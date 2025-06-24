@@ -8,12 +8,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.refactoringlife.lizimportados.features.composablesLipsy.BottomBarItem
-import com.refactoringlife.lizimportados.features.composablesLipsy.LipsyBottomBar
+import com.refactoringlife.lizimportados.features.bottomBar.LipsyBottomBar
 import com.refactoringlife.lizimportados.ui.theme.LizImportadosTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Red)
+                            .background(Color.White)
                             .padding(innerPadding)
                     )
                 }
