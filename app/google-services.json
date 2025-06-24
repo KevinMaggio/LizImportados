@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "339668798043",
+    "project_id": "lizimportados-98786",
+    "storage_bucket": "lizimportados-98786.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339668798043:android:477d9045ace957c2b94d7e",
+        "android_client_info": {
+          "package_name": "com.refactoringlife.lizimportados"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmpZ8zOqYnBE-FyPNy5_NpAl2KSFSzUu8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

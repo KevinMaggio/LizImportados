@@ -1,9 +1,5 @@
 package com.refactoringlife.lizimportados.features.bottomBar
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,14 +26,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.features.composablesLipsy.LipsyCircleButton
 import com.refactoringlife.lizimportados.ui.theme.CircleFilterColor
-
 
 @Composable
 fun LipsyBottomBar(
@@ -107,76 +102,6 @@ fun LipsyBottomBar(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-                .padding(bottom = 20.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            AnimatedVisibility(
-                visible = filtersIsActivated,
-                enter = fadeIn(animationSpec = tween(300)),
-                exit = fadeOut(animationSpec = tween(300))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 50.dp)
-                        .size(80.dp)
-                        .align(Alignment.Bottom)
-                        .padding(10.dp)
-                ) {
-                    LipsyCircleButton(text = "Hombre",
-                        goTo = { DestinationsBottomBar.MAN }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            AnimatedVisibility(
-                visible = filtersIsActivated,
-                enter = fadeIn(animationSpec = tween(900)),
-                exit = fadeOut(animationSpec = tween(300))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(bottom = 50.dp)
-                        .size(80.dp)
-                        .align(Alignment.Top)
-                        .padding(10.dp)
-                ) {
-                    LipsyCircleButton(text = "Niños",
-                        goTo = { DestinationsBottomBar.CHILDREN }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            AnimatedVisibility(
-                visible = filtersIsActivated,
-                enter = fadeIn(animationSpec = tween(1300)),
-                exit = fadeOut(animationSpec = tween(300))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(end = 50.dp)
-                        .size(80.dp)
-                        .align(Alignment.Bottom)
-                        .padding(10.dp)
-                ) {
-                    LipsyCircleButton(text = "Mujer",
-                        goTo = {
-                            goTo.invoke(DestinationsBottomBar.WOMAN)
-                        }
-                    )
-                }
-            }
-        }
-
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -194,6 +119,61 @@ fun LipsyBottomBar(
                         filtersIsActivated = !filtersIsActivated
                         goTo(DestinationsBottomBar.CENTER)
                     }
+            )
+        }
+
+//Floating buttons
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .padding(bottom = 20.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            CircleAnimateButton(
+                modifier = Modifier
+                    .padding(start = 50.dp)
+                    .size(80.dp)
+                    .align(Alignment.Bottom)
+                    .padding(10.dp),
+                isVisible = filtersIsActivated,
+                text = stringResource(R.string.bottom_bar_man),
+                goTo = { goTo.invoke(DestinationsBottomBar.MAN) },
+                fadeIn = 300,
+                fadeOut = 300
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            CircleAnimateButton(
+                modifier = Modifier
+                    .padding(bottom = 50.dp)
+                    .size(80.dp)
+                    .align(Alignment.Top)
+                    .padding(10.dp),
+                isVisible = filtersIsActivated,
+                text = stringResource(R.string.bottom_bar_children),
+                goTo = { goTo.invoke(DestinationsBottomBar.CHILDREN) },
+                fadeIn = 900,
+                fadeOut = 300
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            CircleAnimateButton(
+                modifier = Modifier
+                    .padding(end = 50.dp)
+                    .size(80.dp)
+                    .align(Alignment.Top)
+                    .padding(10.dp),
+                isVisible = filtersIsActivated,
+                text = stringResource(R.string.bottom_bar_woman),
+                goTo = { goTo.invoke(DestinationsBottomBar.WOMAN) },
+                fadeIn = 1300,
+                fadeOut = 300
             )
         }
     }

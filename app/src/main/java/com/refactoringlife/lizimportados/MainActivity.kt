@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.refactoringlife.lizimportados.features.composablesLipsy.BottomBarItem
 import com.refactoringlife.lizimportados.features.bottomBar.LipsyBottomBar
 import com.refactoringlife.lizimportados.ui.theme.LizImportadosTheme
 
@@ -25,10 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         LipsyBottomBar(
-                            goToCart = {},
-                            goToHome = {},
-                            goToContent = {},
-                            selected = BottomBarItem.HOME
+                            goTo = {}
                         )
                     }
                 ) { innerPadding ->

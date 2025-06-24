@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">LizImportados</string>
+    <string name="bottom_bar_woman">Mujer</string>
+    <string name="bottom_bar_man">Hombre</string>
+    <string name="bottom_bar_children">Niños</string>
 </resources>
