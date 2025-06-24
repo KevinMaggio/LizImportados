@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,8 @@ fun LipsyCircleButton(
 ) {
     Box(
         modifier = modifier
-            .size(60.dp)
+            .size(100.dp)
+            .shadow(8.dp, shape = CircleShape, clip = false)
             .clip(CircleShape)
             .background(CircleFilterColor),
         contentAlignment = Alignment.Center
