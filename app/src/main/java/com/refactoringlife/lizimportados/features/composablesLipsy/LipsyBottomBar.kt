@@ -1,5 +1,9 @@
 package com.refactoringlife.lizimportados.features.composablesLipsy
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,10 +33,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.core.tween
 import kotlinx.coroutines.delay
 
 enum class BottomBarItem { HOME, CENTER, CART }
@@ -45,6 +45,7 @@ fun LipsyBottomBar(
     goToCart: () -> Unit
 ) {
     var filtersIsActivated by remember { mutableStateOf(false) }
+
     Box(
         Modifier
             .fillMaxWidth()
@@ -99,26 +100,40 @@ fun LipsyBottomBar(
             }
         }
 
-        // Círculos flotantes sobre el icon_center (sin animación)
-        if (filtersIsActivated) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedVisibility(
+                visible = filtersIsActivated,
+                enter = fadeIn(animationSpec = tween(200)),
+                exit = fadeOut(animationSpec = tween(1200))
+            ) {
                 LipsyCircleButton(
                     text = "Hombre",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .offset(x = (-80).dp, y = (-90).dp)
+                    modifier = Modifier.offset(x = (-120).dp, y = (-90).dp)
                 )
+            }
+            AnimatedVisibility(
+                visible = filtersIsActivated,
+                enter = fadeIn(animationSpec = tween(400)),
+                exit = fadeOut(animationSpec = tween(800))
+            ) {
                 LipsyCircleButton(
                     text = "Niños",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .offset(y = (-140).dp)
+                    modifier = Modifier.offset(y = (-140).dp)
                 )
+            }
+            AnimatedVisibility(
+                visible = filtersIsActivated,
+                enter = fadeIn(animationSpec = tween(600)),
+                exit = fadeOut(animationSpec = tween(400))
+            ) {
                 LipsyCircleButton(
                     text = "Mujer",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .offset(x = 80.dp, y = (-90).dp)
+                    modifier = Modifier.offset(x = 120.dp, y = (-90).dp)
                 )
             }
         }
@@ -132,7 +147,7 @@ fun LipsyBottomBar(
                 contentDescription = "Center",
                 modifier = Modifier
                     .size(100.dp)
-                    .offset(y = (-28).dp)
+                    .offset(y = (-20).dp)
                     .clickable {
                         filtersIsActivated = !filtersIsActivated
                         goToContent()
