@@ -12,6 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val CircleFilterColor = Color(0xFFF5E4DC)
 val CardBackGround = Color(0XFFFFF7F7)
+val ColorGrayLipsy = Color(0XFFE0E0E0)
 
 val TextBlue = Color(0XFF0056D2)
 val TextPrimary = Color(0XFF000000)

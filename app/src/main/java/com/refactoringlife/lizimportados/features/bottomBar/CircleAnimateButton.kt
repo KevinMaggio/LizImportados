@@ -28,7 +28,7 @@ fun CircleAnimateButton(
         ) {
             LipsyCircleButton(
                 text = text,
-                goTo = goTo
+                action = goTo
             )
         }
     }

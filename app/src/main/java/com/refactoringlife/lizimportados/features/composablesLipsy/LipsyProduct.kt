@@ -1,7 +1,10 @@
 package com.refactoringlife.lizimportados.features.composablesLipsy
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,11 +31,14 @@ fun LipsyProduct(
     Column(modifier = Modifier.padding(20.dp)) {
         LipsyCardImage(url)
 
+        Spacer(modifier = Modifier.height(10.dp))
+
         title?.onValid {
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                 fontSize = 12.sp,
+                lineHeight = 1.sp,
                 color = TextSecondary
             )
         }
@@ -42,15 +48,19 @@ fun LipsyProduct(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 fontSize = 10.sp,
+                lineHeight = 6.sp,
                 color = TextSecondary
             )
         }
+
+        Spacer(modifier = Modifier.height(6.dp))
 
         oldPrice?.onValid {
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 fontSize = 10.sp,
+                lineHeight = 1.sp,
                 textDecoration = TextDecoration.LineThrough,
                 color = TextBlue
             )
@@ -61,6 +71,7 @@ fun LipsyProduct(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                 fontSize = 14.sp,
+                lineHeight = 1.sp,
                 color = TextPrimary
             )
         }

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -23,20 +24,21 @@ import com.refactoringlife.lizimportados.ui.theme.CircleFilterColor
 @Composable
 fun LipsyCircleButton(
     modifier: Modifier = Modifier,
-    goTo: () -> Unit,
-    text: String = ""
+    action: () -> Unit,
+    text: String = "",
+    background : Color = CircleFilterColor,
 ) {
     Box(
         modifier = modifier
             .size(100.dp)
             .shadow(2.dp, shape = CircleShape, clip = true)
             .clip(CircleShape)
-            .background(CircleFilterColor)
+            .background(background)
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) {
-                goTo.invoke()
+                action.invoke()
             },
         contentAlignment = Alignment.Center
     ) {

@@ -36,14 +36,16 @@ import com.refactoringlife.lizimportados.ui.theme.CircleFilterColor
 
 @Composable
 fun LipsyBottomBar(
-    goTo: (DestinationsBottomBar) -> Unit
+    goTo: (DestinationsBottomBar) -> Unit,
+    modifier: Modifier
 ) {
     var filtersIsActivated by remember { mutableStateOf(false) }
 
     Box(
-        Modifier
+        modifier
             .fillMaxWidth()
-            .height(250.dp),
+            .height(250.dp)
+            .background(Color.White),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(
