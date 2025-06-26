@@ -3,4 +3,6 @@
     <string name="bottom_bar_woman">Mujer</string>
     <string name="bottom_bar_man">Hombre</string>
     <string name="bottom_bar_children">Niños</string>
+    <string name="home">Inicio</string>
+    <string name="cart">Carrito</string>
 </resources>

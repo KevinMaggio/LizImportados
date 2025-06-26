@@ -72,11 +72,11 @@ fun LipsyBottomBar(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_home),
-                    contentDescription = "Home",
+                    contentDescription = stringResource(R.string.home),
                     modifier = Modifier.size(25.dp)
                 )
                 Text(
-                    text = "Home",
+                    text = stringResource(R.string.home),
                     fontSize = 10.sp,
                     fontFamily = FontFamily(Font(R.font.montserrat_regular))
                 )
@@ -91,11 +91,11 @@ fun LipsyBottomBar(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_cart),
-                    contentDescription = "Cart",
+                    contentDescription = stringResource(R.string.cart),
                     modifier = Modifier.size(25.dp)
                 )
                 Text(
-                    text = "Cart",
+                    text = stringResource(R.string.cart),
                     fontSize = 10.sp,
                     fontFamily = FontFamily(Font(R.font.montserrat_regular))
                 )

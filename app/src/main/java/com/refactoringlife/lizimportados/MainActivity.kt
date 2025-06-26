@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.refactoringlife.lizimportados.features.bottomBar.LipsyBottomBar
+import com.refactoringlife.lizimportados.features.home.presenter.screens.HomeScreen
 import com.refactoringlife.lizimportados.ui.theme.LizImportadosTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,12 +29,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.White)
-                            .padding(innerPadding)
-                    )
+                    HomeScreen(modifier =Modifier.padding(innerPadding))
                 }
             }
         }
