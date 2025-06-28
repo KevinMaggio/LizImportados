@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.utils
+package com.refactoringlife.lizimportados.core.utils
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearEasing

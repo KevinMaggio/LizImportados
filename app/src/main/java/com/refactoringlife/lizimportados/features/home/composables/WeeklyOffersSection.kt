@@ -10,10 +10,10 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.features.composablesLipsy.LipsyProduct
+import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyProduct
 import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
-import com.refactoringlife.lizimportados.features.utils.capitalizeWords
-import com.refactoringlife.lizimportados.features.utils.onValid
+import com.refactoringlife.lizimportados.core.utils.capitalizeWords
+import com.refactoringlife.lizimportados.core.utils.onValid
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
 @Composable

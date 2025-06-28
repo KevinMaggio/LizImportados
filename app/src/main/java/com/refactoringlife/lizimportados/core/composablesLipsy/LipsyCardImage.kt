@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.composablesLipsy
+package com.refactoringlife.lizimportados.core.composablesLipsy
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.features.utils.shimmerEffect
+import com.refactoringlife.lizimportados.core.utils.shimmerEffect
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 
 @Composable

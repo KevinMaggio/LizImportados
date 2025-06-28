@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.composablesLipsy
+package com.refactoringlife.lizimportados.core.composablesLipsy
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

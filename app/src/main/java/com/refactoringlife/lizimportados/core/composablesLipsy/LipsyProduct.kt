@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.composablesLipsy
+package com.refactoringlife.lizimportados.core.composablesLipsy
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,8 +14,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.features.utils.capitalizeWords
-import com.refactoringlife.lizimportados.features.utils.onValid
+import com.refactoringlife.lizimportados.core.utils.capitalizeWords
+import com.refactoringlife.lizimportados.core.utils.onValid
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 import com.refactoringlife.lizimportados.ui.theme.TextPrimary
 import com.refactoringlife.lizimportados.ui.theme.TextSecondary

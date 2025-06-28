@@ -7,7 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.refactoringlife.lizimportados.features.composablesLipsy.LipsyCircleButton
+import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyCircleButton
 
 @Composable
 fun CircleAnimateButton(

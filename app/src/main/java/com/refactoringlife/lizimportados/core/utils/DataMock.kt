@@ -1,5 +1,6 @@
-package com.refactoringlife.lizimportados.features.utils
+package com.refactoringlife.lizimportados.core.utils
 
+import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 
 fun getProductsMock() = listOf(
@@ -38,4 +39,13 @@ fun getProductsMock() = listOf(
         oldPrice = "$55000",
         price = "$34000"
     )
+)
+
+fun getConfigMock() = ConfigResponse(
+    ConfigResponse.Combo(
+        showCombo = true,
+        comboID = listOf("1", "2")
+    ),
+    circleOptions = listOf("invierno", "verano", "ositos", "primavera"),
+    weeklyOffers = true
 )

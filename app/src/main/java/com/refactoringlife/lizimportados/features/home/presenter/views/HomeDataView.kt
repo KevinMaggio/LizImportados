@@ -10,25 +10,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.features.composablesLipsy.LipsyCircleButton
-import com.refactoringlife.lizimportados.features.composablesLipsy.LipsyDivider
+import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
+import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportados.features.home.composables.WeeklyOffersSection
-import com.refactoringlife.lizimportados.features.utils.getProductsMock
-import com.refactoringlife.lizimportados.ui.theme.CardBackGround
-import com.refactoringlife.lizimportados.ui.theme.ColorGrayLipsy
+import com.refactoringlife.lizimportados.core.utils.getProductsMock
+import com.refactoringlife.lizimportados.features.home.composables.CircleOptionsSection
 
 @Composable
 fun HomeDataView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    configData : ConfigResponse,
+    goToOptionScreen : (String)-> Unit
 ) {
 
     Box(
@@ -55,66 +55,22 @@ fun HomeDataView(
             Spacer(Modifier.height(20.dp))
 
             WeeklyOffersSection(
-                "Ofertas semanales",
-                getProductsMock()
+                title = stringResource(R.string.weekly_offers),
+                products = getProductsMock()
             )
 
             LipsyDivider()
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 20.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(10.dp)
-                ) {
-                    LipsyCircleButton(
-                        modifier = Modifier.size(70.dp),
-                        action = {},
-                        text = "invierno",
-                        background = CardBackGround
-                    )
+            CircleOptionsSection(
+               options =  configData.circleOptions,
+                action = { filter ->
+                    goToOptionScreen(filter)
                 }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(10.dp)
-                ) {
-                    LipsyCircleButton(
-                        modifier = Modifier.size(70.dp),
-                        action = {},
-                        text = "invierno",
-                        background = CardBackGround
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(10.dp)
-                ) {
-                    LipsyCircleButton(
-                        modifier = Modifier.size(70.dp),
-                        action = {},
-                        text = "invierno",
-                        background = CardBackGround
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(10.dp)
-                ) {
-                    LipsyCircleButton(
-                        modifier = Modifier.size(70.dp),
-                        action = {},
-                        text = "invierno",
-                        background = CardBackGround
-                    )
-                }
-            }
+            )
+
+            LipsyDivider()
+
+
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.utils
+package com.refactoringlife.lizimportados.core.utils
 
 const val EMPTY = ""
 const val ZERO = 0

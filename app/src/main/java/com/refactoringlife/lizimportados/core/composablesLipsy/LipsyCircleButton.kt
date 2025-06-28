@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.composablesLipsy
+package com.refactoringlife.lizimportados.core.composablesLipsy
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,13 +19,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
+import com.refactoringlife.lizimportados.core.utils.EMPTY
 import com.refactoringlife.lizimportados.ui.theme.CircleFilterColor
 
 @Composable
 fun LipsyCircleButton(
     modifier: Modifier = Modifier,
     action: () -> Unit,
-    text: String = "",
+    text: String = EMPTY,
     background : Color = CircleFilterColor,
 ) {
     Box(
@@ -44,6 +45,7 @@ fun LipsyCircleButton(
     ) {
         Text(
             text = text,
+            maxLines = 2,
             fontSize = 10.sp,
             fontFamily = FontFamily(Font(R.font.montserrat_regular))
         )

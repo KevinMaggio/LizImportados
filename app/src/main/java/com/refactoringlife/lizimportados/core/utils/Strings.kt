@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.utils
+package com.refactoringlife.lizimportados.core.utils
 
 inline fun <R> String?.onValid(block: (String) -> R): R? {
     return if (!this.isNullOrBlank()) block(this) else null
