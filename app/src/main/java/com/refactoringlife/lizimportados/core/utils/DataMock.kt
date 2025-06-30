@@ -10,36 +10,73 @@ fun getProductsMock() = listOf(
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
-        price = "$34000"
+        price = "$34000",
+        id = "1"
     ),
     ProductModel(
         url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
-        price = "$34000"
+        price = "$34000",
+        id = "2"
     ),
     ProductModel(
         url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
-        price = "$34000"
+        price = "$34000",
+        id = "3"
     ),
     ProductModel(
         url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
-        price = "$34000"
+        price = "$34000",
+        id = "4"
     ),
     ProductModel(
         url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
-        price = "$34000"
-    )
+        price = "$34000",
+        id = "5"
+    ),
+    ProductModel(
+        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        title = "campera jean",
+        subtitle = "hermosa campera",
+        oldPrice = "$55000",
+        price = "$34000",
+        id = "6"
+    ),
+    ProductModel(
+        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        title = "campera jean",
+        subtitle = "hermosa campera",
+        oldPrice = "$55000",
+        price = "$34000",
+        id = "7"
+    ),
+    ProductModel(
+        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        title = "campera jean",
+        subtitle = "hermosa campera",
+        oldPrice = "$55000",
+        price = "$34000",
+        id = "8"
+    ),
+    ProductModel(
+        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        title = "campera jean",
+        subtitle = "hermosa campera",
+        oldPrice = "$55000",
+        price = "$34000",
+        id = "9"
+    ),
 )
 
 fun getConfigMock() = ConfigResponse(

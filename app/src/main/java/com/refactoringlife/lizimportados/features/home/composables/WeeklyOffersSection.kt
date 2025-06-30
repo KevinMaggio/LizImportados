@@ -33,11 +33,8 @@ fun WeeklyOffersSection (
     LazyRow(modifier = Modifier.fillMaxWidth()){
         items(products){product ->
             LipsyProduct(
-                url = product.url,
-                title = product.title,
-                subtitle = product.subtitle,
-                oldPrice = product.oldPrice,
-                price = product.price
+                product=product,
+                addCartProduct = {}
             )
         }
     }

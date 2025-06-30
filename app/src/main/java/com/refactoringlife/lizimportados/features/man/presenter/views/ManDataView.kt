@@ -1,4 +1,4 @@
-package com.refactoringlife.lizimportados.features.children.presenter.views
+package com.refactoringlife.lizimportados.features.man.presenter.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,14 +25,14 @@ import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
 @Composable
-fun ChildrenDataView(
+fun ManDataView (
     products: List<ProductModel>
 ){
     Column (modifier = Modifier.fillMaxSize()
         .background(Color.White)
         .padding(start = 20.dp, top = 20.dp, bottom = 90.dp)){
 
-        Text(text = "Seccion Chicos!",
+        Text(text = "Seccion Hombre!",
             fontSize = 16.sp,
             fontFamily = FontFamily(Font(R.font.montserrat_bold)),
             color = TextBlue,

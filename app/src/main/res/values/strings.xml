@@ -7,4 +7,5 @@
     <string name="cart">Carrito</string>
     <string name="weekly_offers">Ofertas semanales</string>
     <string name="unmissable_combo">Combos imperdibles</string>
+    <string name="add_cart">Agregar al carrito +</string>
 </resources>
