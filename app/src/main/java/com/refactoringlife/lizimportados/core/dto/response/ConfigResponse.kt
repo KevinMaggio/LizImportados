@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 
 data class ConfigResponse (
     @SerialName("combo")
-    val combo : Combo?,
+    val combos : List<Combo>?,
     @SerialName("options")
     val circleOptions: List<String>,
     @SerialName("weekly_offers")

@@ -24,20 +24,10 @@ import com.refactoringlife.lizimportados.core.utils.shimmerEffect
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 
 @Composable
-fun LipsyAsyncImage(url: String?) {
+fun LipsyAsyncImage(modifier: Modifier,url: String?) {
     var isLoading by remember { mutableStateOf(true) }
 
-
-    if (isLoading) {
-        Box(
-            modifier = Modifier
-                .width(100.dp)
-                .height(150.dp)
-                .shimmerEffect()
-                .clip(RoundedCornerShape(12.dp))
-                .padding(10.dp)
-        )
-    }
+    if (isLoading) { Box(modifier = modifier.shimmerEffect()) }
 
     if (url.isNullOrEmpty()) {
         isLoading = false
@@ -45,9 +35,7 @@ fun LipsyAsyncImage(url: String?) {
             painter = painterResource(R.drawable.icon_default_clothes),
             contentDescription = "no image",
             contentScale = ContentScale.Inside,
-            modifier = Modifier
-                .width(100.dp)
-                .height(150.dp)
+            modifier = modifier
                 .background(CardBackGround)
                 .clip(RoundedCornerShape(12.dp))
                 .padding(10.dp)
@@ -57,9 +45,7 @@ fun LipsyAsyncImage(url: String?) {
             model = url,
             contentDescription = "generic image",
             contentScale = ContentScale.Inside,
-            modifier = Modifier
-                .width(100.dp)
-                .height(150.dp)
+            modifier = modifier
                 .background(CardBackGround)
                 .clip(RoundedCornerShape(12.dp))
                 .padding(10.dp),
@@ -68,6 +54,4 @@ fun LipsyAsyncImage(url: String?) {
             }
         )
     }
-
-
 }

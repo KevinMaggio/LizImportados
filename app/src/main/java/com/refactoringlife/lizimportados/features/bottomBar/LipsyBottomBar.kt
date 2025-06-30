@@ -45,7 +45,7 @@ fun LipsyBottomBar(
         modifier
             .fillMaxWidth()
             .height(250.dp)
-            .background(Color.White),
+            .background(Color.Transparent),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(

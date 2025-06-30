@@ -20,15 +20,17 @@ import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportados.R
 import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
 import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
+import com.refactoringlife.lizimportados.core.utils.getComboMock
 import com.refactoringlife.lizimportados.features.home.composables.WeeklyOffersSection
 import com.refactoringlife.lizimportados.core.utils.getProductsMock
 import com.refactoringlife.lizimportados.features.home.composables.CircleOptionsSection
+import com.refactoringlife.lizimportados.features.home.composables.ComboSection
 
 @Composable
 fun HomeDataView(
     modifier: Modifier = Modifier,
-    configData : ConfigResponse,
-    goToOptionScreen : (String)-> Unit
+    configData: ConfigResponse,
+    goToOptionScreen: (String) -> Unit
 ) {
 
     Box(
@@ -54,23 +56,25 @@ fun HomeDataView(
 
             Spacer(Modifier.height(20.dp))
 
-            WeeklyOffersSection(
-                title = stringResource(R.string.weekly_offers),
-                products = getProductsMock()
-            )
+            if (configData.weeklyOffers) {
+                WeeklyOffersSection(
+                    title = stringResource(R.string.weekly_offers),
+                    products = getProductsMock()
+                )
+                LipsyDivider()
+            }
 
-            LipsyDivider()
+            if (configData.circleOptions.isNotEmpty()) {
+                CircleOptionsSection(
+                    options = configData.circleOptions,
+                    action = { filter ->
+                        goToOptionScreen(filter)
+                    }
+                )
+                LipsyDivider()
+            }
 
-            CircleOptionsSection(
-               options =  configData.circleOptions,
-                action = { filter ->
-                    goToOptionScreen(filter)
-                }
-            )
-
-            LipsyDivider()
-
-
+            ComboSection(getComboMock())
         }
     }
 }
