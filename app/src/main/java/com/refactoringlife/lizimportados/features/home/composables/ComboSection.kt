@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
 import com.refactoringlife.lizimportados.core.utils.getComboMock
 import com.refactoringlife.lizimportados.features.home.data.model.CombosModel
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
@@ -36,7 +35,6 @@ fun ComboSection (
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(600.dp)
             .padding(end = 20.dp)
     ) {
         Text(
@@ -48,13 +46,19 @@ fun ComboSection (
 
         Spacer(Modifier.height(20.dp))
 
-        Card(modifier = Modifier.shadow(elevation = 8.dp)
-            .background(CardBackGround)) {
-            LazyColumn(modifier = Modifier.background(CardBackGround)) {
-                items(combo.combos){
-                    ComboItem(
-                        combo = it
-                    )
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(elevation = 8.dp)
+                .background(CardBackGround)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(CardBackGround)
+            ) {
+                combo.combos.forEach { comboItem ->
+                    ComboItem(combo = comboItem)
                 }
             }
         }

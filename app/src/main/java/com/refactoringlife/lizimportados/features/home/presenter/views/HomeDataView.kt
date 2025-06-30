@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,39 +34,47 @@ fun HomeDataView(
     configData: ConfigResponse,
     goToOptionScreen: (String) -> Unit
 ) {
-
-    Box(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(start = 20.dp)
+            .padding(start = 20.dp, top = 40.dp)
     ) {
-        Column {
-            Image(
-                painter = painterResource(R.drawable.liz_importados),
-                contentDescription = "",
-                contentScale = ContentScale.Inside
-            )
+        // Header con logo y título
+        item {
+            Column {
+                Image(
+                    painter = painterResource(R.drawable.liz_importados),
+                    contentDescription = "",
+                    contentScale = ContentScale.Inside
+                )
 
-            Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(20.dp))
 
-            Image(
-                modifier = Modifier.padding(start = 50.dp, end = 70.dp),
-                painter = painterResource(R.drawable.title_logo),
-                contentDescription = ""
-            )
+                Image(
+                    modifier = Modifier.padding(start = 50.dp, end = 70.dp),
+                    painter = painterResource(R.drawable.title_logo),
+                    contentDescription = ""
+                )
 
-            Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(20.dp))
+            }
+        }
 
-            if (configData.weeklyOffers) {
+        // Weekly Offers Section
+        if (configData.weeklyOffers) {
+            item {
                 WeeklyOffersSection(
                     title = stringResource(R.string.weekly_offers),
                     products = getProductsMock()
                 )
                 LipsyDivider()
             }
+        }
 
-            if (configData.circleOptions.isNotEmpty()) {
+        // Circle Options Section
+        if (configData.circleOptions.isNotEmpty()) {
+            item {
                 CircleOptionsSection(
                     options = configData.circleOptions,
                     action = { filter ->
@@ -73,7 +83,10 @@ fun HomeDataView(
                 )
                 LipsyDivider()
             }
+        }
 
+        // Combo Section - Se expande en su totalidad
+        item {
             ComboSection(getComboMock())
         }
     }
