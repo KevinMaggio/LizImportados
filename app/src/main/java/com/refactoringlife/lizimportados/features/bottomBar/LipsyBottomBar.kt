@@ -32,11 +32,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
+import com.refactoringlife.lizimportados.core.navigator.AppRoutes
 import com.refactoringlife.lizimportados.ui.theme.CircleFilterColor
 
 @Composable
 fun LipsyBottomBar(
-    goTo: (DestinationsBottomBar) -> Unit,
+    goTo: (String) -> Unit,
     modifier: Modifier
 ) {
     var filtersIsActivated by remember { mutableStateOf(false) }
@@ -69,7 +70,7 @@ fun LipsyBottomBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { goTo(DestinationsBottomBar.HOME) }
+                    .clickable { goTo(AppRoutes.HOME) }
                     .padding(vertical = 15.dp)
             ) {
                 Image(
@@ -88,7 +89,7 @@ fun LipsyBottomBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { goTo(DestinationsBottomBar.CART) }
+                    .clickable { goTo(AppRoutes.CART) }
                     .padding(vertical = 15.dp)
             ) {
                 Image(
@@ -119,7 +120,6 @@ fun LipsyBottomBar(
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
                         filtersIsActivated = !filtersIsActivated
-                        goTo(DestinationsBottomBar.CENTER)
                     }
             )
         }
@@ -143,7 +143,7 @@ fun LipsyBottomBar(
                     .padding(10.dp),
                 isVisible = filtersIsActivated,
                 text = stringResource(R.string.bottom_bar_man),
-                goTo = { goTo.invoke(DestinationsBottomBar.MAN) },
+                goTo = { goTo.invoke(AppRoutes.MAN) },
                 fadeIn = 300,
                 fadeOut = 300
             )
@@ -158,7 +158,7 @@ fun LipsyBottomBar(
                     .padding(10.dp),
                 isVisible = filtersIsActivated,
                 text = stringResource(R.string.bottom_bar_children),
-                goTo = { goTo.invoke(DestinationsBottomBar.CHILDREN) },
+                goTo = { goTo.invoke(AppRoutes.CHILDREN) },
                 fadeIn = 900,
                 fadeOut = 300
             )
@@ -173,7 +173,7 @@ fun LipsyBottomBar(
                     .padding(10.dp),
                 isVisible = filtersIsActivated,
                 text = stringResource(R.string.bottom_bar_woman),
-                goTo = { goTo.invoke(DestinationsBottomBar.WOMAN) },
+                goTo = { goTo.invoke(AppRoutes.WOMAN) },
                 fadeIn = 1300,
                 fadeOut = 300
             )

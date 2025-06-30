@@ -64,11 +64,3 @@ fun ComboSection (
         }
     }
 }
-
-@Preview
-@Composable
-fun ComboSectionPreview(){
-    Box(modifier = Modifier.fillMaxSize()){
-        ComboSection(getComboMock())
-    }
-}
