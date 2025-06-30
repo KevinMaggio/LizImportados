@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    HomeScreen(modifier = Modifier)
+                    HomeScreen(modifier = Modifier.navigationBarsPadding())
                 }
             }
         }

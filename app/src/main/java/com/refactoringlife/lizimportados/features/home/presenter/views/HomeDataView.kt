@@ -38,7 +38,7 @@ fun HomeDataView(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(start = 20.dp, top = 40.dp)
+            .padding(start = 20.dp, top = 40.dp, bottom = 65.dp)
     ) {
         // Header con logo y título
         item {
