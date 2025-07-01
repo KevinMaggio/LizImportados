@@ -2,7 +2,7 @@ package com.refactoringlife.lizimportados.features.home.data.model
 
 data class ProductModel(
     val id: String,
-    var url: String?,
+    val images: List<String>,
     val title: String?,
     val subtitle: String?,
     val oldPrice: String?,

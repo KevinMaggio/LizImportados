@@ -6,7 +6,11 @@ import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 
 fun getProductsMock() = listOf(
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -14,7 +18,11 @@ fun getProductsMock() = listOf(
         id = "1"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -22,7 +30,11 @@ fun getProductsMock() = listOf(
         id = "2"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -30,7 +42,11 @@ fun getProductsMock() = listOf(
         id = "3"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -38,7 +54,11 @@ fun getProductsMock() = listOf(
         id = "4"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -46,7 +66,11 @@ fun getProductsMock() = listOf(
         id = "5"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -54,7 +78,11 @@ fun getProductsMock() = listOf(
         id = "6"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -62,7 +90,11 @@ fun getProductsMock() = listOf(
         id = "7"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",
@@ -70,7 +102,11 @@ fun getProductsMock() = listOf(
         id = "8"
     ),
     ProductModel(
-        url = "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+        images = listOf(
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+            "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
         title = "campera jean",
         subtitle = "hermosa campera",
         oldPrice = "$55000",

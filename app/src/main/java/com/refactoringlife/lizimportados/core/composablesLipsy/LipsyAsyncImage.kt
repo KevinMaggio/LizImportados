@@ -44,7 +44,7 @@ fun LipsyAsyncImage(modifier: Modifier,url: String?) {
         AsyncImage(
             model = url,
             contentDescription = "generic image",
-            contentScale = ContentScale.Inside,
+            contentScale = ContentScale.Crop,
             modifier = modifier
                 .background(CardBackGround)
                 .clip(RoundedCornerShape(12.dp))

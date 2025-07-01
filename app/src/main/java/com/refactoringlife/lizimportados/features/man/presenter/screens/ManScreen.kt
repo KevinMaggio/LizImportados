@@ -16,7 +16,11 @@ fun ManScreen () {
                 id = it.id,
                 title = it.title,
                 subtitle = it.subtitle,
-                url = "https://i.ibb.co/yccHNqLx/pngwing-com-1.png",
+                images = listOf(
+                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
+                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
                 price = it.price,
                 oldPrice = it.oldPrice
             )

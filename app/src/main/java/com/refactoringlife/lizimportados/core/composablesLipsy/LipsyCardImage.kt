@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -26,7 +27,7 @@ import com.refactoringlife.lizimportados.core.utils.shimmerEffect
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 
 @Composable
-fun LipsyCardImage(url: String?) {
+fun LipsyCardImage(url: String?, width: Dp= 100.dp, height: Dp= 150.dp) {
     var isLoading by remember { mutableStateOf(true) }
 
     Surface(
@@ -37,8 +38,8 @@ fun LipsyCardImage(url: String?) {
         if (isLoading) {
             Box(
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(150.dp)
+                    .width(width)
+                    .height(height)
                     .shimmerEffect()
                     .clip(RoundedCornerShape(12.dp))
                     .padding(10.dp)
@@ -52,8 +53,8 @@ fun LipsyCardImage(url: String?) {
                 contentDescription = "no image",
                 contentScale = ContentScale.Inside,
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(150.dp)
+                    .width(width)
+                    .height(height)
                     .background(CardBackGround)
                     .clip(RoundedCornerShape(12.dp))
                     .padding(10.dp)
@@ -64,8 +65,8 @@ fun LipsyCardImage(url: String?) {
                 contentDescription = "generic image",
                 contentScale = ContentScale.Inside,
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(150.dp)
+                    .width(width)
+                    .height(height)
                     .background(CardBackGround)
                     .clip(RoundedCornerShape(12.dp))
                     .padding(10.dp),

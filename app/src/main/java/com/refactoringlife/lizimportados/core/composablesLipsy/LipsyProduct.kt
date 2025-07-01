@@ -29,7 +29,7 @@ fun LipsyProduct(
     addCartProduct: (String) -> Unit
 ) {
     Column(modifier = Modifier.padding(20.dp)) {
-        LipsyCardImage(product.url)
+        LipsyCardImage(product.images[0])
 
         Spacer(modifier = Modifier.height(10.dp))
 
