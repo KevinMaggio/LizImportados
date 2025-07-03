@@ -1,9 +1,9 @@
 package com.refactoringlife.lizimportados.features.details.presenter.views
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.background
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,8 +19,15 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.ui.draw.shadow
-import com.refactoringlife.lizimportados.ui.theme.CardBackGround
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
+import com.refactoringlife.lizimportados.R
+import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
+import com.refactoringlife.lizimportados.ui.theme.TextPrimary
+import com.refactoringlife.lizimportados.ui.theme.TextSecondary
 
 @Composable
 fun DetailsDataView(products: List<ProductModel>) {
@@ -30,8 +37,10 @@ fun DetailsDataView(products: List<ProductModel>) {
         pageCount = { products.size }
     )
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.White).
-        padding(top = 30.dp, bottom = 90.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(top = 30.dp, bottom = 90.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         VerticalPager(
@@ -54,7 +63,7 @@ fun DetailsDataView(products: List<ProductModel>) {
                     state = imagePagerState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.3f)
+                        .weight(1.7f)
                 ) { imagePage ->
                     Surface(
                         modifier = Modifier
@@ -70,13 +79,18 @@ fun DetailsDataView(products: List<ProductModel>) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     repeat(product.images.size) { index ->
-                        val color = if (imagePagerState.currentPage == index) TextBlue else Color.LightGray
+                        val color =
+                            if (imagePagerState.currentPage == index) TextBlue else Color.LightGray
+                        val size =
+                            if (imagePagerState.currentPage == index) 15.dp else 10.dp
+
                         Box(
                             modifier = Modifier
-                                .size(10.dp)
+                                .size(size)
                                 .clip(CircleShape)
                                 .background(color)
                                 .padding(2.dp)
@@ -84,10 +98,76 @@ fun DetailsDataView(products: List<ProductModel>) {
                         if (index < product.images.size - 1) Spacer(modifier = Modifier.width(6.dp))
                     }
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(text = product.title ?: "", style = MaterialTheme.typography.titleLarge)
-                Text(text = product.subtitle ?: "", style = MaterialTheme.typography.bodyMedium)
-                Text(text = product.price ?: "", style = MaterialTheme.typography.titleMedium)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(top = 32.dp)
+                )
+                {
+                    Text(
+                        text = product.name.orEmpty(),
+                        fontSize = 20.sp,
+                        color = TextPrimary,
+                        fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                    )
+
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(
+                            text = product.brand.orEmpty(),
+                            fontSize = 14.sp,
+                            color = TextSecondary,
+                            fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Text(
+                            text = "Talle: "+ product.size.orEmpty(),
+                            fontSize = 14.sp,
+                            color = TextPrimary,
+                            fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                        )
+                    }
+
+                    LipsyDivider()
+
+                    Row(Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically){
+                        Text(
+                            text = product.price.orEmpty(),
+                            fontSize = 18.sp,
+                            color = TextPrimary,
+                            fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Text(
+                            text = "Agregar a carrito",
+                            fontSize = 14.sp,
+                            color = TextPrimary,
+                            fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                        )
+
+                        Image(
+                            painter = painterResource(R.drawable.icon_more),
+                            contentDescription = "",
+                            modifier =Modifier.padding(start = 10.dp).size(20.dp)
+
+                        )
+                    }
+
+                    LipsyDivider()
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = product.description.orEmpty(),
+                        fontSize = 14.sp,
+                        color = TextPrimary,
+                        fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    )
+                }
             }
         }
     }

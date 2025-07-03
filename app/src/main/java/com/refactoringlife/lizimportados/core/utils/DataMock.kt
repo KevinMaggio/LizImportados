@@ -11,10 +11,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "Chaqueta de Jeans de exelente \u2028calidad. Especialpara salidas casuales",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "1"
     ),
     ProductModel(
@@ -23,10 +25,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "2"
     ),
     ProductModel(
@@ -35,10 +39,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "3"
     ),
     ProductModel(
@@ -47,10 +53,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "4"
     ),
     ProductModel(
@@ -59,10 +67,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "5"
     ),
     ProductModel(
@@ -71,10 +81,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "6"
     ),
     ProductModel(
@@ -83,10 +95,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "7"
     ),
     ProductModel(
@@ -95,10 +109,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "8"
     ),
     ProductModel(
@@ -107,10 +123,12 @@ fun getProductsMock() = listOf(
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
             "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-        title = "campera jean",
-        subtitle = "hermosa campera",
+        name = "campera jean",
+        description = "hermosa campera",
         oldPrice = "$55000",
         price = "$34000",
+        brand = "Gap",
+        size = "XL",
         id = "9"
     ),
 )

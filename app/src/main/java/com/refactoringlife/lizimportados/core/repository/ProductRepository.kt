@@ -28,7 +28,7 @@ class ProductRepository(
     
     // Agregar un producto
     fun addProduct(product: ProductModel): Flow<FireStoreResponse<String>> {
-        Log.d(TAG, "➕ Agregando nuevo producto: ${product.title}")
+        Log.d(TAG, "➕ Agregando nuevo producto: ${product.name}")
         return productService.addProduct(product)
     }
     

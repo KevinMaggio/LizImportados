@@ -33,7 +33,7 @@ fun LipsyProduct(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        product.title?.onValid {
+        product.name?.onValid {
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
@@ -43,7 +43,7 @@ fun LipsyProduct(
             )
         }
 
-        product.subtitle?.onValid {
+        product.brand?.onValid {
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),

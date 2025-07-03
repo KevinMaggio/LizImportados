@@ -11,20 +11,6 @@ import com.refactoringlife.lizimportados.features.man.presenter.views.ManDataVie
 @Composable
 fun ManScreen () {
     Box(modifier = Modifier.fillMaxSize()) {
-        ManDataView(getProductsMock().map {
-            ProductModel(
-                id = it.id,
-                title = it.title,
-                subtitle = it.subtitle,
-                images = listOf(
-                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
-                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
-                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png",
-                    "https://i.postimg.cc/6q7WXnwC/pngwing-com.png"),
-                price = it.price,
-                oldPrice = it.oldPrice
-            )
-        }
-        )
+        ManDataView(getProductsMock())
     }
 }
