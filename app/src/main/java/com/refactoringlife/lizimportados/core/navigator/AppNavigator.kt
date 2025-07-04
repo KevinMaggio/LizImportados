@@ -14,13 +14,15 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.navigation.compose.composable
+import com.refactoringlife.lizimportados.features.login.presenter.screens.LoginScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = AppRoutes.HOME,
+        startDestination = AppRoutes.LOGIN,
         modifier = modifier
     ) {
         composable(
@@ -37,6 +39,14 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                 }
             )
         }
+        composable(
+            AppRoutes.LOGIN,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ){
+            LoginScreen()
+        }
+
         composable(
             AppRoutes.CART,
             enterTransition = { fadeIn() },
