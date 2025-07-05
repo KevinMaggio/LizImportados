@@ -3,9 +3,7 @@ package com.refactoringlife.lizimportados.core.composablesLipsy
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -18,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -27,19 +24,17 @@ import com.refactoringlife.lizimportados.core.utils.shimmerEffect
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 
 @Composable
-fun LipsyCardImage(url: String?, width: Dp= 100.dp, height: Dp= 150.dp) {
+fun LipsyCardImage(url: String?, modifier: Modifier= Modifier) {
     var isLoading by remember { mutableStateOf(true) }
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
             .background(CardBackGround)
     ) {
         if (isLoading) {
             Box(
-                modifier = Modifier
-                    .width(width)
-                    .height(height)
+                modifier = modifier
                     .shimmerEffect()
                     .clip(RoundedCornerShape(12.dp))
                     .padding(10.dp)
@@ -52,9 +47,7 @@ fun LipsyCardImage(url: String?, width: Dp= 100.dp, height: Dp= 150.dp) {
                 painter = painterResource(R.drawable.icon_default_clothes),
                 contentDescription = "no image",
                 contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .width(width)
-                    .height(height)
+                modifier = modifier
                     .background(CardBackGround)
                     .clip(RoundedCornerShape(12.dp))
                     .padding(10.dp)
@@ -64,9 +57,7 @@ fun LipsyCardImage(url: String?, width: Dp= 100.dp, height: Dp= 150.dp) {
                 model = url,
                 contentDescription = "generic image",
                 contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .width(width)
-                    .height(height)
+                modifier = modifier
                     .background(CardBackGround)
                     .clip(RoundedCornerShape(12.dp))
                     .padding(10.dp),

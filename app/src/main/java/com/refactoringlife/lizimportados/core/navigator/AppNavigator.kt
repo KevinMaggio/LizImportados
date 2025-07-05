@@ -1,28 +1,29 @@
 package com.refactoringlife.lizimportados.core.navigator
 
+import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import com.refactoringlife.lizimportados.features.home.presenter.screens.HomeScreen
-import com.refactoringlife.lizimportados.features.cart.presenter.screens.CartScreen
-import androidx.compose.ui.Modifier
-import com.refactoringlife.lizimportados.features.children.presenter.screens.ChildrenScreen
-import com.refactoringlife.lizimportados.features.man.presenter.screens.ManScreen
-import com.refactoringlife.lizimportados.features.woman.presenter.screens.WomanScreen
-import com.refactoringlife.lizimportados.features.details.presenter.screens.DetailsScreen
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.navigation.compose.composable
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.refactoringlife.lizimportados.features.cart.presenter.screens.CartScreen
+import com.refactoringlife.lizimportados.features.children.presenter.screens.ChildrenScreen
+import com.refactoringlife.lizimportados.features.details.presenter.screens.DetailsScreen
+import com.refactoringlife.lizimportados.features.home.presenter.screens.HomeScreen
 import com.refactoringlife.lizimportados.features.login.presenter.screens.LoginScreen
-import android.content.Intent
 import com.refactoringlife.lizimportados.features.login.presenter.viewmodel.LoginViewModel
+import com.refactoringlife.lizimportados.features.man.presenter.screens.ManScreen
+import com.refactoringlife.lizimportados.features.woman.presenter.screens.WomanScreen
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(
-    navController: NavHostController, 
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     onGoogleSignInClick: (Intent) -> Unit = {},
     loginViewModel: LoginViewModel
@@ -33,28 +34,29 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(
+            AppRoutes.LOGIN,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ) {
+            LoginScreen(
+                onGoogleClick = {
+                    navController.navigateFromLoginToHome()
+                },
+                onGoogleSignInClick = onGoogleSignInClick,
+                viewModel = loginViewModel
+            )
+        }
+
+        composable(
             AppRoutes.HOME,
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            HomeScreen(modifier = Modifier,
+            HomeScreen(
+                modifier = Modifier,
                 goTo = { destination, filter ->
-                    navController.navigate("$destination/$filter") {
-                        launchSingleTop = true
-                        popUpTo(AppRoutes.HOME) { inclusive = false }
-                    }
+                    navController.navigateToDetails(destination, filter)
                 }
-            )
-        }
-        composable(
-            AppRoutes.LOGIN,
-            enterTransition = { fadeIn() },
-            exitTransition = { fadeOut() }
-        ){
-            LoginScreen(
-                onGoogleClick = { navController.navigate(AppRoutes.HOME) },
-                onGoogleSignInClick = onGoogleSignInClick,
-                viewModel = loginViewModel
             )
         }
 
@@ -65,37 +67,41 @@ fun AppNavHost(
         ) {
             CartScreen()
         }
+
         composable(
             AppRoutes.MAN,
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            ManScreen()
+            ManScreen(navController)
         }
+
         composable(
             route = AppRoutes.DETAILS,
             arguments = listOf(
-                androidx.navigation.navArgument("filter") { type = androidx.navigation.NavType.StringType }
+                navArgument("id") { type = NavType.StringType }
             ),
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) { backStackEntry ->
-            val filter = backStackEntry.arguments?.getString("filter")
+            val filter = backStackEntry.arguments?.getString("id")
             DetailsScreen(filter = filter)
         }
+
         composable(
             AppRoutes.CHILDREN,
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            ChildrenScreen()
+            ChildrenScreen(navController)
         }
+
         composable(
             AppRoutes.WOMAN,
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            WomanScreen()
+            WomanScreen(navController)
         }
     }
-} 
+}

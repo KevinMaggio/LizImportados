@@ -8,4 +8,7 @@
     <string name="weekly_offers">Ofertas semanales</string>
     <string name="unmissable_combo">Combos imperdibles</string>
     <string name="add_cart">Agregar al carrito +</string>
+    <string name="section_children">Sección chicos</string>
+    <string name="section_man">Sección hombres</string>
+    <string name="section_woman">Sección mujeres</string>
 </resources>

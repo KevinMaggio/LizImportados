@@ -1,34 +1,33 @@
 package com.refactoringlife.lizimportados.features.home.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.core.utils.getComboMock
 import com.refactoringlife.lizimportados.features.home.data.model.CombosModel
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
 @Composable
-fun ComboSection (
- combo: CombosModel
-){
+fun ComboSection(
+    combo: CombosModel
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,6 +51,7 @@ fun ComboSection (
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(corner = CornerSize(8.dp)))
                     .background(CardBackGround)
             ) {
                 combo.combos.forEachIndexed { index, comboItem ->

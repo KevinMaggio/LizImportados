@@ -24,9 +24,12 @@ import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyProduct
 import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
+typealias route = String
+typealias filter = String
 @Composable
 fun WomanDataView (
-    products: List<ProductModel>
+    products: List<ProductModel>,
+    goToOptionScreen: (route, filter) -> Unit
 ){
     Column (modifier = Modifier.fillMaxSize()
     .background(Color.White)
@@ -52,7 +55,8 @@ fun WomanDataView (
                 LipsyProduct(
                     product= product,
                     isAvailable = true,
-                    addCartProduct = {}
+                    addCartProduct = {},
+                    goToOptionScreen = goToOptionScreen
                 )
             }
         }

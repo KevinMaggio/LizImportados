@@ -70,7 +70,10 @@ fun LipsyBottomBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { goTo(AppRoutes.HOME) }
+                    .clickable {
+                        goTo(AppRoutes.HOME)
+                        filtersIsActivated = false
+                    }
                     .padding(vertical = 15.dp)
             ) {
                 Image(
@@ -89,7 +92,10 @@ fun LipsyBottomBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { goTo(AppRoutes.CART) }
+                    .clickable {
+                        goTo(AppRoutes.CART)
+                        filtersIsActivated = false
+                    }
                     .padding(vertical = 15.dp)
             ) {
                 Image(
@@ -143,7 +149,10 @@ fun LipsyBottomBar(
                     .padding(10.dp),
                 isVisible = filtersIsActivated,
                 text = stringResource(R.string.bottom_bar_man),
-                goTo = { goTo.invoke(AppRoutes.MAN) },
+                goTo = {
+                    goTo.invoke(AppRoutes.MAN)
+                    filtersIsActivated = false
+                },
                 fadeIn = 300,
                 fadeOut = 300
             )
@@ -158,7 +167,10 @@ fun LipsyBottomBar(
                     .padding(10.dp),
                 isVisible = filtersIsActivated,
                 text = stringResource(R.string.bottom_bar_children),
-                goTo = { goTo.invoke(AppRoutes.CHILDREN) },
+                goTo = {
+                    goTo.invoke(AppRoutes.CHILDREN)
+                    filtersIsActivated = false
+                },
                 fadeIn = 900,
                 fadeOut = 300
             )
@@ -173,7 +185,10 @@ fun LipsyBottomBar(
                     .padding(10.dp),
                 isVisible = filtersIsActivated,
                 text = stringResource(R.string.bottom_bar_woman),
-                goTo = { goTo.invoke(AppRoutes.WOMAN) },
+                goTo = {
+                    goTo.invoke(AppRoutes.WOMAN)
+                    filtersIsActivated = false
+                },
                 fadeIn = 1300,
                 fadeOut = 300
             )

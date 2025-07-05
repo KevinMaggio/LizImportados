@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -23,11 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -39,7 +37,6 @@ import com.refactoringlife.lizimportados.features.login.presenter.viewmodel.Logi
 import com.refactoringlife.lizimportados.ui.theme.ColorWhiteLipsy
 import androidx.compose.ui.graphics.Color
 
-@Preview
 @Composable
 fun LoginScreen(
     onGoogleClick: () -> Unit = {},
@@ -51,16 +48,14 @@ fun LoginScreen(
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     
-    // Inicializar el AuthManager
     LaunchedEffect(Unit) {
         viewModel.initializeAuthManager(context)
     }
     
-    // Manejar estados de la UI
     LaunchedEffect(uiState) {
         when (uiState) {
             is LoginUiState.Success -> {
-                onGoogleClick() // Navegar a Home
+                onGoogleClick()
                 viewModel.resetState()
             }
             is LoginUiState.Error -> {
@@ -76,6 +71,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(ColorWhiteLipsy)
+            .padding(top = 50.dp)
     ) {
         Image(
             painter = painterResource(R.drawable.liz_importados),
@@ -109,7 +105,10 @@ fun LoginScreen(
                 .padding(bottom = 150.dp)
                 .size(120.dp)
                 .align(Alignment.BottomCenter)
-                .clickable { 
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
                     val intent = viewModel.signInWithGoogle(context)
                     if (intent != null) {
                         onGoogleSignInClick(intent)

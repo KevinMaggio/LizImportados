@@ -24,18 +24,19 @@ import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyAsyncImage
 import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
 import com.refactoringlife.lizimportados.features.home.data.model.CombosModel
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
+import com.refactoringlife.lizimportados.ui.theme.TextBlue
 import com.refactoringlife.lizimportados.ui.theme.TextPrimary
 import com.refactoringlife.lizimportados.ui.theme.TextSecondary
 
 @Composable
 fun ComboItem(
     combo: CombosModel.ComboModel,
-    lastItem : Boolean
+    lastItem: Boolean
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp )
+            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
     ) {
         Row(
             modifier = Modifier
@@ -60,25 +61,28 @@ fun ComboItem(
                 modifier = Modifier
                     .weight(1f)
                     .height(120.dp),
-                combo.secondProduct.image)
+                combo.secondProduct.image
+            )
 
-            Spacer(modifier = Modifier
-                    .weight(0.5f))
+            Spacer(
+                modifier = Modifier
+                    .weight(0.5f)
+            )
 
-            Column (
+            Column(
                 modifier = Modifier
                     .weight(1f),
                 horizontalAlignment = Alignment.End
-            ){
+            ) {
                 Text(
-                    text = combo.oldPrice.toString(),
+                    text = "$" + combo.oldPrice.toString(),
                     fontSize = 10.sp,
                     fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                     textDecoration = TextDecoration.LineThrough,
-                    color = TextPrimary
+                    color = TextBlue
                 )
                 Text(
-                    text = combo.price.toString(),
+                    text = "$" + combo.price.toString(),
                     fontSize = 18.sp,
                     fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                     color = TextPrimary
@@ -88,15 +92,15 @@ fun ComboItem(
         Row {
             Text(
                 text = "${combo.firstProduct.brand} + ${combo.secondProduct.brand}",
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
-                color = TextSecondary
+                color = TextPrimary
             )
         }
         Row {
             Text(
                 text = "${combo.firstProduct.description} + ${combo.secondProduct.description}",
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 color = TextSecondary
             )
@@ -105,7 +109,7 @@ fun ComboItem(
 
     if (!lastItem) {
         LipsyDivider()
-    }else{
+    } else {
         Spacer(Modifier.height(10.dp))
     }
 }

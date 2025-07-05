@@ -66,5 +66,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
     implementation("com.airbnb.android:lottie-compose:6.0.0")
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.android.gms:play-services-auth")
+    implementation("com.google.android.gms:play-services-auth:21.1.0")
 }

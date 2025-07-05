@@ -6,6 +6,6 @@ object AppRoutes {
     const val MAN = "man"
     const val WOMAN = "woman"
     const val CHILDREN = "children"
-    const val DETAILS = "details/{filter}"
+    const val DETAILS = "details/{id}"
     const val LOGIN = "login"
 }

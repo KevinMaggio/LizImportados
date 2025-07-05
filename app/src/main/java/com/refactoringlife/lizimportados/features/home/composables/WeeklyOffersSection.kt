@@ -16,10 +16,14 @@ import com.refactoringlife.lizimportados.core.utils.capitalizeWords
 import com.refactoringlife.lizimportados.core.utils.onValid
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
+typealias route = String
+typealias filter = String
+
 @Composable
 fun WeeklyOffersSection (
     title : String?,
-    products: List<ProductModel>
+    products: List<ProductModel>,
+    goToOptionScreen: (route, filter) -> Unit
 ){
     title?.onValid {
         Text(
@@ -34,7 +38,8 @@ fun WeeklyOffersSection (
         items(products){product ->
             LipsyProduct(
                 product=product,
-                addCartProduct = {}
+                addCartProduct = {},
+                goToOptionScreen = goToOptionScreen
             )
         }
     }
