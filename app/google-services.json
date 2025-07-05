@@ -12,7 +12,20 @@
           "package_name": "com.refactoringlife.lizimportados"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "339668798043-9ieqgivh2bptp7ffq5gkq8m8jm8bh4ig.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.refactoringlife.lizimportados",
+            "certificate_hash": "f1ae4ff64330fa7bc1da60704606322c481c5e43"
+          }
+        },
+        {
+          "client_id": "339668798043-jmmgt28b4u9e51qskpa0cooo2kq2cjrv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCmpZ8zOqYnBE-FyPNy5_NpAl2KSFSzUu8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339668798043-jmmgt28b4u9e51qskpa0cooo2kq2cjrv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
