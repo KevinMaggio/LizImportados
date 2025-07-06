@@ -8,7 +8,7 @@ import com.refactoringlife.lizimportados.core.utils.getProductsMock
 import com.refactoringlife.lizimportados.features.details.presenter.views.DetailsDataView
 
 @Composable
-fun DetailsScreen(filter: String?) {
+fun DetailsScreen(filter: String?, id: String?) {
     Box(modifier = Modifier.fillMaxSize())
     {
         DetailsDataView(getProductsMock())

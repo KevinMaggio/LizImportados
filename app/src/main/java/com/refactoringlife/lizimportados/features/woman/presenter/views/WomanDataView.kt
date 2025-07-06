@@ -24,18 +24,22 @@ import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyProduct
 import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
-typealias route = String
-typealias filter = String
-@Composable
-fun WomanDataView (
-    products: List<ProductModel>,
-    goToOptionScreen: (route, filter) -> Unit
-){
-    Column (modifier = Modifier.fillMaxSize()
-    .background(Color.White)
-    .padding(start = 20.dp, top = 20.dp, bottom = 90.dp)){
+typealias id = String
 
-        Text(text = "Seccion Mujer!",
+@Composable
+fun WomanDataView(
+    products: List<ProductModel>,
+    action: (id) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(start = 20.dp, top = 20.dp, bottom = 90.dp)
+    ) {
+
+        Text(
+            text = "Seccion Mujer!",
             fontSize = 16.sp,
             fontFamily = FontFamily(Font(R.font.montserrat_bold)),
             color = TextBlue,
@@ -51,12 +55,12 @@ fun WomanDataView (
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(products){product ->
+            items(products) { product ->
                 LipsyProduct(
-                    product= product,
+                    product = product,
                     isAvailable = true,
                     addCartProduct = {},
-                    goToOptionScreen = goToOptionScreen
+                    action = action
                 )
             }
         }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.refactoringlife.lizimportados.core.navigator.navigateToDetails
 import com.refactoringlife.lizimportados.core.utils.getProductsMock
 import com.refactoringlife.lizimportados.features.man.presenter.views.ManDataView
 
@@ -12,7 +13,7 @@ import com.refactoringlife.lizimportados.features.man.presenter.views.ManDataVie
 fun ManScreen(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize()) {
         ManDataView(getProductsMock(),
-            goToOptionScreen = { route, id -> navController.navigate("$route/$id") }
+            action = { id -> navController.navigateToDetails(filter = "man", id = id) }
         )
     }
 }

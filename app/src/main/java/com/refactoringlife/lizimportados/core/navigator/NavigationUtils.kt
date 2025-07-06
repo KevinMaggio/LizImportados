@@ -21,8 +21,8 @@ fun NavController.navigateFromBottomBar(destination: String) {
  * Función utilitaria para navegar a detalles desde HOME
  * Mantiene HOME como base para poder volver
  */
-fun NavController.navigateToDetails(destination: String, filter: String) {
-    navigate("$destination/$filter") {
+fun NavController.navigateToDetails(filter: String, id: String) {
+    navigate("details/$filter/$id") {
         launchSingleTop = true
         popUpTo(AppRoutes.HOME) { inclusive = false } // HOME queda como base
     }

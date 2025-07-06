@@ -54,9 +54,7 @@ fun AppNavHost(
         ) {
             HomeScreen(
                 modifier = Modifier,
-                goTo = { destination, filter ->
-                    navController.navigateToDetails(destination, filter)
-                }
+                navController
             )
         }
 
@@ -79,13 +77,15 @@ fun AppNavHost(
         composable(
             route = AppRoutes.DETAILS,
             arguments = listOf(
-                navArgument("id") { type = NavType.StringType }
+                navArgument("id") { type = NavType.StringType },
+                navArgument("filter") { type = NavType.StringType }
             ),
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) { backStackEntry ->
-            val filter = backStackEntry.arguments?.getString("id")
-            DetailsScreen(filter = filter)
+            val filter = backStackEntry.arguments?.getString("filter")
+            val id = backStackEntry.arguments?.getString("id")
+            DetailsScreen(filter = filter, id = id)
         }
 
         composable(

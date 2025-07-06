@@ -2,20 +2,18 @@ package com.refactoringlife.lizimportados.features.home.presenter.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import com.refactoringlife.lizimportados.core.utils.getConfigMock
 import com.refactoringlife.lizimportados.features.home.presenter.views.HomeDataView
-
-typealias route = String
-typealias filter = String
 
 @Composable
 fun HomeScreen(
     modifier: Modifier,
-    goTo: (route, filter)-> Unit
+    navController: NavHostController,
 ) {
     HomeDataView(
         modifier = modifier,
         configData = getConfigMock(),
-        goToOptionScreen = goTo
+        action = { filter, id -> navController.navigate("details/$filter/$id") }
     )
 }

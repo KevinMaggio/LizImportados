@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportados.R
 import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
+import com.refactoringlife.lizimportados.core.composablesLipsy.id
 import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportados.core.utils.getComboMock
 import com.refactoringlife.lizimportados.features.home.composables.WeeklyOffersSection
@@ -24,14 +25,14 @@ import com.refactoringlife.lizimportados.features.home.composables.CircleOptions
 import com.refactoringlife.lizimportados.features.home.composables.ComboSection
 import com.refactoringlife.lizimportados.ui.theme.ColorWhiteLipsy
 
-typealias route = String
 typealias filter = String
+typealias id = String
 
 @Composable
 fun HomeDataView(
     modifier: Modifier = Modifier,
     configData: ConfigResponse,
-    goToOptionScreen: (route, filter) -> Unit
+    action: (filter, id) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -58,7 +59,7 @@ fun HomeDataView(
                 WeeklyOffersSection(
                     title = stringResource(R.string.weekly_offers),
                     products = getProductsMock(),
-                    goToOptionScreen=  goToOptionScreen
+                    action =  {action.invoke("ofertas", it)}
                 )
                 LipsyDivider()
             }
@@ -69,7 +70,7 @@ fun HomeDataView(
                 CircleOptionsSection(
                     options = configData.circleOptions,
                     action = { filter ->
-                        goToOptionScreen("details", filter)
+                        action(filter, "01")
                     }
                 )
                 LipsyDivider()
