@@ -26,16 +26,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.refactoringlife.lizimportados.R
 import com.refactoringlife.lizimportados.features.login.presenter.viewmodel.LoginUiState
 import com.refactoringlife.lizimportados.features.login.presenter.viewmodel.LoginViewModel
 import com.refactoringlife.lizimportados.ui.theme.ColorWhiteLipsy
 import androidx.compose.ui.graphics.Color
+import com.refactoringlife.lizimportados.core.composablesLipsy.LottieAnimationButterfly
 
 @Composable
 fun LoginScreen(
@@ -100,7 +96,7 @@ fun LoginScreen(
 
         Image(
             painter = painterResource(R.drawable.icon_login_google),
-            contentDescription = "Iniciar sesión con Google",
+            contentDescription = "login with Google",
             modifier = Modifier
                 .padding(bottom = 150.dp)
                 .size(120.dp)
@@ -119,7 +115,6 @@ fun LoginScreen(
         LottieAnimationButterfly(modifier = Modifier.align(Alignment.BottomCenter)
             .padding(top = 70.dp, start = 50.dp, bottom = 140.dp))
         
-        // Indicador de carga
         if (uiState is LoginUiState.Loading) {
             Box(
                 modifier = Modifier
@@ -132,7 +127,7 @@ fun LoginScreen(
         }
     }
     
-    // Dialog de error
+    // Dialog error
     if (showErrorDialog) {
         AlertDialog(
             onDismissRequest = { showErrorDialog = false },
@@ -145,18 +140,4 @@ fun LoginScreen(
             }
         )
     }
-}
-
-@Composable
-fun LottieAnimationButterfly(modifier: Modifier = Modifier) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("lootie_butterfly.json"))
-    val progress by animateLottieCompositionAsState(composition,
-        iterations = LottieConstants.IterateForever)
-
-    LottieAnimation(
-        composition,
-        progress,
-        modifier = modifier
-            .size(60.dp)
-    )
 }
