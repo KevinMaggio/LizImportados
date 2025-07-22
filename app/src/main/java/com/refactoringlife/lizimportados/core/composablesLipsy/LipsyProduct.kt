@@ -2,11 +2,7 @@ package com.refactoringlife.lizimportados.core.composablesLipsy
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -32,10 +28,11 @@ fun LipsyProduct(
     product: ProductModel,
     isAvailable: Boolean = false,
     addCartProduct: (String) -> Unit,
-    action: (id) -> Unit
+    action: (id) -> Unit,
+    isLarge: Boolean = false
 ) {
     Column(modifier = Modifier
-        .padding(20.dp)
+        .padding(if (isLarge) 5.dp else 20.dp)
         .clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() }
@@ -43,9 +40,10 @@ fun LipsyProduct(
             action.invoke(product.id)
         }) {
         LipsyCardImage(
-            product.images[0], modifier = Modifier
-                .width(100.dp)
-                .height(150.dp)
+            product.images[0], 
+            modifier = Modifier
+                .width(if (isLarge) 170.dp else 100.dp)
+                .height(if (isLarge) 220.dp else 150.dp)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -54,7 +52,7 @@ fun LipsyProduct(
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
-                fontSize = 12.sp,
+                fontSize = if (isLarge) 14.sp else 12.sp,
                 lineHeight = 1.sp,
                 color = TextSecondary
             )
@@ -64,7 +62,7 @@ fun LipsyProduct(
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                fontSize = 10.sp,
+                fontSize = if (isLarge) 12.sp else 10.sp,
                 lineHeight = 6.sp,
                 color = TextSecondary
             )
@@ -76,7 +74,7 @@ fun LipsyProduct(
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                fontSize = 10.sp,
+                fontSize = if (isLarge) 12.sp else 10.sp,
                 lineHeight = 1.sp,
                 textDecoration = TextDecoration.LineThrough,
                 color = TextBlue
@@ -91,7 +89,7 @@ fun LipsyProduct(
                     it.capitalizeWords()
                 },
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
-                fontSize = 14.sp,
+                fontSize = if (isLarge) 16.sp else 14.sp,
                 lineHeight = 1.sp,
                 color = TextPrimary
             )
@@ -103,7 +101,7 @@ fun LipsyProduct(
             Text(
                 text = stringResource(R.string.add_cart),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                fontSize = 10.sp,
+                fontSize = if (isLarge) 12.sp else 10.sp,
                 lineHeight = 1.sp,
                 color = TextBlue,
                 modifier = Modifier.clickable {

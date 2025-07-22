@@ -35,9 +35,8 @@ fun WomanDataView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(start = 20.dp, top = 20.dp, bottom = 90.dp)
+            .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 90.dp)
     ) {
-
         Text(
             text = "Seccion Mujer!",
             fontSize = 16.sp,
@@ -51,16 +50,17 @@ fun WomanDataView(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(0.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp),
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             items(products) { product ->
                 LipsyProduct(
                     product = product,
                     isAvailable = true,
                     addCartProduct = {},
-                    action = action
+                    action = action,
+                    isLarge = true
                 )
             }
         }

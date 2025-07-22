@@ -26,6 +26,7 @@ import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
 typealias id = String
+
 @Composable
 fun ChildrenDataView(
     products: List<ProductModel>,
@@ -33,7 +34,7 @@ fun ChildrenDataView(
 ){
     Column (modifier = Modifier.fillMaxSize()
         .background(Color.White)
-        .padding(start = 20.dp, top = 20.dp, bottom = 90.dp)){
+        .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 90.dp)){
 
         Text(text = stringResource(R.string.section_children),
             fontSize = 16.sp,
@@ -47,16 +48,17 @@ fun ChildrenDataView(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(0.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp),
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             items(products){product ->
                 LipsyProduct(
                     product= product,
                     isAvailable = true,
                     addCartProduct = {},
-                    action = goToOptionScreen
+                    action = goToOptionScreen,
+                    isLarge = true
                 )
             }
         }

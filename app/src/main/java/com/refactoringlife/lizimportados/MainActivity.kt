@@ -17,13 +17,15 @@ import com.refactoringlife.lizimportados.features.bottomBar.LipsyBottomBar
 import com.refactoringlife.lizimportados.features.login.presenter.viewmodel.LoginViewModel
 import com.refactoringlife.lizimportados.ui.theme.LizImportadosTheme
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportados.core.navigator.navigateFromBottomBar
 import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
-    
+
     private val loginViewModel: LoginViewModel by lazy { LoginViewModel() }
-    
+
     private val googleSignInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -33,13 +35,13 @@ class MainActivity : ComponentActivity() {
             loginViewModel.handleSignInResult(null)
         }
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
+
         setupSystemBars()
-        
+
         setContent {
             LizImportadosTheme {
                 val navController = rememberNavController()
@@ -53,17 +55,17 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         if (showBottomBar) {
                             LipsyBottomBar(
-                                goTo = { destination -> 
+                                goTo = { destination ->
                                     navController.navigateFromBottomBar(destination)
                                 },
                                 modifier = Modifier.navigationBarsPadding()
                             )
                         }
-                    }
+                    },
                 ) { innerPadding ->
                     AppNavHost(
                         navController = navController,
-                        modifier = Modifier.navigationBarsPadding(),
+                        modifier = Modifier.navigationBarsPadding().padding(top = 20.dp),
                         onGoogleSignInClick = { intent ->
                             googleSignInLauncher.launch(intent)
                         },
@@ -73,11 +75,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    
+
     private fun setupSystemBars() {
         window.statusBarColor = android.graphics.Color.BLACK
         window.navigationBarColor = android.graphics.Color.BLACK
-        
+
         WindowCompat.getInsetsController(window, window.decorView).apply {
             isAppearanceLightStatusBars = false
             isAppearanceLightNavigationBars = false
