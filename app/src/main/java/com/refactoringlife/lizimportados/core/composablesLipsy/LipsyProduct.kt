@@ -26,6 +26,7 @@ import com.refactoringlife.lizimportados.ui.theme.TextPrimary
 import com.refactoringlife.lizimportados.ui.theme.TextSecondary
 
 typealias id = String
+
 @Composable
 fun LipsyProduct(
     product: ProductModel,
@@ -33,14 +34,19 @@ fun LipsyProduct(
     addCartProduct: (String) -> Unit,
     action: (id) -> Unit
 ) {
-    Column(modifier = Modifier.padding(20.dp)
+    Column(modifier = Modifier
+        .padding(20.dp)
         .clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() }
         ) {
             action.invoke(product.id)
         }) {
-        LipsyCardImage(product.images[0], modifier = Modifier.width(100.dp).height(150.dp))
+        LipsyCardImage(
+            product.images[0], modifier = Modifier
+                .width(100.dp)
+                .height(150.dp)
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -66,7 +72,7 @@ fun LipsyProduct(
 
         Spacer(modifier = Modifier.height(6.dp))
 
-        product.oldPrice?.onValid {
+        product.price?.onValid {
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
@@ -79,7 +85,11 @@ fun LipsyProduct(
 
         product.price?.onValid {
             Text(
-                text = it.capitalizeWords(),
+                text = if (product.offersPrice?.isNotEmpty() == true) {
+                    product.offersPrice.capitalizeWords()
+                } else {
+                    it.capitalizeWords()
+                },
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                 fontSize = 14.sp,
                 lineHeight = 1.sp,

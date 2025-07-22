@@ -45,7 +45,8 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
-                val showBottomBar = currentRoute != null && currentRoute != AppRoutes.LOGIN
+                val showBottomBar = currentRoute != null && currentRoute != AppRoutes.LOGIN &&
+                        currentRoute != AppRoutes.CART
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

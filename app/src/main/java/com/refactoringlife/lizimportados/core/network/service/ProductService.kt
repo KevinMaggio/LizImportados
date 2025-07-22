@@ -1,35 +1,51 @@
 package com.refactoringlife.lizimportados.core.network.service
 
-import com.refactoringlife.lizimportados.core.network.fireStore.FireStoreResponse
-import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
-import kotlinx.coroutines.flow.Flow
+import com.google.firebase.firestore.FirebaseFirestore
+import com.refactoringlife.lizimportados.core.dto.response.ProductResponse
+import com.refactoringlife.lizimportados.core.network.fireStore.FirebaseProvider
+import kotlinx.coroutines.tasks.await
 
 class ProductService(
-    private val firebaseService: FireBaseService = FireBaseService()
+    private val firestore: FirebaseFirestore = FirebaseProvider.instance
 ) {
-    
-    // Obtener todos los productos
-    fun getProducts(): Flow<FireStoreResponse<List<ProductModel>>> {
-        return firebaseService.getCollection("products", ProductModel::class.java)
+    suspend fun getMenProducts(): List<ProductResponse> {
+        return try {
+            firestore.collection("products")
+                .whereEqualTo("gender", "Hombre")
+                .whereEqualTo("is_available", true)
+                .get()
+                .await()
+                .toObjects(ProductResponse::class.java)
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener productos de hombre", e)
+        }
     }
-    
-    // Obtener un producto específico
-    fun getProduct(productId: String): Flow<FireStoreResponse<ProductModel>> {
-        return firebaseService.getDocument("products", productId, ProductModel::class.java)
+
+    suspend fun getChildrenProducts(): List<ProductResponse> {
+        return try {
+            firestore.collection("products")
+                .whereEqualTo("is_available", true)
+                .whereIn("gender", listOf("Niño", "Bebe"))
+                .get()
+                .await()
+                .toObjects(ProductResponse::class.java)
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener productos de niños", e)
+        }
     }
-    
-    // Agregar un producto
-    fun addProduct(product: ProductModel): Flow<FireStoreResponse<String>> {
-        return firebaseService.addDocument("products", product)
-    }
-    
-    // Actualizar un producto
-    fun updateProduct(productId: String, product: ProductModel): Flow<FireStoreResponse<Unit>> {
-        return firebaseService.updateDocument("products", productId, product)
-    }
-    
-    // Eliminar un producto
-    fun deleteProduct(productId: String): Flow<FireStoreResponse<Unit>> {
-        return firebaseService.deleteDocument("products", productId)
+
+    suspend fun getWomanProducts(): List<ProductResponse> {
+        return try {
+            firestore.collection("products")
+                .whereEqualTo("gender", "Mujer")
+                .whereEqualTo("is_available", true)
+                .get()
+                .await()
+                .toObjects(ProductResponse::class.java)
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener productos de mujer", e)
+        }
     }
 }
+
+class ProductException(message: String, cause: Throwable? = null) : Exception(message, cause)
