@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
 import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyAsyncImage
 import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
-import com.refactoringlife.lizimportados.features.home.data.model.CombosModel
+import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 import com.refactoringlife.lizimportados.ui.theme.TextPrimary
@@ -30,7 +30,7 @@ import com.refactoringlife.lizimportados.ui.theme.TextSecondary
 
 @Composable
 fun ComboItem(
-    combo: CombosModel.ComboModel,
+    combo: ConfigResponse.ComboModel,
     lastItem: Boolean
 ) {
     Column(

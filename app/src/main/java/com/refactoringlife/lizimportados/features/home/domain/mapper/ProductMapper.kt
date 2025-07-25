@@ -10,6 +10,7 @@ fun ProductResponse.toProductModel(): ProductModel {
         brand = this.brand,
         name = this.name,
         description = this.description,
+        size = this.size,
         offersPrice = this.offerPrice.toString(),
         price = this.price?.toString()
     )

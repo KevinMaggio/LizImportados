@@ -9,6 +9,8 @@ data class ProductResponse(
     val name: String? = null,
     @SerialName("description")
     val description: String? = null,
+    @SerialName("size")
+    val size: String? = null,
     @SerialName("brand")
     val brand: String? = null,
     @SerialName("category")

@@ -24,14 +24,8 @@ class GetHomeDataUseCase(
                 } else null
 
                 // 3. Procesar todos los combos activos
-                val comboProducts = config.combos?.mapNotNull { combo ->
-                    if (combo.showCombo && !combo.comboID.isNullOrEmpty()) {
-                        when (val comboResult = repository.getProductById(combo.comboID)) {
-                            is Either.Success -> comboResult.value.toProductModel()
-                            else -> null
-                        }
-                    } else null
-                }
+                val comboProducts = config.combos
+
 
                 // 4. Retornar todo junto
                 Either.Success(

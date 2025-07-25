@@ -20,13 +20,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportados.R
-import com.refactoringlife.lizimportados.features.home.data.model.CombosModel
+import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 import com.refactoringlife.lizimportados.ui.theme.TextBlue
 
 @Composable
 fun ComboSection(
-    combo: CombosModel
+    combos: List<ConfigResponse.ComboModel>
 ) {
     Column(
         modifier = Modifier
@@ -54,10 +54,10 @@ fun ComboSection(
                     .clip(shape = RoundedCornerShape(corner = CornerSize(8.dp)))
                     .background(CardBackGround)
             ) {
-                combo.combos.forEachIndexed { index, comboItem ->
+                combos.forEachIndexed { index, comboItem ->
                     ComboItem(
                         combo = comboItem,
-                        lastItem = index == combo.combos.size - 1
+                        lastItem = index == combos.size - 1
                     )
                 }
             }
