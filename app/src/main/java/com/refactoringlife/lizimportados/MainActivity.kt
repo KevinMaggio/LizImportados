@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     AppNavHost(
                         navController = navController,
-                        modifier = Modifier.navigationBarsPadding().padding(top = 20.dp),
+                        modifier = Modifier.navigationBarsPadding(),
                         onGoogleSignInClick = { intent ->
                             googleSignInLauncher.launch(intent)
                         },
@@ -77,12 +77,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setupSystemBars() {
-        window.statusBarColor = android.graphics.Color.BLACK
-        window.navigationBarColor = android.graphics.Color.BLACK
-
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false
-            isAppearanceLightNavigationBars = false
-        }
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 }

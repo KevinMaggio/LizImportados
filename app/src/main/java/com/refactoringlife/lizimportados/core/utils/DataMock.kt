@@ -6,18 +6,6 @@ import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 
 fun getProductsMock() = emptyList<ProductModel>()
 
-fun getConfigMock() = ConfigResponse(
-    listOf(
-        ConfigResponse.Combo(
-            showCombo = true,
-            comboID = listOf("")
-        )
-    ),
-    circleOptions = listOf("invierno", "verano", "ositos", "primavera"),
-    weeklyOffers = true
-
-)
-
 fun getComboMock() = CombosModel(
     listOf(
         CombosModel.ComboModel(

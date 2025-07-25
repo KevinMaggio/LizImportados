@@ -9,11 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyCircleButton
+import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 
 @Composable
 fun CircleOptionsSection(
-    options: List<String>,
+    options: List<ConfigResponse.Option>,
     action: (String) -> Unit
 ) {
     Row(
@@ -21,7 +22,7 @@ fun CircleOptionsSection(
             .fillMaxWidth()
             .padding(end = 20.dp)
     ) {
-        options.forEach { text ->
+        options.forEach { option ->
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -29,8 +30,9 @@ fun CircleOptionsSection(
             ) {
                 LipsyCircleButton(
                     modifier = Modifier.size(70.dp),
-                    action = { action.invoke(text) },
-                    text = text,
+                    action = { action.invoke(option.name) },
+                    text = option.name,
+                    imageUrl = option.image,
                     background = CardBackGround
                 )
             }

@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportados.R
 import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyDivider
-import com.refactoringlife.lizimportados.core.composablesLipsy.id
 import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportados.core.utils.getComboMock
 import com.refactoringlife.lizimportados.features.home.composables.WeeklyOffersSection
@@ -38,9 +37,8 @@ fun HomeDataView(
         modifier = modifier
             .fillMaxSize()
             .background(ColorWhiteLipsy)
-            .padding(start = 20.dp, top = 40.dp, bottom = 110.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 40.dp)
     ) {
-
         item {
             Column {
                 Image(
@@ -49,17 +47,16 @@ fun HomeDataView(
                     contentScale = ContentScale.Inside
                 )
 
-                Spacer(Modifier.height(40.dp))
-
+                Spacer(Modifier.height(20.dp))
             }
         }
 
-        if (configData.weeklyOffers) {
+        if (configData.isOffers) {
             item {
                 WeeklyOffersSection(
                     title = stringResource(R.string.weekly_offers),
                     products = getProductsMock(),
-                    action =  {action.invoke("ofertas", it)}
+                    action = { action.invoke("ofertas", it) }
                 )
                 LipsyDivider()
             }
