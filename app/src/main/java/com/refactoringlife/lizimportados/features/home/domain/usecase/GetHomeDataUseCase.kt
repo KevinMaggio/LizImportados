@@ -9,13 +9,12 @@ class GetHomeDataUseCase(
     private val repository: HomeRepository = HomeRepository()
 ) {
     suspend fun getHomeData(): Either<HomeDataModel, String> {
-        // 1. Obtener configuración
         return when (val configResult = repository.getHomeConfig()) {
             is Either.Success -> {
                 val config = configResult.value
-                val homeDataModel = HomeDataModel(config = config)
+                val homeData = HomeDataModel(config = config)
 
-                // 2. Si hay weekly_offers, obtener productos en oferta
+                // Si hay ofertas activas, obtener productos en oferta
                 val offersProducts = if (config.isOffers) {
                     when (val offersResult = repository.getOffersProducts()) {
                         is Either.Success -> offersResult.value.map { it.toProductModel() }
@@ -23,15 +22,11 @@ class GetHomeDataUseCase(
                     }
                 } else null
 
-                // 3. Procesar todos los combos activos
-                val comboProducts = config.combos
-
-
-                // 4. Retornar todo junto
+                // Los combos ya vienen en el config, no necesitamos hacer otra llamada
                 Either.Success(
-                    homeDataModel.copy(
+                    homeData.copy(
                         offersProducts = offersProducts,
-                        comboProduct = comboProducts
+                        comboProduct = config.combos
                     )
                 )
             }

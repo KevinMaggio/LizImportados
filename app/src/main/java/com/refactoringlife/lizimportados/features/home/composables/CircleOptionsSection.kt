@@ -1,16 +1,13 @@
 package com.refactoringlife.lizimportados.features.home.composables
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyCircleButton
+import com.refactoringlife.lizimportados.core.composablesLipsy.LipsyOptionsButton
 import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
-import com.refactoringlife.lizimportados.ui.theme.CardBackGround
 
 @Composable
 fun CircleOptionsSection(
@@ -20,22 +17,18 @@ fun CircleOptionsSection(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 20.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         options.forEach { option ->
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(10.dp)
-            ) {
-                LipsyCircleButton(
-                    modifier = Modifier.size(70.dp),
-                    action = { action.invoke(option.name) },
-                    text = option.name,
-                    imageUrl = option.image,
-                    background = CardBackGround
-                )
-            }
+            LipsyOptionsButton(
+                modifier = Modifier.width(70.dp),
+                action = { action.invoke(option.name) },
+                text = option.name,
+                imageUrl = option.image,
+                background = Color.White
+            )
         }
     }
 }
