@@ -49,7 +49,7 @@ fun HomeDataView(
             }
         }
 
-        if (state.offersProducts?.isNotEmpty() == true) {
+        state.offersProducts?.let{
             item {
                 WeeklyOffersSection(
                     title = stringResource(R.string.weekly_offers),
@@ -60,7 +60,7 @@ fun HomeDataView(
             }
         }
 
-        if (state.config?.circleOptions?.isNotEmpty() == true) {
+        state.config?.circleOptions?.let{
             item {
                 CircleOptionsSection(
                     options = state.config.circleOptions,
@@ -72,8 +72,10 @@ fun HomeDataView(
             }
         }
 
-        item {
-            ComboSection(state.combosModel.orEmpty())
+        state.combosModel?.let { combos ->
+            item {
+                ComboSection(combos)
+            }
         }
     }
 }
