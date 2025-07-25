@@ -22,6 +22,7 @@ import com.refactoringlife.lizimportados.features.home.composables.WeeklyOffersS
 import com.refactoringlife.lizimportados.core.utils.getProductsMock
 import com.refactoringlife.lizimportados.features.home.composables.CircleOptionsSection
 import com.refactoringlife.lizimportados.features.home.composables.ComboSection
+import com.refactoringlife.lizimportados.features.home.domain.state.HomeUiState
 import com.refactoringlife.lizimportados.ui.theme.ColorWhiteLipsy
 
 typealias filter = String
@@ -30,7 +31,7 @@ typealias id = String
 @Composable
 fun HomeDataView(
     modifier: Modifier = Modifier,
-    configData: ConfigResponse,
+    state: HomeUiState,
     action: (filter, id) -> Unit
 ) {
     LazyColumn(
@@ -51,21 +52,21 @@ fun HomeDataView(
             }
         }
 
-        if (configData.isOffers) {
+        if (state.config?.isOffers == true) {
             item {
                 WeeklyOffersSection(
                     title = stringResource(R.string.weekly_offers),
-                    products = getProductsMock(),
+                    products = state.offersProducts,
                     action = { action.invoke("ofertas", it) }
                 )
                 LipsyDivider()
             }
         }
 
-        if (configData.circleOptions.isNotEmpty()) {
+        if (state.config?.circleOptions?.isNotEmpty() == true) {
             item {
                 CircleOptionsSection(
-                    options = configData.circleOptions,
+                    options = state.config.circleOptions,
                     action = { filter ->
                         action(filter, "01")
                     }
@@ -75,7 +76,7 @@ fun HomeDataView(
         }
 
         item {
-            ComboSection(getComboMock())
+            ComboSection(state.comboProducts)
         }
     }
 }

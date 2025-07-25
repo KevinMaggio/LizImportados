@@ -2,21 +2,11 @@ package com.refactoringlife.lizimportados.features.home.presenter.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.refactoringlife.lizimportados.core.dto.response.ConfigResponse
-import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
+import com.refactoringlife.lizimportados.features.home.domain.state.HomeUiState
 import com.refactoringlife.lizimportados.features.home.domain.usecase.GetHomeDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
-data class HomeUiState(
-    val config: ConfigResponse? = null,
-    val offersProducts: List<ProductModel>? = null,
-    val comboProducts: List<ProductModel>? = null,
-    val showError: Boolean = false,
-    val showLoading: Boolean = false,
-    val errorMessage: String? = null
-)
 
 class HomeViewModel(
     private val getHomeDataUseCase: GetHomeDataUseCase = GetHomeDataUseCase()
@@ -38,7 +28,7 @@ class HomeViewModel(
                     _state.value = _state.value.copy(
                         config = result.value.config,
                         offersProducts = result.value.offersProducts,
-                        comboProducts = result.value.comboProduct,
+                        combosModel = result.value.comboProduct,
                         showError = false,
                         showLoading = false
                     )
@@ -54,7 +44,7 @@ class HomeViewModel(
                     _state.value = _state.value.copy(
                         showError = true,
                         showLoading = false,
-                        errorMessage = "Error desconocido"
+                        errorMessage = "Error"
                     )
                 }
             }

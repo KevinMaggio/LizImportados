@@ -5,7 +5,6 @@ data class ProductModel(
     val images: List<String>,
     val brand: String?,
     val name: String?,
-    val size: String?,
     val description: String?,
     val offersPrice: String?,
     val price: String?,

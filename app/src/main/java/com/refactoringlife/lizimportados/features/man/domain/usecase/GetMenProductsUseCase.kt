@@ -3,14 +3,14 @@ package com.refactoringlife.lizimportados.features.man.domain.usecase
 import Either
 import com.refactoringlife.lizimportados.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportados.features.man.data.repository.ManRepository
-import com.refactoringlife.lizimportados.features.man.domain.mapper.toDomain
+import com.refactoringlife.lizimportados.features.home.domain.mapper.toProductModel
 
 class GetMenProductsUseCase(
     private val repository: ManRepository = ManRepository()
 ) {
     suspend operator fun invoke(): Either<List<ProductModel>, String> {
         return when (val result = repository.getMenProducts()) {
-            is Either.Success -> Either.Success(result.value.map { it.toDomain() })
+            is Either.Success -> Either.Success(result.value.map { it.toProductModel() })
             is Either.Error -> Either.Error(result.value)
             else -> {Either.Error("Error")}
         }

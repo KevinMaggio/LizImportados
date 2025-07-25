@@ -26,10 +26,10 @@ fun HomeScreen(
             // TODO: Mostrar error
         }
         else -> {
-            uiState.config?.let { config ->
+            uiState.config?.let {
                 HomeDataView(
                     modifier = modifier,
-                    configData = config,
+                    state = uiState,
                     action = { filter, id -> navController.navigate("$DETAILS/$filter/$id") }
                 )
             }
