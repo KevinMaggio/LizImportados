@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.refactoringlife.lizimportados"
+    namespace = "com.refactoringlife.lizimportadosv2"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.refactoringlife.lizimportados"
+        applicationId = "com.refactoringlife.lizimportadosv2"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
