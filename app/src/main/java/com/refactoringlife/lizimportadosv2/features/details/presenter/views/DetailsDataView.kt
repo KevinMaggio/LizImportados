@@ -25,12 +25,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportadosv2.R
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyDivider
+import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
 
 @Composable
-fun DetailsDataView(products: List<ProductModel>) {
+fun DetailsDataView(products: List<ProductResponse>) {
     val productPagerState = rememberPagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f,
@@ -51,7 +52,7 @@ fun DetailsDataView(products: List<ProductModel>) {
             val imagePagerState = rememberPagerState(
                 initialPage = 0,
                 initialPageOffsetFraction = 0f,
-                pageCount = { product.images.size }
+                pageCount = { product.images?.size ?: 0 }
             )
             Column(
                 modifier = Modifier
@@ -67,12 +68,12 @@ fun DetailsDataView(products: List<ProductModel>) {
                 ) { imagePage ->
                     Surface(
                         modifier = Modifier
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
+                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp))
                             .background(Color.Red)
                     ) {
                         LipsyAsyncImage(
                             modifier = Modifier.fillMaxSize(),
-                            url = product.images[imagePage]
+                            url = product.images?.get(imagePage) ?: ""
                         )
                     }
                 }
@@ -82,7 +83,7 @@ fun DetailsDataView(products: List<ProductModel>) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    repeat(product.images.size) { index ->
+                    repeat(product.images?.size ?: 0) { index ->
                         val color =
                             if (imagePagerState.currentPage == index) TextBlue else Color.LightGray
                         val size =
@@ -95,7 +96,7 @@ fun DetailsDataView(products: List<ProductModel>) {
                                 .background(color)
                                 .padding(2.dp)
                         )
-                        if (index < product.images.size - 1) Spacer(modifier = Modifier.width(6.dp))
+                        if (index < (product.images?.size ?: 0) - 1) Spacer(modifier = Modifier.width(6.dp))
                     }
                 }
                 Column(
@@ -135,7 +136,7 @@ fun DetailsDataView(products: List<ProductModel>) {
                     Row(Modifier.fillMaxWidth().padding(vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically){
                         Text(
-                            text = product.price.orEmpty(),
+                            text = product.price?.toString().orEmpty(),
                             fontSize = 18.sp,
                             color = TextPrimary,
                             fontFamily = FontFamily(Font(R.font.montserrat_bold)),

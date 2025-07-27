@@ -2,13 +2,37 @@ package com.refactoringlife.lizimportadosv2.features.details.data.repository
 
 import Either
 import android.util.Log
+import com.google.firebase.firestore.DocumentSnapshot
 import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
 import com.refactoringlife.lizimportadosv2.core.network.service.ProductException
 import com.refactoringlife.lizimportadosv2.core.network.service.ProductService
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class DetailsRepository(
+class DetailsRepository private constructor(
     private val service: ProductService = ProductService()
 ) {
+    companion object {
+        @Volatile
+        private var INSTANCE: DetailsRepository? = null
+        
+        fun getInstance(): DetailsRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: DetailsRepository().also { INSTANCE = it }
+            }
+        }
+    }
+
+    // Flow local para almacenar productos en memoria
+    private val _productsFlow = MutableStateFlow<List<ProductResponse>>(emptyList())
+    val productsFlow: StateFlow<List<ProductResponse>> = _productsFlow.asStateFlow()
+
+    // Control de paginación
+    private var lastDocument: DocumentSnapshot? = null
+    private var hasMoreProducts = true
+    private var isLoading = false
+
     suspend fun getProductById(id: String): Either<ProductResponse, String> {
         return try {
             val response = service.getProductById(id)
@@ -19,23 +43,62 @@ class DetailsRepository(
         }
     }
 
-    suspend fun getRelatedProducts(): Either<List<ProductResponse>, String> {
-        return try {
-            val response = service.getRelatedProducts(limit = 10)
-            Either.Success(response)
-        } catch (e: ProductException) {
-            Log.e("DetailsRepository", "Error obteniendo productos relacionados", e)
-            Either.Error(e.message ?: "Error")
+    suspend fun loadInitialProducts() {
+        if (isLoading) return
+        
+        isLoading = true
+        try {
+            val products = service.getRelatedProducts(limit = 10)
+            _productsFlow.value = products
+            hasMoreProducts = products.isNotEmpty()
+            Log.d("DetailsRepository", "✅ Cargados ${products.size} productos iniciales")
+        } catch (e: Exception) {
+            Log.e("DetailsRepository", "❌ Error cargando productos iniciales", e)
+        } finally {
+            isLoading = false
         }
     }
 
-    suspend fun getMoreProducts(lastDocumentId: String?): Either<List<ProductResponse>, String> {
-        return try {
-            val response = service.getMoreProducts(limit = 10, lastDocument = null) // TODO: Implementar cursor
-            Either.Success(response)
-        } catch (e: ProductException) {
-            Log.e("DetailsRepository", "Error obteniendo más productos", e)
-            Either.Error(e.message ?: "Error")
+    suspend fun loadMoreProductsIfNeeded(currentIndex: Int) {
+        // Cargar más productos cuando el usuario llegue al 8vo elemento
+        if (currentIndex >= 7 && hasMoreProducts && !isLoading) {
+            Log.d("DetailsRepository", "🔄 Cargando más productos desde índice $currentIndex")
+            loadMoreProducts()
         }
     }
+
+    private suspend fun loadMoreProducts() {
+        if (isLoading || !hasMoreProducts) return
+        
+        isLoading = true
+        try {
+            val newProducts = service.getMoreProducts(limit = 10, lastDocument)
+            
+            if (newProducts.isNotEmpty()) {
+                val currentProducts = _productsFlow.value
+                _productsFlow.value = currentProducts + newProducts
+                Log.d("DetailsRepository", "✅ Agregados ${newProducts.size} productos más. Total: ${_productsFlow.value.size}")
+            } else {
+                hasMoreProducts = false
+                Log.d("DetailsRepository", "📭 No hay más productos disponibles")
+            }
+        } catch (e: Exception) {
+            Log.e("DetailsRepository", "❌ Error cargando más productos", e)
+        } finally {
+            isLoading = false
+        }
+    }
+
+    fun clearProducts() {
+        _productsFlow.value = emptyList()
+        lastDocument = null
+        hasMoreProducts = true
+        isLoading = false
+    }
+
+    fun getCurrentProducts(): List<ProductResponse> = _productsFlow.value
+
+    fun hasMoreProducts(): Boolean = hasMoreProducts
+
+    fun isLoading(): Boolean = isLoading
 } 

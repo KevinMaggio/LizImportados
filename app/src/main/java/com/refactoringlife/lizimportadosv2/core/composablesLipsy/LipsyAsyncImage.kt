@@ -36,7 +36,6 @@ fun LipsyAsyncImage(modifier: Modifier,url: String?) {
             modifier = modifier
                 .background(CardBackGround)
                 .clip(RoundedCornerShape(12.dp))
-                .padding(10.dp)
         )
     } else {
         AsyncImage(
@@ -45,8 +44,7 @@ fun LipsyAsyncImage(modifier: Modifier,url: String?) {
             contentScale = ContentScale.Crop,
             modifier = modifier
                 .background(CardBackGround)
-                .clip(RoundedCornerShape(12.dp))
-                .padding(10.dp),
+                .clip(RoundedCornerShape(12.dp)),
             onState = { state ->
                 isLoading = state is AsyncImagePainter.State.Loading
             }

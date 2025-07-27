@@ -4,16 +4,32 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.refactoringlife.lizimportadosv2.features.details.domain.state.DetailsUiState
 import com.refactoringlife.lizimportadosv2.features.details.domain.usecase.GetDetailsUseCase
+import com.refactoringlife.lizimportadosv2.features.details.data.repository.DetailsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
-    private val getDetailsUseCase: GetDetailsUseCase = GetDetailsUseCase()
+    private val getDetailsUseCase: GetDetailsUseCase = GetDetailsUseCase(),
+    private val repository: DetailsRepository = DetailsRepository.getInstance()
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsUiState())
     val state = _state.asStateFlow()
+
+    init {
+        // Observar el Flow del repository
+        viewModelScope.launch {
+            repository.productsFlow.collectLatest { products ->
+                _state.value = _state.value.copy(
+                    relatedProducts = products,
+                    hasMoreProducts = repository.hasMoreProducts(),
+                    isLoadingMore = repository.isLoading()
+                )
+            }
+        }
+    }
 
     fun loadProductDetails(productId: String) {
         viewModelScope.launch {
@@ -28,7 +44,7 @@ class DetailsViewModel(
                     )
                     
                     // Cargar productos relacionados
-                    loadInitialRelatedProducts()
+                    repository.loadInitialProducts()
                 }
                 is Either.Error -> {
                     _state.value = _state.value.copy(
@@ -46,59 +62,18 @@ class DetailsViewModel(
         }
     }
 
-    private suspend fun loadInitialRelatedProducts() {
-        when (val relatedResult = getDetailsUseCase.getInitialRelatedProducts()) {
-            is Either.Success -> {
-                _state.value = _state.value.copy(
-                    relatedProducts = relatedResult.value,
-                    hasMoreProducts = relatedResult.value.isNotEmpty()
-                )
-            }
-            is Either.Error -> {
-                _state.value = _state.value.copy(
-                    error = relatedResult.value
-                )
-            }
-            else -> {
-                _state.value = _state.value.copy(
-                    error = "Error al cargar productos relacionados"
-                )
-            }
-        }
-    }
-
-    fun loadMoreProducts() {
-        if (_state.value.isLoadingMore || !_state.value.hasMoreProducts) return
-
+    fun onProductPageChanged(currentIndex: Int) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoadingMore = true)
-
-            when (val moreResult = getDetailsUseCase.getMoreProducts(_state.value.lastDocumentId)) {
-                is Either.Success -> {
-                    val newProducts = _state.value.relatedProducts + moreResult.value
-                    _state.value = _state.value.copy(
-                        relatedProducts = newProducts,
-                        isLoadingMore = false,
-                        hasMoreProducts = moreResult.value.isNotEmpty()
-                    )
-                }
-                is Either.Error -> {
-                    _state.value = _state.value.copy(
-                        error = moreResult.value,
-                        isLoadingMore = false
-                    )
-                }
-                else -> {
-                    _state.value = _state.value.copy(
-                        error = "Error al cargar más productos",
-                        isLoadingMore = false
-                    )
-                }
-            }
+            repository.loadMoreProductsIfNeeded(currentIndex)
         }
     }
 
     fun clearError() {
         _state.value = _state.value.copy(error = null)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        repository.clearProducts()
     }
 } 

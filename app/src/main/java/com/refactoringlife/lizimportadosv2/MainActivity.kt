@@ -66,8 +66,7 @@ class MainActivity : ComponentActivity() {
                     AppNavHost(
                         navController = navController,
                         modifier = Modifier
-                            .navigationBarsPadding()
-                            .padding(innerPadding),
+                            .navigationBarsPadding(),
                         onGoogleSignInClick = { intent ->
                             googleSignInLauncher.launch(intent)
                         },
