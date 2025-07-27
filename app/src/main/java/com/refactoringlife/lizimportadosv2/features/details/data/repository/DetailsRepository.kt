@@ -32,10 +32,12 @@ class DetailsRepository private constructor(
     private var lastDocument: DocumentSnapshot? = null
     private var hasMoreProducts = true
     private var isLoading = false
+    private var currentProductId: String? = null
 
     suspend fun getProductById(id: String): Either<ProductResponse, String> {
         return try {
             val response = service.getProductById(id)
+            currentProductId = id // Guardamos el ID del producto principal
             Either.Success(response)
         } catch (e: ProductException) {
             Log.e("DetailsRepository", "Error obteniendo producto por ID", e)
@@ -48,10 +50,12 @@ class DetailsRepository private constructor(
         
         isLoading = true
         try {
-            val products = service.getRelatedProducts(limit = 10)
+            // Filtramos directamente en Firestore para evitar traer el producto principal
+            val products = service.getRelatedProducts(limit = 10, excludeProductId = currentProductId)
+            
             _productsFlow.value = products
             hasMoreProducts = products.isNotEmpty()
-            Log.d("DetailsRepository", "✅ Cargados ${products.size} productos iniciales")
+            Log.d("DetailsRepository", "✅ Cargados ${products.size} productos (excluyendo producto principal)")
         } catch (e: Exception) {
             Log.e("DetailsRepository", "❌ Error cargando productos iniciales", e)
         } finally {
@@ -72,7 +76,8 @@ class DetailsRepository private constructor(
         
         isLoading = true
         try {
-            val newProducts = service.getMoreProducts(limit = 10, lastDocument)
+            // Filtramos directamente en Firestore para evitar traer el producto principal
+            val newProducts = service.getMoreProducts(limit = 10, lastDocument, excludeProductId = currentProductId)
             
             if (newProducts.isNotEmpty()) {
                 val currentProducts = _productsFlow.value
@@ -94,6 +99,7 @@ class DetailsRepository private constructor(
         lastDocument = null
         hasMoreProducts = true
         isLoading = false
+        currentProductId = null
     }
 
     fun getCurrentProducts(): List<ProductResponse> = _productsFlow.value

@@ -7,6 +7,7 @@ data class ProductModel(
     val name: String?,
     val description: String?,
     val offersPrice: String?,
+    val isOffer: Boolean,
     val size: String?,
     val price: String?,
 )

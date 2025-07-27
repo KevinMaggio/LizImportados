@@ -70,29 +70,33 @@ fun LipsyProduct(
 
         Spacer(modifier = Modifier.height(6.dp))
 
-        product.price?.onValid {
+        if(product.isOffer) {
             Text(
-                text = it.capitalizeWords(),
+                text ="$" +  product.price.orEmpty().capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 fontSize = if (isLarge) 12.sp else 10.sp,
                 lineHeight = 1.sp,
                 textDecoration = TextDecoration.LineThrough,
                 color = TextBlue
             )
-        }
 
-        product.price?.onValid {
             Text(
-                text = if (product.offersPrice?.isNotEmpty() == true) {
-                    product.offersPrice.capitalizeWords()
-                } else {
-                    it.capitalizeWords()
-                },
+                text = "$" + product.offersPrice.orEmpty().capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                 fontSize = if (isLarge) 16.sp else 14.sp,
                 lineHeight = 1.sp,
                 color = TextPrimary
             )
+        }else {
+            "$" + product.price?.onValid {
+                Text(
+                    text = it.capitalizeWords(),
+                    fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                    fontSize = if (isLarge) 16.sp else 14.sp,
+                    lineHeight = 1.sp,
+                    color = TextPrimary
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(6.dp))

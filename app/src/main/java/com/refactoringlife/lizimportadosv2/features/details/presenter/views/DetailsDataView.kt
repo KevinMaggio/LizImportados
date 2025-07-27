@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportadosv2.R
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyDivider
 import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
+import com.refactoringlife.lizimportadosv2.core.utils.capitalizeWords
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
@@ -57,7 +58,7 @@ fun DetailsDataView(products: List<ProductResponse>) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(20.dp),
+                    .padding(vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 HorizontalPager(
@@ -65,11 +66,12 @@ fun DetailsDataView(products: List<ProductResponse>) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1.7f)
+                        .padding(horizontal = 20.dp)
                 ) { imagePage ->
                     Surface(
                         modifier = Modifier
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp))
-                            .background(Color.Red)
+                            .shadow(elevation = 5.dp, shape = RoundedCornerShape(12.dp))
+                            .background(Color.White)
                     ) {
                         LipsyAsyncImage(
                             modifier = Modifier.fillMaxSize(),
@@ -81,7 +83,9 @@ fun DetailsDataView(products: List<ProductResponse>) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
                 ) {
                     repeat(product.images?.size ?: 0) { index ->
                         val color =
@@ -96,14 +100,16 @@ fun DetailsDataView(products: List<ProductResponse>) {
                                 .background(color)
                                 .padding(2.dp)
                         )
-                        if (index < (product.images?.size ?: 0) - 1) Spacer(modifier = Modifier.width(6.dp))
+                        if (index < (product.images?.size
+                                ?: 0) - 1
+                        ) Spacer(modifier = Modifier.width(6.dp))
                     }
                 }
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .padding(top = 32.dp)
+                        .padding(top = 32.dp, start = 20.dp, end = 20.dp)
                 )
                 {
                     Text(
@@ -124,7 +130,7 @@ fun DetailsDataView(products: List<ProductResponse>) {
                         Spacer(modifier = Modifier.weight(1f))
 
                         Text(
-                            text = "Talle: "+ product.size.orEmpty(),
+                            text = "Talle: " + product.size.orEmpty(),
                             fontSize = 14.sp,
                             color = TextPrimary,
                             fontFamily = FontFamily(Font(R.font.montserrat_bold)),
@@ -133,10 +139,18 @@ fun DetailsDataView(products: List<ProductResponse>) {
 
                     LipsyDivider()
 
-                    Row(Modifier.fillMaxWidth().padding(vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically){
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = product.price?.toString().orEmpty(),
+                            text = "$" + if (product.isOffer == true) {
+                                product.offerPrice?.toString().orEmpty()
+                            } else {
+                                product.price?.toString().orEmpty()
+                            },
                             fontSize = 18.sp,
                             color = TextPrimary,
                             fontFamily = FontFamily(Font(R.font.montserrat_bold)),
@@ -154,7 +168,9 @@ fun DetailsDataView(products: List<ProductResponse>) {
                         Image(
                             painter = painterResource(R.drawable.icon_more),
                             contentDescription = "",
-                            modifier =Modifier.padding(start = 10.dp).size(20.dp)
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .size(20.dp)
 
                         )
                     }
@@ -163,7 +179,7 @@ fun DetailsDataView(products: List<ProductResponse>) {
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = product.description.orEmpty(),
+                        text = product.description.orEmpty().capitalizeWords(),
                         fontSize = 14.sp,
                         color = TextPrimary,
                         fontFamily = FontFamily(Font(R.font.montserrat_regular)),

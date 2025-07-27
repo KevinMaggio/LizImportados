@@ -28,7 +28,7 @@ data class ProductResponse(
     @SerialName("is_offer")
     val isOffer: Boolean? = null,
     @SerialName("offer_price")
-    val offerPrice: Int = 0,
+    val offerPrice: Int? = null,
     @SerialName("price")
     val price: Int? = null,
     @SerialName("season")

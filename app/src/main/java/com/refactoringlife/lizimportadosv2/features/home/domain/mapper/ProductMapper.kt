@@ -12,6 +12,7 @@ fun ProductResponse.toProductModel(): ProductModel {
         description = this.description,
         size = this.size,
         offersPrice = this.offerPrice.toString(),
-        price = this.price?.toString()
+        price = this.price?.toString(),
+        isOffer = this.isOffer ?: false
     )
 } 

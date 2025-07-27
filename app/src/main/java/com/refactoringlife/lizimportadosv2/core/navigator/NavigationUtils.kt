@@ -18,13 +18,14 @@ fun NavController.navigateFromBottomBar(destination: String) {
 }
 
 /**
- * Función utilitaria para navegar a detalles desde HOME
- * Mantiene HOME como base para poder volver
+ * Función utilitaria para navegar a detalles desde cualquier pantalla
+ * Mantiene la pantalla anterior en el back stack para poder volver
  */
 fun NavController.navigateToDetails(filter: String, id: String) {
     navigate("details/$filter/$id") {
         launchSingleTop = true
-        popUpTo(AppRoutes.HOME) { inclusive = false } // HOME queda como base
+        // NO hacemos popUpTo para mantener la pantalla anterior en el back stack
+        // Esto permite que el onBack regrese a la pantalla anterior
     }
 }
 

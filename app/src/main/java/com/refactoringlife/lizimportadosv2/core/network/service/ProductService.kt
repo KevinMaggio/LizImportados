@@ -7,6 +7,7 @@ import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
 import com.refactoringlife.lizimportadosv2.core.dto.response.ComboResponse
 import com.refactoringlife.lizimportadosv2.core.network.fireStore.FirebaseProvider
 import kotlinx.coroutines.tasks.await
+import android.util.Log
 
 class ProductService(
     private val firestore: FirebaseFirestore = FirebaseProvider.instance
@@ -73,32 +74,55 @@ class ProductService(
     }
 
     // Obtener productos relacionados (paginación inicial)
-    suspend fun getRelatedProducts(limit: Int = 10): List<ProductResponse> {
+    suspend fun getRelatedProducts(limit: Int = 10, excludeProductId: String? = null): List<ProductResponse> {
         return try {
-            firestore.collection("products")
+            val query = firestore.collection("products")
                 .limit(limit.toLong())
-                .get()
-                .await()
-                .toObjects(ProductResponse::class.java)
+            
+            // Si tenemos un ID para excluir, lo filtramos en Firestore
+            val finalQuery = if (excludeProductId != null) {
+                query.whereNotEqualTo("id", excludeProductId)
+            } else {
+                query
+            }
+            
+            val snapshot = finalQuery.get().await()
+            val products = snapshot.toObjects(ProductResponse::class.java)
+            Log.d("ProductService", "✅ Productos relacionados cargados: ${products.size}")
+            products
         } catch (e: Exception) {
-            throw ProductException("Error al obtener productos relacionados", e)
+            Log.e("ProductService", "❌ Error obteniendo productos relacionados", e)
+            emptyList()
         }
     }
 
     // Obtener más productos para scroll infinito
-    suspend fun getMoreProducts(limit: Int = 10, lastDocument: DocumentSnapshot?): List<ProductResponse> {
+    suspend fun getMoreProducts(limit: Int = 10, lastDocument: DocumentSnapshot?, excludeProductId: String? = null): List<ProductResponse> {
         return try {
             val query = firestore.collection("products")
+                .limit(limit.toLong())
             
-            val snapshot = if (lastDocument != null) {
-                query.startAfter(lastDocument).limit(limit.toLong()).get().await()
+            // Si tenemos un ID para excluir, lo filtramos en Firestore
+            val filteredQuery = if (excludeProductId != null) {
+                query.whereNotEqualTo("id", excludeProductId)
             } else {
-                query.limit(limit.toLong()).get().await()
+                query
             }
             
-            snapshot.toObjects(ProductResponse::class.java)
+            // Aplicamos paginación si tenemos documento anterior
+            val finalQuery = if (lastDocument != null) {
+                filteredQuery.startAfter(lastDocument)
+            } else {
+                filteredQuery
+            }
+            
+            val snapshot = finalQuery.get().await()
+            val products = snapshot.toObjects(ProductResponse::class.java)
+            Log.d("ProductService", "✅ Más productos cargados: ${products.size}")
+            products
         } catch (e: Exception) {
-            throw ProductException("Error al obtener más productos", e)
+            Log.e("ProductService", "❌ Error obteniendo más productos", e)
+            emptyList()
         }
     }
 
