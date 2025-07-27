@@ -20,13 +20,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportadosv2.R
-import com.refactoringlife.lizimportadosv2.core.dto.response.ConfigResponse
+import com.refactoringlife.lizimportadosv2.core.dto.response.ComboResponse
 import com.refactoringlife.lizimportadosv2.ui.theme.CardBackGround
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 
 @Composable
 fun ComboSection(
-    combos: List<ConfigResponse.ComboModel>
+    combos: List<ComboResponse>
 ) {
     Column(
         modifier = Modifier

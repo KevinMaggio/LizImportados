@@ -18,15 +18,22 @@ class GetHomeDataUseCase(
                 val offersProducts = if (config.isOffers) {
                     when (val offersResult = repository.getOffersProducts()) {
                         is Either.Success -> offersResult.value.map { it.toProductModel() }
-                        else -> null
+                        else -> emptyList()
                     }
-                } else null
+                } else emptyList()
 
-                // Los combos ya vienen en el config, no necesitamos hacer otra llamada
+                // Si hay combos activos, obtener combos
+                val combos = if (config.hasCombo) {
+                    when (val combosResult = repository.getCombos()) {
+                        is Either.Success -> combosResult.value
+                        else -> emptyList()
+                    }
+                } else emptyList()
+
                 Either.Success(
                     homeData.copy(
                         offersProducts = offersProducts,
-                        comboProduct = config.combos
+                        comboProduct = combos
                     )
                 )
             }

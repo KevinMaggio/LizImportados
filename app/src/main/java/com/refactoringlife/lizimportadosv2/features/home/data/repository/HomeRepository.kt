@@ -4,6 +4,7 @@ import Either
 import android.util.Log
 import com.refactoringlife.lizimportadosv2.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
+import com.refactoringlife.lizimportadosv2.core.dto.response.ComboResponse
 import com.refactoringlife.lizimportadosv2.core.network.service.ProductException
 import com.refactoringlife.lizimportadosv2.core.network.service.ProductService
 
@@ -26,6 +27,16 @@ class HomeRepository(
             Either.Success(response)
         } catch (e: ProductException) {
             Log.e("HomeRepository", "Error obteniendo productos en oferta", e)
+            Either.Error(e.message ?: "Error")
+        }
+    }
+
+    suspend fun getCombos(): Either<List<ComboResponse>, String> {
+        return try {
+            val response = service.getCombos()
+            Either.Success(response)
+        } catch (e: ProductException) {
+            Log.e("HomeRepository", "Error obteniendo combos", e)
             Either.Error(e.message ?: "Error")
         }
     }

@@ -3,6 +3,7 @@ package com.refactoringlife.lizimportadosv2.core.network.service
 import com.google.firebase.firestore.FirebaseFirestore
 import com.refactoringlife.lizimportadosv2.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
+import com.refactoringlife.lizimportadosv2.core.dto.response.ComboResponse
 import com.refactoringlife.lizimportadosv2.core.network.fireStore.FirebaseProvider
 import kotlinx.coroutines.tasks.await
 
@@ -11,65 +12,50 @@ class ProductService(
 ) {
     suspend fun getHomeConfig(): ConfigResponse {
         return try {
-            // Obtenemos el documento principal de config/home
+            // Obtenemos el documento principal de config/general
             val configDoc = firestore.collection("config")
-                .document("home")
+                .document("general")
                 .get()
                 .await()
 
-            // Obtenemos la colección de options
-            val optionsSnapshot = firestore.collection("config")
-                .document("home")
-                .collection("options")
-                .get()
-                .await()
-
-            // Convertimos los documentos de options a nuestra clase Option
-            val options = optionsSnapshot.documents.mapNotNull { doc ->
-                doc.data?.let {
-                    ConfigResponse.Option(
-                        name = it["name"] as? String ?: "",
-                        image = it["image"] as? String ?: ""
-                    )
-                }
+            // Obtenemos las options como array del documento
+            val optionsArray = configDoc.get("options") as? List<Map<String, Any>> ?: emptyList()
+            
+            // Convertimos los elementos del array a nuestra clase Option
+            val options = optionsArray.mapNotNull { optionMap ->
+                ConfigResponse.Option(
+                    name = optionMap["name"] as? String ?: "",
+                    image = optionMap["image"] as? String ?: ""
+                )
             }.sortedBy { it.name } // Ordenamos por nombre para mantener consistencia
 
             // Obtenemos los datos base del config
             val isOffers = configDoc.getBoolean("is_offers") ?: false
-            val combos = configDoc.get("combo") as? List<Map<String, Any>>
-
-            // Mapeamos los combos si existen
-            val mappedCombos = combos?.mapNotNull { comboMap ->
-                try {
-                    ConfigResponse.ComboModel(
-                        oldPrice = (comboMap["old_price"] as? Number)?.toInt() ?: 0,
-                        price = (comboMap["price"] as? Number)?.toInt() ?: 0,
-                        firstProduct = mapComboProduct(comboMap["first_product"] as? Map<String, Any>),
-                        secondProduct = mapComboProduct(comboMap["second_product"] as? Map<String, Any>)
-                    )
-                } catch (e: Exception) {
-                    null
-                }
-            }
+            val hasCombo = configDoc.getBoolean("has_combos") ?: false
 
             // Construimos el ConfigResponse final
             ConfigResponse(
                 isOffers = isOffers,
                 circleOptions = options,
-                combos = mappedCombos
+                hasCombo = hasCombo
             )
         } catch (e: Exception) {
             throw ProductException("Error al obtener configuración de home", e)
         }
     }
 
-    private fun mapComboProduct(data: Map<String, Any>?): ConfigResponse.ComboProductModel {
-        return ConfigResponse.ComboProductModel(
-            id = data?.get("id") as? String,
-            brand = data?.get("brand") as? String,
-            description = (data?.get("description") as? String) ?: "",
-            image = (data?.get("image") as? String) ?: ""
-        )
+    suspend fun getCombos(): List<ComboResponse> {
+        return try {
+            val combosSnapshot = firestore.collection("combos")
+                .get()
+                .await()
+
+            combosSnapshot.documents.mapNotNull { doc ->
+                doc.toObject(ComboResponse::class.java)
+            }
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener combos", e)
+        }
     }
 
     suspend fun getProductById(id: String): ProductResponse {
@@ -89,7 +75,6 @@ class ProductService(
         return try {
             firestore.collection("products")
                 .whereEqualTo("is_offer", true)
-                .whereEqualTo("is_available", true)
                 .get()
                 .await()
                 .toObjects(ProductResponse::class.java)
@@ -101,8 +86,7 @@ class ProductService(
     suspend fun getMenProducts(): List<ProductResponse> {
         return try {
             firestore.collection("products")
-                .whereEqualTo("gender", "Hombre")
-                .whereEqualTo("is_available", true)
+                .whereEqualTo("gender", "man")
                 .get()
                 .await()
                 .toObjects(ProductResponse::class.java)
@@ -111,29 +95,27 @@ class ProductService(
         }
     }
 
-    suspend fun getChildrenProducts(): List<ProductResponse> {
-        return try {
-            firestore.collection("products")
-                .whereEqualTo("is_available", true)
-                .whereIn("gender", listOf("Niño", "Bebe"))
-                .get()
-                .await()
-                .toObjects(ProductResponse::class.java)
-        } catch (e: Exception) {
-            throw ProductException("Error al obtener productos de niños", e)
-        }
-    }
-
     suspend fun getWomanProducts(): List<ProductResponse> {
         return try {
             firestore.collection("products")
-                .whereEqualTo("gender", "Mujer")
-                .whereEqualTo("is_available", true)
+                .whereEqualTo("gender", "woman")
                 .get()
                 .await()
                 .toObjects(ProductResponse::class.java)
         } catch (e: Exception) {
             throw ProductException("Error al obtener productos de mujer", e)
+        }
+    }
+
+    suspend fun getChildrenProducts(): List<ProductResponse> {
+        return try {
+            firestore.collection("products")
+                .whereEqualTo("gender", "children")
+                .get()
+                .await()
+                .toObjects(ProductResponse::class.java)
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener productos de niños", e)
         }
     }
 }

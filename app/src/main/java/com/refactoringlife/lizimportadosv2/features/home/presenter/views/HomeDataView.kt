@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportadosv2.R
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyDivider
+import com.refactoringlife.lizimportadosv2.core.utils.isTrue
 import com.refactoringlife.lizimportadosv2.features.home.composables.WeeklyOffersSection
 import com.refactoringlife.lizimportadosv2.features.home.composables.CircleOptionsSection
 import com.refactoringlife.lizimportadosv2.features.home.composables.ComboSection
@@ -49,7 +50,7 @@ fun HomeDataView(
             }
         }
 
-        state.offersProducts?.let{
+        state.config?.isOffers?.isTrue{
             item {
                 WeeklyOffersSection(
                     title = stringResource(R.string.weekly_offers),
@@ -72,9 +73,9 @@ fun HomeDataView(
             }
         }
 
-        state.combosModel?.let { combos ->
+        state.config?.hasCombo?.isTrue { combos ->
             item {
-                ComboSection(combos)
+                ComboSection(emptyList())
             }
         }
     }
