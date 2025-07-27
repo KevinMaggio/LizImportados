@@ -1,6 +1,7 @@
 package com.refactoringlife.lizimportadosv2.core.network.service
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentSnapshot
 import com.refactoringlife.lizimportadosv2.core.dto.response.ConfigResponse
 import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
 import com.refactoringlife.lizimportadosv2.core.dto.response.ComboResponse
@@ -71,6 +72,36 @@ class ProductService(
         }
     }
 
+    // Obtener productos relacionados (paginación inicial)
+    suspend fun getRelatedProducts(limit: Int = 10): List<ProductResponse> {
+        return try {
+            firestore.collection("products")
+                .limit(limit.toLong())
+                .get()
+                .await()
+                .toObjects(ProductResponse::class.java)
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener productos relacionados", e)
+        }
+    }
+
+    // Obtener más productos para scroll infinito
+    suspend fun getMoreProducts(limit: Int = 10, lastDocument: DocumentSnapshot?): List<ProductResponse> {
+        return try {
+            val query = firestore.collection("products")
+            
+            val snapshot = if (lastDocument != null) {
+                query.startAfter(lastDocument).limit(limit.toLong()).get().await()
+            } else {
+                query.limit(limit.toLong()).get().await()
+            }
+            
+            snapshot.toObjects(ProductResponse::class.java)
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener más productos", e)
+        }
+    }
+
     suspend fun getOffersProducts(): List<ProductResponse> {
         return try {
             firestore.collection("products")
@@ -86,7 +117,7 @@ class ProductService(
     suspend fun getMenProducts(): List<ProductResponse> {
         return try {
             firestore.collection("products")
-                .whereEqualTo("gender", "man")
+                .whereEqualTo("gender", "Hombre")
                 .get()
                 .await()
                 .toObjects(ProductResponse::class.java)
@@ -98,7 +129,7 @@ class ProductService(
     suspend fun getWomanProducts(): List<ProductResponse> {
         return try {
             firestore.collection("products")
-                .whereEqualTo("gender", "woman")
+                .whereEqualTo("gender", "Mujer")
                 .get()
                 .await()
                 .toObjects(ProductResponse::class.java)
@@ -110,7 +141,7 @@ class ProductService(
     suspend fun getChildrenProducts(): List<ProductResponse> {
         return try {
             firestore.collection("products")
-                .whereEqualTo("gender", "children")
+                .whereEqualTo("gender", "Niño")
                 .get()
                 .await()
                 .toObjects(ProductResponse::class.java)

@@ -16,6 +16,9 @@ class ChildrenRepository(
         } catch (e: ProductException) {
             Log.e("ChildrenRepository", "Error obteniendo productos de niños", e)
             Either.Error(e.message ?: "Error")
+        } catch (e: Exception) {
+            Log.e("ChildrenRepository", "Error inesperado obteniendo productos de niños", e)
+            Either.Error("Error inesperado: ${e.message}")
         }
     }
 } 

@@ -37,6 +37,12 @@ class ChildrenViewModel(
                         showLoading = false
                     )
                 }
+                is Either.Error -> {
+                    _state.value = _state.value.copy(
+                        showError = true,
+                        showLoading = false
+                    )
+                }
                 else -> {
                     _state.value = _state.value.copy(
                         showError = true,
