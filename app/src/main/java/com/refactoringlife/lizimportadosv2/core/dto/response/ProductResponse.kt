@@ -13,8 +13,8 @@ data class ProductResponse(
     val size: String? = null,
     @SerialName("brand")
     val brand: String? = null,
-    @SerialName("category")
-    val category: String? = null,
+    @SerialName("categories")
+    val categories: List<String>? = null,
     @SerialName("combo_id")
     val comboId: List<String>? = null,
     @SerialName("combo_price")

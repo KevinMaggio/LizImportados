@@ -105,12 +105,33 @@ class ProductService(
 
     suspend fun getProductById(id: String): ProductResponse {
         return try {
-            firestore.collection("products")
+            val doc = firestore.collection("products")
                 .document(id)
                 .get()
                 .await()
-                .toObject(ProductResponse::class.java)
-                ?: throw ProductException("Producto no encontrado")
+
+            if (!doc.exists()) {
+                throw ProductException("Producto no encontrado")
+            }
+
+            ProductResponse(
+                id = doc.getString("id") ?: "",
+                name = doc.getString("name"),
+                description = doc.getString("description"),
+                size = doc.getString("size"),
+                brand = doc.getString("brand"),
+                categories = doc.get("categories") as? List<String>,
+                comboId = doc.get("combo_id") as? List<String>,
+                comboPrice = doc.getLong("combo_price")?.toInt(),
+                gender = doc.getString("gender"),
+                images = doc.get("images") as? List<String>,
+                isAvailable = doc.getBoolean("is_available"),
+                isOffer = doc.getBoolean("is_offer"),
+                offerPrice = doc.getLong("offer_price")?.toInt(),
+                price = doc.getLong("price")?.toInt(),
+                season = doc.getString("season"),
+                circleOptionFilter = doc.getString("circle_option_filter")
+            )
         } catch (e: Exception) {
             throw ProductException("Error al obtener producto por ID", e)
         }
@@ -130,8 +151,30 @@ class ProductService(
             }
             
             val snapshot = finalQuery.get().await()
-            val products = snapshot.toObjects(ProductResponse::class.java)
-            products
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    ProductResponse(
+                        id = doc.getString("id") ?: "",
+                        name = doc.getString("name"),
+                        description = doc.getString("description"),
+                        size = doc.getString("size"),
+                        brand = doc.getString("brand"),
+                        categories = doc.get("categories") as? List<String>,
+                        comboId = doc.get("combo_id") as? List<String>,
+                        comboPrice = doc.getLong("combo_price")?.toInt(),
+                        gender = doc.getString("gender"),
+                        images = doc.get("images") as? List<String>,
+                        isAvailable = doc.getBoolean("is_available"),
+                        isOffer = doc.getBoolean("is_offer"),
+                        offerPrice = doc.getLong("offer_price")?.toInt(),
+                        price = doc.getLong("price")?.toInt(),
+                        season = doc.getString("season"),
+                        circleOptionFilter = doc.getString("circle_option_filter")
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            }
         } catch (e: Exception) {
             emptyList()
         }
@@ -158,8 +201,30 @@ class ProductService(
             }
             
             val snapshot = finalQuery.get().await()
-            val products = snapshot.toObjects(ProductResponse::class.java)
-            products
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    ProductResponse(
+                        id = doc.getString("id") ?: "",
+                        name = doc.getString("name"),
+                        description = doc.getString("description"),
+                        size = doc.getString("size"),
+                        brand = doc.getString("brand"),
+                        categories = doc.get("categories") as? List<String>,
+                        comboId = doc.get("combo_id") as? List<String>,
+                        comboPrice = doc.getLong("combo_price")?.toInt(),
+                        gender = doc.getString("gender"),
+                        images = doc.get("images") as? List<String>,
+                        isAvailable = doc.getBoolean("is_available"),
+                        isOffer = doc.getBoolean("is_offer"),
+                        offerPrice = doc.getLong("offer_price")?.toInt(),
+                        price = doc.getLong("price")?.toInt(),
+                        season = doc.getString("season"),
+                        circleOptionFilter = doc.getString("circle_option_filter")
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            }
         } catch (e: Exception) {
             emptyList()
         }
@@ -179,7 +244,7 @@ class ProductService(
                     description = doc.getString("description"),
                     size = doc.getString("size"),
                     brand = doc.getString("brand"),
-                    category = doc.getString("category"),
+                    categories = doc.get("categories") as? List<String>,
                     comboId = doc.get("combo_id") as? List<String>,
                     comboPrice = doc.getLong("combo_price")?.toInt(),
                     gender = doc.getString("gender"),
@@ -199,11 +264,35 @@ class ProductService(
 
     suspend fun getMenProducts(): List<ProductResponse> {
         return try {
-            firestore.collection("products")
-                .whereEqualTo("gender", "Hombre")
+            val snapshot = firestore.collection("products")
+                .whereArrayContains("categories", "Hombre")
                 .get()
                 .await()
-                .toObjects(ProductResponse::class.java)
+
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    ProductResponse(
+                        id = doc.getString("id") ?: "",
+                        name = doc.getString("name"),
+                        description = doc.getString("description"),
+                        size = doc.getString("size"),
+                        brand = doc.getString("brand"),
+                        categories = doc.get("categories") as? List<String>,
+                        comboId = doc.get("combo_id") as? List<String>,
+                        comboPrice = doc.getLong("combo_price")?.toInt(),
+                        gender = doc.getString("gender"),
+                        images = doc.get("images") as? List<String>,
+                        isAvailable = doc.getBoolean("is_available"),
+                        isOffer = doc.getBoolean("is_offer"),
+                        offerPrice = doc.getLong("offer_price")?.toInt(),
+                        price = doc.getLong("price")?.toInt(),
+                        season = doc.getString("season"),
+                        circleOptionFilter = doc.getString("circle_option_filter")
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            }
         } catch (e: Exception) {
             throw ProductException("Error al obtener productos de hombre", e)
         }
@@ -211,11 +300,35 @@ class ProductService(
 
     suspend fun getWomanProducts(): List<ProductResponse> {
         return try {
-            firestore.collection("products")
-                .whereEqualTo("gender", "Mujer")
+            val snapshot = firestore.collection("products")
+                .whereArrayContains("categories", "Mujer")
                 .get()
                 .await()
-                .toObjects(ProductResponse::class.java)
+
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    ProductResponse(
+                        id = doc.getString("id") ?: "",
+                        name = doc.getString("name"),
+                        description = doc.getString("description"),
+                        size = doc.getString("size"),
+                        brand = doc.getString("brand"),
+                        categories = doc.get("categories") as? List<String>,
+                        comboId = doc.get("combo_id") as? List<String>,
+                        comboPrice = doc.getLong("combo_price")?.toInt(),
+                        gender = doc.getString("gender"),
+                        images = doc.get("images") as? List<String>,
+                        isAvailable = doc.getBoolean("is_available"),
+                        isOffer = doc.getBoolean("is_offer"),
+                        offerPrice = doc.getLong("offer_price")?.toInt(),
+                        price = doc.getLong("price")?.toInt(),
+                        season = doc.getString("season"),
+                        circleOptionFilter = doc.getString("circle_option_filter")
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            }
         } catch (e: Exception) {
             throw ProductException("Error al obtener productos de mujer", e)
         }
@@ -223,11 +336,35 @@ class ProductService(
 
     suspend fun getChildrenProducts(): List<ProductResponse> {
         return try {
-            firestore.collection("products")
-                .whereEqualTo("gender", "Niño")
+            val snapshot = firestore.collection("products")
+                .whereArrayContains("categories", "Niño")
                 .get()
                 .await()
-                .toObjects(ProductResponse::class.java)
+
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    ProductResponse(
+                        id = doc.getString("id") ?: "",
+                        name = doc.getString("name"),
+                        description = doc.getString("description"),
+                        size = doc.getString("size"),
+                        brand = doc.getString("brand"),
+                        categories = doc.get("categories") as? List<String>,
+                        comboId = doc.get("combo_id") as? List<String>,
+                        comboPrice = doc.getLong("combo_price")?.toInt(),
+                        gender = doc.getString("gender"),
+                        images = doc.get("images") as? List<String>,
+                        isAvailable = doc.getBoolean("is_available"),
+                        isOffer = doc.getBoolean("is_offer"),
+                        offerPrice = doc.getLong("offer_price")?.toInt(),
+                        price = doc.getLong("price")?.toInt(),
+                        season = doc.getString("season"),
+                        circleOptionFilter = doc.getString("circle_option_filter")
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            }
         } catch (e: Exception) {
             throw ProductException("Error al obtener productos de niños", e)
         }
@@ -235,7 +372,7 @@ class ProductService(
 
     suspend fun getProductsByCategory(category: String, limit: Int = 10): List<ProductResponse> {
         val snapshot = firestore.collection("products")
-            .whereEqualTo("category", category)
+            .whereArrayContains("categories", category)
             .limit(limit.toLong())
             .get()
             .await()
@@ -248,7 +385,7 @@ class ProductService(
                     description = doc.getString("description"),
                     size = doc.getString("size"),
                     brand = doc.getString("brand"),
-                    category = doc.getString("category"),
+                    categories = doc.get("categories") as? List<String>,
                     comboId = doc.get("combo_id") as? List<String>,
                     comboPrice = doc.getLong("combo_price")?.toInt(),
                     gender = doc.getString("gender"),
@@ -273,7 +410,7 @@ class ProductService(
     ): List<ProductResponse> {
         return try {
             val query = firestore.collection("products")
-                .whereEqualTo("category", category)
+                .whereArrayContains("categories", category)
                 .limit(limit.toLong())
             
             val finalQuery = if (lastDocument != null) {
@@ -290,7 +427,7 @@ class ProductService(
                     description = doc.getString("description"),
                     size = doc.getString("size"),
                     brand = doc.getString("brand"),
-                    category = doc.getString("category"),
+                    categories = doc.get("categories") as? List<String>,
                     comboId = doc.get("combo_id") as? List<String>,
                     comboPrice = doc.getLong("combo_price")?.toInt(),
                     gender = doc.getString("gender"),
