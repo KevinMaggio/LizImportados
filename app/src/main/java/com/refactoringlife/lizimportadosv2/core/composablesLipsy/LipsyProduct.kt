@@ -87,10 +87,10 @@ fun LipsyProduct(
                 lineHeight = 1.sp,
                 color = TextPrimary
             )
-        }else {
-            "$" + product.price?.onValid {
+        } else {
+            product.price?.onValid {
                 Text(
-                    text = it.capitalizeWords(),
+                    text = "$" + it.capitalizeWords(),
                     fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                     fontSize = if (isLarge) 16.sp else 14.sp,
                     lineHeight = 1.sp,

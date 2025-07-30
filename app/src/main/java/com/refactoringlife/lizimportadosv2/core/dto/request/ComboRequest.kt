@@ -1,10 +1,8 @@
-package com.refactoringlife.lizimportadosv2.core.dto.response
+package com.refactoringlife.lizimportadosv2.core.dto.request
 
 import kotlinx.serialization.SerialName
 
-data class ComboResponse(
-    @SerialName("available")
-    val available: Boolean,
+class ComboRequest (
     @SerialName("old_price")
     val oldPrice: Int,
     @SerialName("price")

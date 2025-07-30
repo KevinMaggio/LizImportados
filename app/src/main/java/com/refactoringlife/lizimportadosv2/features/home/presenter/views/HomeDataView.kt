@@ -75,7 +75,7 @@ fun HomeDataView(
 
         state.config?.hasCombo?.isTrue { combos ->
             item {
-                ComboSection(emptyList())
+                ComboSection(state.combosModel)
             }
         }
     }

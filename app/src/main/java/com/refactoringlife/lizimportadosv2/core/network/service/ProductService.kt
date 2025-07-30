@@ -8,6 +8,7 @@ import com.refactoringlife.lizimportadosv2.core.dto.response.ComboResponse
 import com.refactoringlife.lizimportadosv2.core.network.fireStore.FirebaseProvider
 import kotlinx.coroutines.tasks.await
 import android.util.Log
+import com.refactoringlife.lizimportadosv2.core.dto.response.ComboProductResponse
 
 class ProductService(
     private val firestore: FirebaseFirestore = FirebaseProvider.instance
@@ -49,11 +50,53 @@ class ProductService(
     suspend fun getCombos(): List<ComboResponse> {
         return try {
             val combosSnapshot = firestore.collection("combos")
+                .whereEqualTo("available", true) // Solo combos disponibles
                 .get()
                 .await()
 
             combosSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(ComboResponse::class.java)
+                // Mapear manualmente desde Firestore
+                val available = doc.getBoolean("available") ?: false
+                val oldPrice = doc.getLong("oldPrice")?.toInt() ?: 0
+                val newPrice = doc.getLong("newPrice")?.toInt() ?: 0
+                val product1Id = doc.getString("product1Id") ?: ""
+                val product2Id = doc.getString("product2Id") ?: ""
+                
+                // Obtener productos completos
+                val product1 = try {
+                    getProductById(product1Id)
+                } catch (e: Exception) {
+                    null
+                }
+                
+                val product2 = try {
+                    getProductById(product2Id)
+                } catch (e: Exception) {
+                    null
+                }
+                
+                // Crear ComboProductResponse para cada producto
+                val firstProduct = ComboProductResponse(
+                    id = product1?.id ?: product1Id,
+                    brand = product1?.brand ?: "",
+                    description = product1?.name ?: "",
+                    image = product1?.images?.firstOrNull() ?: ""
+                )
+                
+                val secondProduct = ComboProductResponse(
+                    id = product2?.id ?: product2Id,
+                    brand = product2?.brand ?: "",
+                    description = product2?.name ?: "",
+                    image = product2?.images?.firstOrNull() ?: ""
+                )
+                
+                ComboResponse(
+                    available = available,
+                    oldPrice = oldPrice,
+                    price = newPrice,
+                    firstProduct = firstProduct,
+                    secondProduct = secondProduct
+                )
             }
         } catch (e: Exception) {
             throw ProductException("Error al obtener combos", e)
