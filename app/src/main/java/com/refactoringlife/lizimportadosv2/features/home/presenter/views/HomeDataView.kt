@@ -23,14 +23,14 @@ import com.refactoringlife.lizimportadosv2.features.home.composables.ComboSectio
 import com.refactoringlife.lizimportadosv2.features.home.domain.state.HomeUiState
 import com.refactoringlife.lizimportadosv2.ui.theme.ColorWhiteLipsy
 
-typealias filter = String
+typealias category = String
 typealias id = String
 
 @Composable
 fun HomeDataView(
     modifier: Modifier = Modifier,
     state: HomeUiState,
-    action: (filter, id) -> Unit
+    action: (category, id) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -65,8 +65,8 @@ fun HomeDataView(
             item {
                 CircleOptionsSection(
                     options = state.config.circleOptions,
-                    action = { filter ->
-                        action(filter, "01")
+                    action = { category ->
+                        action(category, "")
                     }
                 )
                 LipsyDivider()

@@ -32,7 +32,7 @@ fun ManScreen(
                 uiState.products?.let { products ->
                     ManDataView(
                         products = products,
-                        action = { id -> navController.navigateToDetails(filter = MAN, id = id) }
+                        action = { id -> navController.navigateToDetails(category = MAN, id = id) }
                     )
                 }
             }

@@ -78,14 +78,14 @@ fun AppNavHost(
             route = AppRoutes.DETAILS,
             arguments = listOf(
                 navArgument("id") { type = NavType.StringType },
-                navArgument("filter") { type = NavType.StringType }
+                navArgument("category") { type = NavType.StringType }
             ),
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) { backStackEntry ->
-            val filter = backStackEntry.arguments?.getString("filter")
+            val category = backStackEntry.arguments?.getString("category")
             val id = backStackEntry.arguments?.getString("id")
-            DetailsScreen(filter = filter, id = id)
+            DetailsScreen(category = category, id = id)
         }
 
         composable(

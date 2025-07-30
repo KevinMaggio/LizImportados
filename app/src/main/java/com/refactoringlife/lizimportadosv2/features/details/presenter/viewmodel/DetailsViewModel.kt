@@ -62,14 +62,51 @@ class DetailsViewModel(
         }
     }
 
+    fun loadProductsByCategory(category: String) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true, error = null, mainProduct = null)
+            
+            try {
+                repository.loadProductsByCategory(category)
+                
+                val products = repository.getCurrentProducts()
+                if (products.isEmpty()) {
+                    _state.value = _state.value.copy(
+                        error = "No se encontraron productos para la categoría: $category",
+                        isLoading = false
+                    )
+                } else {
+                    _state.value = _state.value.copy(isLoading = false)
+                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    error = "Error al cargar productos: ${e.message}",
+                    isLoading = false
+                )
+            }
+        }
+    }
+
     fun onProductPageChanged(currentIndex: Int) {
         viewModelScope.launch {
-            repository.loadMoreProductsIfNeeded(currentIndex)
+            // Si no hay producto principal, cargar más productos por categoría
+            if (state.value.mainProduct == null) {
+                // TODO: Necesitamos pasar la categoría actual al repository
+                // Por ahora usamos el método existente
+                repository.loadMoreProductsIfNeeded(currentIndex)
+            } else {
+                // Si hay producto principal, cargar productos relacionados
+                repository.loadMoreProductsIfNeeded(currentIndex)
+            }
         }
     }
 
     fun clearError() {
         _state.value = _state.value.copy(error = null)
+    }
+
+    fun setError(errorMessage: String) {
+        _state.value = _state.value.copy(error = errorMessage, isLoading = false)
     }
 
     override fun onCleared() {

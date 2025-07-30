@@ -33,7 +33,7 @@ fun WomanScreen(
                 uiState.products?.let { products ->
                     WomanDataView(
                         products = products,
-                        action = { id -> navController.navigateToDetails(filter = WOMAN, id = id) }
+                        action = { id -> navController.navigateToDetails(category = WOMAN, id = id) }
                     )
                 }
             }

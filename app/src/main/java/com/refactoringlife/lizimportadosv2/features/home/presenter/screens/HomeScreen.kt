@@ -43,7 +43,10 @@ fun HomeScreen(
                     HomeDataView(
                         modifier = modifier,
                         state = uiState,
-                        action = { filter, id -> navController.navigate("$DETAILS/$filter/$id") }
+                        action = { category, id -> 
+                            val finalId = if (id.isEmpty()) "empty" else id
+                            navController.navigate("$DETAILS/$category/$finalId") 
+                        }
                     )
                 }
             }

@@ -28,6 +28,7 @@ fun LipsyAsyncImage(modifier: Modifier,url: String?) {
     if (isLoading) { Box(modifier = modifier.shimmerEffect()) }
 
     if (url.isNullOrEmpty()) {
+        // Si la URL es null o vacía, mostrar imagen por defecto sin loading
         isLoading = false
         Image(
             painter = painterResource(R.drawable.icon_default_clothes),

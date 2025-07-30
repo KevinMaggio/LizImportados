@@ -17,40 +17,49 @@ import com.refactoringlife.lizimportadosv2.features.details.presenter.views.Deta
 
 @Composable
 fun DetailsScreen(
-    filter: String?, 
+    category: String?, 
     id: String?
 ) {
     val viewModel: DetailsViewModel = viewModel()
     val state by viewModel.state.collectAsState()
     
-    // Cargar datos cuando cambie el ID
-    LaunchedEffect(id) {
-        id?.let { productId ->
-            viewModel.loadProductDetails(productId)
+    // Cargar datos cuando cambie el ID o categoría
+    LaunchedEffect(id, category) {
+        if (id.isNullOrEmpty() || id == "empty") {
+            category?.let { cat ->
+                viewModel.loadProductsByCategory(cat)
+            }
+        } else {
+            viewModel.loadProductDetails(id)
         }
     }
     
     Box(modifier = Modifier.fillMaxSize()) {
-        state.isLoading.isFalse {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        
-        state.error?.let {
-            Text(
-                text = state.error ?: "Error desconocido",
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        
-        state.mainProduct?.let { product ->
-            // Crear lista con producto principal + productos relacionados
-            val allProducts = listOf(product) + state.relatedProducts
-            
-            DetailsDataView(
-                products = allProducts
-            )
+        when {
+            state.isLoading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            state.error != null -> {
+                Text(
+                    text = state.error!!,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            state.mainProduct != null -> {
+                val allProducts = listOf(state.mainProduct!!) + state.relatedProducts
+                DetailsDataView(products = allProducts)
+            }
+            state.relatedProducts.isNotEmpty() -> {
+                DetailsDataView(products = state.relatedProducts)
+            }
+            else -> {
+                Text(
+                    text = "No se encontraron productos para esta categoría",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
     }
 }

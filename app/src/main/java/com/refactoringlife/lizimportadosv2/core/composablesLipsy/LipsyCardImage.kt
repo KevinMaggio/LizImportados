@@ -28,19 +28,8 @@ import com.refactoringlife.lizimportadosv2.ui.theme.CardBackGround
 fun LipsyCardImage(url: String?, modifier: Modifier = Modifier) {
     var isLoading by remember { mutableStateOf(true) }
 
-    Surface(
-        modifier = modifier
-            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp))
-            .background(CardBackGround)
-    ) {
-        if (isLoading) {
-            Box(
-                modifier = modifier
-                    .shimmerEffect()
-                    .clip(RoundedCornerShape(8.dp))
-            )
-        }
-
+    Box(modifier = modifier) {
+        // Imagen por debajo
         if (url.isNullOrEmpty()) {
             isLoading = false
             Image(
@@ -62,6 +51,15 @@ fun LipsyCardImage(url: String?, modifier: Modifier = Modifier) {
                 onState = { state ->
                     isLoading = state is AsyncImagePainter.State.Loading
                 }
+            )
+        }
+
+        // Shimmer por encima solo cuando está cargando
+        if (isLoading) {
+            Box(
+                modifier = modifier
+                    .shimmerEffect()
+                    .clip(RoundedCornerShape(8.dp))
             )
         }
     }

@@ -107,4 +107,48 @@ class DetailsRepository private constructor(
     fun hasMoreProducts(): Boolean = hasMoreProducts
 
     fun isLoading(): Boolean = isLoading
+
+    suspend fun loadProductsByCategory(category: String) {
+        if (isLoading) return
+        
+        isLoading = true
+        _productsFlow.value = emptyList()
+        lastDocument = null
+        hasMoreProducts = true
+        currentProductId = null
+        
+        try {
+            val products = service.getProductsByCategory(category, limit = 10)
+            _productsFlow.value = products
+            hasMoreProducts = products.isNotEmpty()
+        } catch (e: Exception) {
+            _productsFlow.value = emptyList()
+            hasMoreProducts = false
+            throw e
+        } finally {
+            isLoading = false
+        }
+    }
+
+    suspend fun loadMoreProductsByCategory(category: String) {
+        if (isLoading || !hasMoreProducts) return
+        
+        isLoading = true
+        try {
+            val newProducts = service.getMoreProductsByCategory(category, limit = 10, lastDocument)
+            
+            if (newProducts.isNotEmpty()) {
+                val currentProducts = _productsFlow.value
+                _productsFlow.value = currentProducts + newProducts
+                Log.d("DetailsRepository", "✅ Agregados ${newProducts.size} productos más de categoría: $category. Total: ${_productsFlow.value.size}")
+            } else {
+                hasMoreProducts = false
+                Log.d("DetailsRepository", "📭 No hay más productos disponibles para la categoría: $category")
+            }
+        } catch (e: Exception) {
+            Log.e("DetailsRepository", "❌ Error cargando más productos por categoría: $category", e)
+        } finally {
+            isLoading = false
+        }
+    }
 } 

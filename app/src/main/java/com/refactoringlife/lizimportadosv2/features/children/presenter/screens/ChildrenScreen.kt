@@ -41,7 +41,7 @@ fun ChildrenScreen(
             ChildrenDataView(
                 products = products,
                 goToOptionScreen = { id ->
-                    navController.navigateToDetails(filter = CHILDREN, id = id)
+                    navController.navigateToDetails(category = CHILDREN, id = id)
                 }
             )
         }

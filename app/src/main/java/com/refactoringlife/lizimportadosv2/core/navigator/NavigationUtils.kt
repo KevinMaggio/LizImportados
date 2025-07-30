@@ -21,8 +21,8 @@ fun NavController.navigateFromBottomBar(destination: String) {
  * Función utilitaria para navegar a detalles desde cualquier pantalla
  * Mantiene la pantalla anterior en el back stack para poder volver
  */
-fun NavController.navigateToDetails(filter: String, id: String) {
-    navigate("details/$filter/$id") {
+fun NavController.navigateToDetails(category: String, id: String) {
+    navigate("details/$category/$id") {
         launchSingleTop = true
         // NO hacemos popUpTo para mantener la pantalla anterior en el back stack
         // Esto permite que el onBack regrese a la pantalla anterior
