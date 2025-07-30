@@ -31,7 +31,6 @@ fun ComboSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 20.dp)
     ) {
         Text(
             text = stringResource(R.string.unmissable_combo),
@@ -47,6 +46,7 @@ fun ComboSection(
                 .fillMaxWidth()
                 .shadow(elevation = 8.dp)
                 .background(CardBackGround)
+                .padding(top = 20.dp)
         ) {
             Column(
                 modifier = Modifier

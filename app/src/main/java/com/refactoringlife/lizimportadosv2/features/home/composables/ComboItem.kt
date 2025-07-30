@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -51,11 +52,15 @@ fun ComboItem(
                 combo.firstProduct.image
             )
 
+            Spacer(Modifier.width(10.dp))
+
             Image(
                 painter = painterResource(R.drawable.icon_plus),
                 contentDescription = "No description",
                 modifier = Modifier.size(15.dp)
             )
+
+            Spacer(Modifier.width(10.dp))
 
             LipsyAsyncImage(
                 modifier = Modifier

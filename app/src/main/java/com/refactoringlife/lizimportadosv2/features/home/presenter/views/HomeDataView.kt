@@ -78,5 +78,9 @@ fun HomeDataView(
                 ComboSection(state.combosModel)
             }
         }
+
+        item {
+            Spacer(Modifier.height(160.dp))
+        }
     }
 }

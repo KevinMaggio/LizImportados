@@ -131,10 +131,8 @@ class ProductService(
             
             val snapshot = finalQuery.get().await()
             val products = snapshot.toObjects(ProductResponse::class.java)
-            Log.d("ProductService", "✅ Productos relacionados cargados: ${products.size}")
             products
         } catch (e: Exception) {
-            Log.e("ProductService", "❌ Error obteniendo productos relacionados", e)
             emptyList()
         }
     }
@@ -161,21 +159,39 @@ class ProductService(
             
             val snapshot = finalQuery.get().await()
             val products = snapshot.toObjects(ProductResponse::class.java)
-            Log.d("ProductService", "✅ Más productos cargados: ${products.size}")
             products
         } catch (e: Exception) {
-            Log.e("ProductService", "❌ Error obteniendo más productos", e)
             emptyList()
         }
     }
 
     suspend fun getOffersProducts(): List<ProductResponse> {
         return try {
-            firestore.collection("products")
+            val snapshot = firestore.collection("products")
                 .whereEqualTo("is_offer", true)
                 .get()
                 .await()
-                .toObjects(ProductResponse::class.java)
+            
+            snapshot.documents.mapNotNull { doc ->
+                ProductResponse(
+                    id = doc.getString("id") ?: "",
+                    name = doc.getString("name"),
+                    description = doc.getString("description"),
+                    size = doc.getString("size"),
+                    brand = doc.getString("brand"),
+                    category = doc.getString("category"),
+                    comboId = doc.get("combo_id") as? List<String>,
+                    comboPrice = doc.getLong("combo_price")?.toInt(),
+                    gender = doc.getString("gender"),
+                    images = doc.get("images") as? List<String>,
+                    isAvailable = doc.getBoolean("is_available"),
+                    isOffer = doc.getBoolean("is_offer"),
+                    offerPrice = doc.getLong("offer_price")?.toInt(),
+                    price = doc.getLong("price")?.toInt(),
+                    season = doc.getString("season"),
+                    circleOptionFilter = doc.getString("circle_option_filter")
+                )
+            }
         } catch (e: Exception) {
             throw ProductException("Error al obtener productos en oferta", e)
         }
