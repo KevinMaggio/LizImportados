@@ -3,6 +3,7 @@ package com.refactoringlife.lizimportadosv2.core.composablesLipsy
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,31 +28,39 @@ fun LipsyAsyncImage(
 ) {
     var isLoading by remember { mutableStateOf(true) }
 
-    if (isLoading) {
-        Box(modifier = modifier.shimmerEffect())
-    }
-
-    if (url.isNullOrEmpty()) {
-        isLoading = false
-        Image(
-            painter = painterResource(R.drawable.icon_default_clothes),
-            contentDescription = "no image",
-            contentScale = ContentScale.Inside,
-            modifier = modifier
-                .background(CardBackGround)
-                .clip(RoundedCornerShape(12.dp))
-        )
-    } else {
-        AsyncImage(
-            model = url,
-            contentDescription = "generic image",
-            contentScale = ContentScale.Crop,
-            modifier = modifier
-                .background(CardBackGround)
-                .clip(RoundedCornerShape(12.dp)),
-            onState = { state ->
-                isLoading = state is AsyncImagePainter.State.Loading
-            }
-        )
+    Box(modifier = modifier) {
+        if (url.isNullOrEmpty()) {
+            isLoading = false
+            Image(
+                painter = painterResource(R.drawable.icon_default_clothes),
+                contentDescription = "no image",
+                contentScale = ContentScale.Inside,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(CardBackGround)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+        } else {
+            AsyncImage(
+                model = url,
+                contentDescription = "generic image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(CardBackGround)
+                    .clip(RoundedCornerShape(12.dp)),
+                onState = { state ->
+                    isLoading = state is AsyncImagePainter.State.Loading
+                }
+            )
+        }
+        
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .shimmerEffect()
+            )
+        }
     }
 }

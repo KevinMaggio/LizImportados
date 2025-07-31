@@ -119,9 +119,12 @@ fun CartDataView(
 
         item {
             Spacer(Modifier.height(20.dp))
+
             LipsyMoreItems(
                 action = {}
             )
+
+            Spacer(Modifier.height(20.dp))
         }
     }
 }
