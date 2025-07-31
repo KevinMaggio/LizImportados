@@ -11,4 +11,5 @@
     <string name="section_children">Sección chicos</string>
     <string name="section_man">Sección hombres</string>
     <string name="section_woman">Sección mujeres</string>
+    <string name="no_product">"No se encontraron productos para esta categoría"</string>
 </resources>

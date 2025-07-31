@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportadosv2.R
 import com.refactoringlife.lizimportadosv2.core.utils.capitalizeWords
-import com.refactoringlife.lizimportadosv2.core.utils.onValid
+import com.refactoringlife.lizimportadosv2.core.utils.isValid
 import com.refactoringlife.lizimportadosv2.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
@@ -48,7 +48,7 @@ fun LipsyProduct(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        product.name?.onValid {
+        product.name?.isValid {
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
@@ -58,7 +58,7 @@ fun LipsyProduct(
             )
         }
 
-        product.brand?.onValid {
+        product.brand?.isValid {
             Text(
                 text = it.capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
@@ -88,7 +88,7 @@ fun LipsyProduct(
                 color = TextPrimary
             )
         } else {
-            product.price?.onValid {
+            product.price?.isValid {
                 Text(
                     text = "$" + it.capitalizeWords(),
                     fontFamily = FontFamily(Font(R.font.montserrat_bold)),

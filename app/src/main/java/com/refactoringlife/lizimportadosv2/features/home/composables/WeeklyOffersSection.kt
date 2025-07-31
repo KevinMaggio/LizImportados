@@ -13,7 +13,7 @@ import com.refactoringlife.lizimportadosv2.R
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyProduct
 import com.refactoringlife.lizimportadosv2.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportadosv2.core.utils.capitalizeWords
-import com.refactoringlife.lizimportadosv2.core.utils.onValid
+import com.refactoringlife.lizimportadosv2.core.utils.isValid
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 
 typealias id = String
@@ -24,7 +24,7 @@ fun WeeklyOffersSection (
     products: List<ProductModel>,
     action: (id) -> Unit
 ){
-    title?.onValid {
+    title?.isValid {
         Text(
             text = it.capitalizeWords(),
             fontFamily = FontFamily(Font(R.font.montserrat_bold)),

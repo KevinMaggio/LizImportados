@@ -3,7 +3,6 @@ package com.refactoringlife.lizimportadosv2.core.composablesLipsy
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,13 +21,17 @@ import com.refactoringlife.lizimportadosv2.core.utils.shimmerEffect
 import com.refactoringlife.lizimportadosv2.ui.theme.CardBackGround
 
 @Composable
-fun LipsyAsyncImage(modifier: Modifier,url: String?) {
+fun LipsyAsyncImage(
+    modifier: Modifier = Modifier,
+    url: String?
+) {
     var isLoading by remember { mutableStateOf(true) }
 
-    if (isLoading) { Box(modifier = modifier.shimmerEffect()) }
+    if (isLoading) {
+        Box(modifier = modifier.shimmerEffect())
+    }
 
     if (url.isNullOrEmpty()) {
-        // Si la URL es null o vacía, mostrar imagen por defecto sin loading
         isLoading = false
         Image(
             painter = painterResource(R.drawable.icon_default_clothes),
