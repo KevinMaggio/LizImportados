@@ -265,7 +265,7 @@ class ProductService(
     suspend fun getMenProducts(): List<ProductResponse> {
         return try {
             val snapshot = firestore.collection("products")
-                .whereArrayContains("categories", "Hombre")
+                .whereArrayContains("gender", "Hombre")
                 .get()
                 .await()
 
@@ -301,7 +301,7 @@ class ProductService(
     suspend fun getWomanProducts(): List<ProductResponse> {
         return try {
             val snapshot = firestore.collection("products")
-                .whereArrayContains("categories", "Mujer")
+                .whereArrayContains("gender", "Mujer")
                 .get()
                 .await()
 
@@ -337,7 +337,7 @@ class ProductService(
     suspend fun getChildrenProducts(): List<ProductResponse> {
         return try {
             val snapshot = firestore.collection("products")
-                .whereArrayContains("categories", "Niño")
+                .whereArrayContains("gender", "Niño")
                 .get()
                 .await()
 
