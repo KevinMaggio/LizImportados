@@ -67,7 +67,7 @@ fun TotalSection(
         Row(Modifier.fillMaxWidth()) {
             Text(
                 text = "Total",
-                fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                 fontSize = 14.sp,
                 color = TextPrimary
             )

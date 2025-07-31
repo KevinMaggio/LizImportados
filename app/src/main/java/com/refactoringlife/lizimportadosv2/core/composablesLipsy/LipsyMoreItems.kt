@@ -42,17 +42,17 @@ fun LipsyMoreItems(
             )
             .clip(RoundedCornerShape(12.dp))
             .clickable { action.invoke() }
-            .padding(horizontal = 16.dp)
             .background(TextSecondary),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .padding(horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
             Image(
-                painter = painterResource(R.drawable.icon_whatsapp),
+                painter = painterResource(R.drawable.icon_store),
                 contentDescription = "Icono",
                 modifier = Modifier
                     .size(35.dp)
@@ -67,7 +67,7 @@ fun LipsyMoreItems(
                     text = "Buscar productos similares",
                     fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                     fontSize = 14.sp,
-                    color = Color.Blue
+                    color = Color.White
                 )
             }
         }

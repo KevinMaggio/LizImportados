@@ -18,52 +18,51 @@ import com.refactoringlife.lizimportadosv2.ui.theme.CardBackGround
 fun CartScreen() {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
+            .fillMaxSize()
             .background(CardBackGround)
     ) {
         CartDataView(
             ProductCartModel(
-                subTotal = 10000,
-                discount = 5000,
+                subTotal = 45900,
+                discount = 45900,
                 products = listOf(
                     ProductCartModel.CartItemModel(
-                        name = "Chaqueta cuero",
+                        name = "Chaqueta de Jeans",
                         image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "M",
+                        season = "XL",
                         available = true,
-                        price = 20000
+                        price = 45900
                     ),
                     ProductCartModel.CartItemModel(
-                        name = "Chaqueta cuero",
+                        name = "Chaqueta de Jeans",
                         image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "M",
+                        season = "XL",
                         available = true,
-                        price = 20000
+                        price = 45900
                     ),
                     ProductCartModel.CartItemModel(
-                        name = "Chaqueta cuero",
+                        name = "Chaqueta de Jeans",
                         image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "M",
+                        season = "XL",
                         available = true,
-                        price = 20000
+                        price = 45900
                     ),
                     ProductCartModel.CartItemModel(
-                        name = "Chaqueta cuero",
+                        name = "Chaqueta de Jeans",
                         image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "M",
+                        season = "XL",
                         available = false,
-                        price = 20000
+                        price = 45900
                     ),
                     ProductCartModel.CartItemModel(
-                        name = "Chaqueta cuero",
+                        name = "Chaqueta de Jeans",
                         image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "M",
+                        season = "XL",
                         available = false,
-                        price = 20000
+                        price = 45900
                     )
                 ),
-                total = 60000
+                total = 45900
             )
         )
     }
