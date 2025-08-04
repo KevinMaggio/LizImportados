@@ -31,11 +31,13 @@ import com.refactoringlife.lizimportadosv2.core.utils.capitalizeWords
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
+import androidx.compose.foundation.clickable
 
 @Composable
 fun DetailsDataView(
     products: List<ProductResponse>,
-    onProductPageChanged: (Int) -> Unit = {}
+    onProductPageChanged: (Int) -> Unit = {},
+    onAddToCart: (String) -> Unit = {}
 ) {
     val productPagerState = rememberPagerState(
         initialPage = 0,
@@ -167,21 +169,25 @@ fun DetailsDataView(
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        Text(
-                            text = "Agregar a carrito",
-                            fontSize = 14.sp,
-                            color = TextPrimary,
-                            fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable { onAddToCart(product.id) }
+                        ) {
+                            Text(
+                                text = "Agregar a carrito",
+                                fontSize = 14.sp,
+                                color = TextPrimary,
+                                fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                            )
 
-                        Image(
-                            painter = painterResource(R.drawable.icon_more),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 10.dp)
-                                .size(20.dp)
-
-                        )
+                            Image(
+                                painter = painterResource(R.drawable.icon_more),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .padding(start = 10.dp)
+                                    .size(20.dp)
+                            )
+                        }
                     }
 
                     LipsyDivider()

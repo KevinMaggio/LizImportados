@@ -3,67 +3,69 @@ package com.refactoringlife.lizimportadosv2.features.cart.presenter.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.refactoringlife.lizimportadosv2.features.cart.data.model.ProductCartModel
+import com.refactoringlife.lizimportadosv2.features.cart.presenter.viewmodel.CartViewModel
 import com.refactoringlife.lizimportadosv2.features.cart.presenter.views.CartDataView
 import com.refactoringlife.lizimportadosv2.ui.theme.CardBackGround
+import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 
 @Composable
 fun CartScreen() {
+    val viewModel: CartViewModel = viewModel()
+    val state by viewModel.state.collectAsState()
+
+    // TODO: Obtener el email del usuario autenticado
+    val userEmail = "usuario@ejemplo.com" // Esto debería venir del sistema de autenticación
+
+    LaunchedEffect(userEmail) {
+        viewModel.loadCart(userEmail)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(CardBackGround)
     ) {
-        CartDataView(
-            ProductCartModel(
-                subTotal = 45900,
-                discount = 45900,
-                products = listOf(
-                    ProductCartModel.CartItemModel(
-                        name = "Chaqueta de Jeans",
-                        image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "XL",
-                        available = true,
-                        price = 45900
-                    ),
-                    ProductCartModel.CartItemModel(
-                        name = "Chaqueta de Jeans",
-                        image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "XL",
-                        available = true,
-                        price = 45900
-                    ),
-                    ProductCartModel.CartItemModel(
-                        name = "Chaqueta de Jeans",
-                        image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "XL",
-                        available = true,
-                        price = 45900
-                    ),
-                    ProductCartModel.CartItemModel(
-                        name = "Chaqueta de Jeans",
-                        image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "XL",
-                        available = false,
-                        price = 45900
-                    ),
-                    ProductCartModel.CartItemModel(
-                        name = "Chaqueta de Jeans",
-                        image = "https://firebasestorage.googleapis.com/v0/b/liz-importados.firebasestorage.app/o/productos%2F4e38cdf8-427b-4af2-9a6b-43c513694802.jpg?alt=media&token=ee03fcc2-a7d8-444b-9e3f-2fc91bc26e97",
-                        season = "XL",
-                        available = false,
-                        price = 45900
-                    )
-                ),
-                total = 45900
-            )
-        )
+        when {
+            state.isLoading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .align(Alignment.Center),
+                    color = TextBlue
+                )
+            }
+            state.error != null -> {
+                Text(
+                    text = state.error!!,
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color.Red
+                )
+            }
+            else -> {
+                CartDataView(
+                    product = state.cart,
+                    onRemoveItem = { productId ->
+                        viewModel.removeFromCart(userEmail, productId)
+                    },
+                    onClearCart = {
+                        viewModel.clearCart(userEmail)
+                    }
+                )
+            }
+        }
     }
 }

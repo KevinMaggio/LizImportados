@@ -1,5 +1,7 @@
 package com.refactoringlife.lizimportadosv2.features.cart.presenter.views
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -26,11 +29,46 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 
 @Composable
 fun CartDataView(
-    product: ProductCartModel
+    product: ProductCartModel,
+    onRemoveItem: (String) -> Unit = {},
+    onClearCart: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     val availableProducts = product.products.filter { it.available }
-
     val sealedProducts = product.products.filter { !it.available }
+
+    fun sendWhatsAppMessage() {
+        val message = buildString {
+            appendLine("🛒 *Carrito de Compras - Liz Importados*")
+            appendLine()
+            appendLine("*Productos:*")
+            availableProducts.forEach { item ->
+                appendLine("• ${item.name} - Talle: ${item.season} - $${item.price}")
+            }
+            appendLine()
+            appendLine("*Resumen:*")
+            appendLine("Subtotal: $${product.subTotal}")
+            if (product.discount > 0) {
+                appendLine("Descuento: $${product.discount}")
+            }
+            appendLine("*Total: $${product.total}*")
+            appendLine()
+            appendLine("Por favor, confirma mi pedido. ¡Gracias! 🛍️")
+        }
+
+        val encodedMessage = Uri.encode(message)
+        val whatsappUrl = "https://wa.me/5401162399695?text=$encodedMessage"
+        
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl))
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            // Fallback: abrir WhatsApp con el número
+            val fallbackUrl = "https://wa.me/5401162399695"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl))
+            context.startActivity(intent)
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -49,9 +87,16 @@ fun CartDataView(
         }
 
         item {
-            availableProducts.forEach {
+            availableProducts.forEach { item ->
                 LipsyDivider()
-                CartItem(cartItemModel = it)
+                CartItem(
+                    cartItemModel = item,
+                    onRemove = {
+                        // TODO: Necesitamos el productId para remover
+                        // Por ahora usamos el nombre como identificador temporal
+                        onRemoveItem(item.name ?: "")
+                    }
+                )
             }
         }
 
@@ -69,59 +114,65 @@ fun CartDataView(
             Spacer(Modifier.height(20.dp))
 
             LipsyWhatsAppButton(
-                action = {}
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-        }
-
-        item {
-            Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "Productos no disponibles",
-                fontFamily = FontFamily(Font(R.font.montserrat_bold)),
-                fontSize = 16.sp,
-                color = TextBlue
+                action = { sendWhatsAppMessage() }
             )
 
             Spacer(Modifier.height(20.dp))
         }
 
-        item {
-            sealedProducts.forEach {
-                LipsyDivider()
-                CartItem(cartItemModel = it)
+        if (sealedProducts.isNotEmpty()) {
+            item {
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    text = "Productos no disponibles",
+                    fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                    fontSize = 16.sp,
+                    color = TextBlue
+                )
+
+                Spacer(Modifier.height(20.dp))
+            }
+
+            item {
+                sealedProducts.forEach { item ->
+                    LipsyDivider()
+                    CartItem(
+                        cartItemModel = item,
+                        onRemove = {
+                            onRemoveItem(item.name ?: "")
+                        }
+                    )
+                }
+            }
+
+            item {
+                Spacer(Modifier.height(20.dp))
+
+                HorizontalDivider(color = Color.Black)
+
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    text = "Estos productos fueron vendidos mientras armabas el carrito, lo sentimos",
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    fontSize = 12.sp,
+                    color = TextPrimary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(Modifier.height(20.dp))
             }
         }
 
         item {
             Spacer(Modifier.height(20.dp))
 
-            HorizontalDivider(color = Color.Black)
-
-            Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "Estos productos fueron vendidos mientras armabas el carrito, lo sentimos",
-                fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                fontSize = 12.sp,
-                color = TextPrimary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(Modifier.height(20.dp))
-        }
-
-        item {
-            Spacer(Modifier.height(20.dp))
-
             LipsyMoreItems(
-                action = {}
+                action = { /* TODO: Navegar a más productos */ }
             )
 
             Spacer(Modifier.height(20.dp))

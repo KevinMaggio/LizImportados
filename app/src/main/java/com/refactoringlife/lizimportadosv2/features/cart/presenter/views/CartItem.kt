@@ -2,6 +2,7 @@ package com.refactoringlife.lizimportadosv2.features.cart.presenter.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,8 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 
 @Composable
 fun CartItem(
-    cartItemModel: ProductCartModel.CartItemModel
+    cartItemModel: ProductCartModel.CartItemModel,
+    onRemove: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -93,7 +95,8 @@ fun CartItem(
                     text = "Eliminar",
                     fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                     fontSize = 10.sp,
-                    color = TextBlue
+                    color = TextBlue,
+                    modifier = Modifier.clickable { onRemove() }
                 )
             }
         }
