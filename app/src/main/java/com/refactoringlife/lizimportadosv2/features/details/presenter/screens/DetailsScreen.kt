@@ -6,14 +6,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +28,7 @@ import com.refactoringlife.lizimportadosv2.features.details.presenter.viewmodel.
 import com.refactoringlife.lizimportadosv2.features.details.presenter.views.DetailsDataView
 import com.refactoringlife.lizimportadosv2.features.cart.presenter.viewmodel.CartViewModel
 import android.util.Log
+import kotlinx.coroutines.delay
 
 @Composable
 fun DetailsScreen(
@@ -39,8 +40,7 @@ fun DetailsScreen(
     val detailsState by detailsViewModel.state.collectAsState()
     val cartState by cartViewModel.state.collectAsState()
     
-    var showSuccessMessage by remember { mutableStateOf(false) }
-    var lastCartSize by remember { mutableStateOf(0) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // TODO: Obtener el email del usuario autenticado
     val userEmail = "usuario@ejemplo.com" // Esto debería venir del sistema de autenticación
@@ -59,12 +59,22 @@ fun DetailsScreen(
         }
     }
 
-    // Mostrar mensaje de éxito cuando se agrega al carrito
-    LaunchedEffect(cartState.cart.products.size) {
-        if (cartState.cart.products.size > lastCartSize && lastCartSize > 0) {
-            showSuccessMessage = true
+    // Mostrar snackbar cuando hay mensaje del carrito
+    LaunchedEffect(cartState.addToCartMessage) {
+        Log.d("DetailsScreen", "👀 Estado del carrito - addToCartMessage: '${cartState.addToCartMessage}'")
+        cartState.addToCartMessage?.let { message ->
+            Log.d("DetailsScreen", "🍞 Mostrando snackbar: '$message'")
+            try {
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = androidx.compose.material3.SnackbarDuration.Short
+                )
+                Log.d("DetailsScreen", "✅ Snackbar mostrado exitosamente")
+            } catch (e: Exception) {
+                Log.e("DetailsScreen", "❌ Error mostrando snackbar", e)
+            }
+            cartViewModel.clearAddToCartMessage()
         }
-        lastCartSize = cartState.cart.products.size
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -88,7 +98,8 @@ fun DetailsScreen(
                     onAddToCart = { productId ->
                         Log.d("DetailsScreen", "🛒 Agregando producto $productId al carrito")
                         cartViewModel.addToCart(userEmail, productId)
-                    }
+                    },
+                    isAddingToCart = cartState.isAddingToCart
                 )
             }
             detailsState.relatedProducts.isNotEmpty() -> {
@@ -98,7 +109,8 @@ fun DetailsScreen(
                     onAddToCart = { productId ->
                         Log.d("DetailsScreen", "🛒 Agregando producto $productId al carrito")
                         cartViewModel.addToCart(userEmail, productId)
-                    }
+                    },
+                    isAddingToCart = cartState.isAddingToCart
                 )
             }
             else -> {
@@ -109,25 +121,12 @@ fun DetailsScreen(
             }
         }
 
-        // Snackbar de éxito
-        if (showSuccessMessage) {
-            Snackbar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-                action = {
-                    Text(
-                        text = "✓ Producto agregado al carrito",
-                        color = Color.White
-                    )
-                }
-            ) {
-                // Auto-hide después de 3 segundos
-                LaunchedEffect(Unit) {
-                    kotlinx.coroutines.delay(3000)
-                    showSuccessMessage = false
-                }
-            }
-        }
+        // SnackbarHost para mostrar las notificaciones - movido arriba para evitar BottomBar
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp, start = 16.dp, end = 16.dp)
+        )
     }
 }

@@ -4,6 +4,9 @@ import com.refactoringlife.lizimportadosv2.core.dto.response.CartResponse
 import com.refactoringlife.lizimportadosv2.core.network.service.CartService
 import android.util.Log
 
+// Alias para el resultado del carrito
+typealias CartAddResult = CartService.CartAddResult
+
 class CartRepository(
     private val cartService: CartService = CartService()
 ) {
@@ -24,17 +27,25 @@ class CartRepository(
         }
     }
 
-    suspend fun addToCart(email: String, productId: String): CartResponse? {
+    suspend fun addToCart(email: String, productId: String): CartAddResult {
         return try {
             Log.d("CartRepository", "➕ Agregando producto $productId al carrito")
-            val cart = cartService.addToCart(email, productId)
-            if (cart != null) {
-                Log.d("CartRepository", "✅ Producto agregado. Total productos: ${cart.products.size}")
+            val result = cartService.addToCart(email, productId)
+            when (result) {
+                is CartService.CartAddResult.Success -> {
+                    Log.d("CartRepository", "✅ Producto agregado. Total productos: ${result.cart.products.size}")
+                }
+                is CartService.CartAddResult.AlreadyInCart -> {
+                    Log.d("CartRepository", "⚠️ Producto ya estaba en el carrito")
+                }
+                is CartService.CartAddResult.Error -> {
+                    Log.e("CartRepository", "❌ Error agregando producto: ${result.message}")
+                }
             }
-            cart
+            result
         } catch (e: Exception) {
             Log.e("CartRepository", "❌ Error agregando producto al carrito", e)
-            null
+            CartService.CartAddResult.Error(e.message ?: "Error desconocido")
         }
     }
 
@@ -67,4 +78,4 @@ class CartRepository(
             false
         }
     }
-} 
+}

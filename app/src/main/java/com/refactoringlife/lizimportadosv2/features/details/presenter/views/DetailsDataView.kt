@@ -37,7 +37,8 @@ import androidx.compose.foundation.clickable
 fun DetailsDataView(
     products: List<ProductResponse>,
     onProductPageChanged: (Int) -> Unit = {},
-    onAddToCart: (String) -> Unit = {}
+    onAddToCart: (String) -> Unit = {},
+    isAddingToCart: Boolean = false
 ) {
     val productPagerState = rememberPagerState(
         initialPage = 0,
@@ -171,12 +172,18 @@ fun DetailsDataView(
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clickable { onAddToCart(product.id) }
+                            modifier = Modifier.clickable(
+                                enabled = !isAddingToCart
+                            ) { 
+                                if (!isAddingToCart) {
+                                    onAddToCart(product.id) 
+                                }
+                            }
                         ) {
                             Text(
-                                text = "Agregar a carrito",
+                                text = if (isAddingToCart) "Agregando..." else "Agregar a carrito",
                                 fontSize = 14.sp,
-                                color = TextPrimary,
+                                color = if (isAddingToCart) Color.Gray else TextPrimary,
                                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                             )
 

@@ -54,7 +54,7 @@ class CartService(
         }
     }
 
-    suspend fun addToCart(email: String, productId: String): CartResponse? {
+    suspend fun addToCart(email: String, productId: String): CartAddResult {
         return try {
             Log.d("CartService", "🛒 Iniciando addToCart - Email: $email, ProductId: $productId")
             
@@ -78,7 +78,7 @@ class CartService(
             val existingProduct = currentCart.products.find { it.productId == productId }
             if (existingProduct != null) {
                 Log.d("CartService", "⚠️ Producto $productId ya está en el carrito")
-                return currentCart
+                return CartAddResult.AlreadyInCart(currentCart)
             }
 
             // Crear nuevo item del carrito
@@ -110,10 +110,10 @@ class CartService(
             saveCart(updatedCart)
 
             Log.d("CartService", "✅ Producto $productId agregado al carrito de $email. Total productos: ${updatedCart.products.size}")
-            updatedCart
+            CartAddResult.Success(updatedCart)
         } catch (e: Exception) {
             Log.e("CartService", "❌ Error agregando producto $productId al carrito de $email", e)
-            null
+            CartAddResult.Error(e.message ?: "Error desconocido")
         }
     }
 
@@ -182,5 +182,11 @@ class CartService(
             .document(cart.email)
             .set(cartData)
             .await()
+    }
+
+    sealed class CartAddResult {
+        data class Success(val cart: CartResponse) : CartAddResult()
+        data class AlreadyInCart(val cart: CartResponse) : CartAddResult()
+        data class Error(val message: String) : CartAddResult()
     }
 } 

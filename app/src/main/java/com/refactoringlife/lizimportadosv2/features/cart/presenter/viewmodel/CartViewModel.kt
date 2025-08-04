@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.refactoringlife.lizimportadosv2.core.dto.response.CartResponse
 import com.refactoringlife.lizimportadosv2.features.cart.data.model.ProductCartModel
 import com.refactoringlife.lizimportadosv2.features.cart.data.repository.CartRepository
+import com.refactoringlife.lizimportadosv2.core.network.service.CartService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -58,17 +59,53 @@ class CartViewModel(
     fun addToCart(email: String, productId: String) {
         viewModelScope.launch {
             Log.d("CartViewModel", "➕ Agregando producto $productId al carrito")
+            _state.value = _state.value.copy(isAddingToCart = true)
+            
             try {
-                val cartResponse = repository.addToCart(email, productId)
-                if (cartResponse != null) {
-                    val cartModel = mapToCartModel(cartResponse)
-                    _state.value = _state.value.copy(cart = cartModel)
-                    Log.d("CartViewModel", "✅ Producto agregado al carrito")
-                } else {
-                    Log.e("CartViewModel", "❌ Error agregando producto al carrito")
+                val result = repository.addToCart(email, productId)
+                Log.d("CartViewModel", "📦 Resultado recibido: $result")
+                
+                when (result) {
+                    is CartService.CartAddResult.Success -> {
+                        val cartModel = mapToCartModel(result.cart)
+                        val message = "✓ Producto agregado al carrito"
+                        Log.d("CartViewModel", "✅ Estableciendo mensaje: '$message'")
+                        _state.value = _state.value.copy(
+                            cart = cartModel,
+                            isAddingToCart = false,
+                            addToCartMessage = message
+                        )
+                        Log.d("CartViewModel", "✅ Producto agregado al carrito")
+                    }
+                    is CartService.CartAddResult.AlreadyInCart -> {
+                        val cartModel = mapToCartModel(result.cart)
+                        val message = "⚠️ Este producto ya está en tu carrito"
+                        Log.d("CartViewModel", "⚠️ Estableciendo mensaje: '$message'")
+                        _state.value = _state.value.copy(
+                            cart = cartModel,
+                            isAddingToCart = false,
+                            addToCartMessage = message
+                        )
+                        Log.d("CartViewModel", "⚠️ Producto ya estaba en el carrito")
+                    }
+                    is CartService.CartAddResult.Error -> {
+                        val message = "❌ Error: ${result.message}"
+                        Log.d("CartViewModel", "❌ Estableciendo mensaje: '$message'")
+                        _state.value = _state.value.copy(
+                            isAddingToCart = false,
+                            addToCartMessage = message
+                        )
+                        Log.e("CartViewModel", "❌ Error agregando producto: ${result.message}")
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("CartViewModel", "❌ Error agregando producto al carrito", e)
+                val message = "❌ Error al agregar producto"
+                Log.d("CartViewModel", "❌ Estableciendo mensaje de error: '$message'")
+                _state.value = _state.value.copy(
+                    isAddingToCart = false,
+                    addToCartMessage = message
+                )
             }
         }
     }
@@ -114,6 +151,10 @@ class CartViewModel(
         }
     }
 
+    fun clearAddToCartMessage() {
+        _state.value = _state.value.copy(addToCartMessage = null)
+    }
+
     fun clearError() {
         _state.value = _state.value.copy(error = null)
     }
@@ -146,5 +187,7 @@ data class CartUiState(
         products = emptyList()
     ),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val isAddingToCart: Boolean = false,
+    val error: String? = null,
+    val addToCartMessage: String? = null
 ) 
