@@ -90,15 +90,13 @@ fun CartItem(
 
             Spacer(Modifier.height(10.dp))
 
-            if (cartItemModel.available) {
-                Text(
-                    text = "Eliminar",
-                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                    fontSize = 10.sp,
-                    color = TextBlue,
-                    modifier = Modifier.clickable { onRemove() }
-                )
-            }
+            Text(
+                text = "Eliminar",
+                fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                fontSize = 10.sp,
+                color = TextBlue,
+                modifier = Modifier.clickable { onRemove() }
+            )
         }
 
         Text(

@@ -162,6 +162,7 @@ class CartViewModel(
     private fun mapToCartModel(cartResponse: CartResponse): ProductCartModel {
         val cartItems = cartResponse.products.map { product ->
             ProductCartModel.CartItemModel(
+                productId = product.productId,
                 image = product.image,
                 name = product.name,
                 season = product.season,

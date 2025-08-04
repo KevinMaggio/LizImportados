@@ -27,23 +27,23 @@ import com.refactoringlife.lizimportadosv2.core.utils.isValid
 import com.refactoringlife.lizimportadosv2.features.details.presenter.viewmodel.DetailsViewModel
 import com.refactoringlife.lizimportadosv2.features.details.presenter.views.DetailsDataView
 import com.refactoringlife.lizimportadosv2.features.cart.presenter.viewmodel.CartViewModel
+import com.refactoringlife.lizimportadosv2.core.auth.AuthStateViewModel
 import android.util.Log
 import kotlinx.coroutines.delay
 
 @Composable
 fun DetailsScreen(
     category: String?,
-    id: String?
+    id: String?,
+    authStateViewModel: AuthStateViewModel
 ) {
     val detailsViewModel: DetailsViewModel = viewModel()
     val cartViewModel: CartViewModel = viewModel()
     val detailsState by detailsViewModel.state.collectAsState()
     val cartState by cartViewModel.state.collectAsState()
+    val userEmail by authStateViewModel.userEmail.collectAsState()
     
     val snackbarHostState = remember { SnackbarHostState() }
-
-    // TODO: Obtener el email del usuario autenticado
-    val userEmail = "usuario@ejemplo.com" // Esto debería venir del sistema de autenticación
 
     LaunchedEffect(id, category) {
         Log.d("DetailsScreen", "🎯 Navegación recibida - Category: '$category', ID: '$id'")
@@ -59,17 +59,13 @@ fun DetailsScreen(
         }
     }
 
-    // Mostrar snackbar cuando hay mensaje del carrito
     LaunchedEffect(cartState.addToCartMessage) {
-        Log.d("DetailsScreen", "👀 Estado del carrito - addToCartMessage: '${cartState.addToCartMessage}'")
         cartState.addToCartMessage?.let { message ->
-            Log.d("DetailsScreen", "🍞 Mostrando snackbar: '$message'")
             try {
                 snackbarHostState.showSnackbar(
                     message = message,
                     duration = androidx.compose.material3.SnackbarDuration.Short
                 )
-                Log.d("DetailsScreen", "✅ Snackbar mostrado exitosamente")
             } catch (e: Exception) {
                 Log.e("DetailsScreen", "❌ Error mostrando snackbar", e)
             }
@@ -96,8 +92,9 @@ fun DetailsScreen(
                     products = allProducts,
                     onProductPageChanged = detailsViewModel::onProductPageChanged,
                     onAddToCart = { productId ->
-                        Log.d("DetailsScreen", "🛒 Agregando producto $productId al carrito")
-                        cartViewModel.addToCart(userEmail, productId)
+                        userEmail?.let { email ->
+                            cartViewModel.addToCart(email, productId)
+                        }
                     },
                     isAddingToCart = cartState.isAddingToCart
                 )
@@ -107,8 +104,9 @@ fun DetailsScreen(
                     products = detailsState.relatedProducts,
                     onProductPageChanged = detailsViewModel::onProductPageChanged,
                     onAddToCart = { productId ->
-                        Log.d("DetailsScreen", "🛒 Agregando producto $productId al carrito")
-                        cartViewModel.addToCart(userEmail, productId)
+                        userEmail?.let { email ->
+                            cartViewModel.addToCart(email, productId)
+                        }
                     },
                     isAddingToCart = cartState.isAddingToCart
                 )
@@ -121,7 +119,6 @@ fun DetailsScreen(
             }
         }
 
-        // SnackbarHost para mostrar las notificaciones - movido arriba para evitar BottomBar
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier

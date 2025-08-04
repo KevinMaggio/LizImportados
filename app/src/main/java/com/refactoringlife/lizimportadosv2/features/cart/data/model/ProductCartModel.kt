@@ -7,6 +7,7 @@ data class ProductCartModel (
     val products: List<CartItemModel>
 ){
     data class CartItemModel(
+        val productId: String,
         val image: String?,
         val name: String?,
         val season: String?,

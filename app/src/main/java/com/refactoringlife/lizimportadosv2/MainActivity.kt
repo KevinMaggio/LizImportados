@@ -21,10 +21,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportadosv2.core.navigator.navigateFromBottomBar
 import androidx.core.view.WindowCompat
+import com.refactoringlife.lizimportadosv2.core.auth.AuthStateViewModel
 
 class MainActivity : ComponentActivity() {
 
     private val loginViewModel: LoginViewModel by lazy { LoginViewModel() }
+    private val authStateViewModel: AuthStateViewModel by lazy { AuthStateViewModel() }
 
     private val googleSignInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -70,7 +72,8 @@ class MainActivity : ComponentActivity() {
                         onGoogleSignInClick = { intent ->
                             googleSignInLauncher.launch(intent)
                         },
-                        loginViewModel = loginViewModel
+                        loginViewModel = loginViewModel,
+                        authStateViewModel = authStateViewModel
                     )
                 }
             }

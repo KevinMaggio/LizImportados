@@ -92,9 +92,7 @@ fun CartDataView(
                 CartItem(
                     cartItemModel = item,
                     onRemove = {
-                        // TODO: Necesitamos el productId para remover
-                        // Por ahora usamos el nombre como identificador temporal
-                        onRemoveItem(item.name ?: "")
+                        onRemoveItem(item.productId)
                     }
                 )
             }
@@ -140,7 +138,7 @@ fun CartDataView(
                     CartItem(
                         cartItemModel = item,
                         onRemove = {
-                            onRemoveItem(item.name ?: "")
+                            onRemoveItem(item.productId)
                         }
                     )
                 }

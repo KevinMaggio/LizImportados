@@ -19,6 +19,7 @@ import com.refactoringlife.lizimportadosv2.features.man.presenter.screens.ManScr
 import com.refactoringlife.lizimportadosv2.features.woman.presenter.screens.WomanScreen
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
+import com.refactoringlife.lizimportadosv2.core.auth.AuthStateViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -26,7 +27,8 @@ fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     onGoogleSignInClick: (Intent) -> Unit = {},
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    authStateViewModel: AuthStateViewModel
 ) {
     AnimatedNavHost(
         navController = navController,
@@ -63,7 +65,7 @@ fun AppNavHost(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            CartScreen()
+            CartScreen(authStateViewModel = authStateViewModel)
         }
 
         composable(
@@ -85,7 +87,11 @@ fun AppNavHost(
         ) { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category")
             val id = backStackEntry.arguments?.getString("id")
-            DetailsScreen(category = category, id = id)
+            DetailsScreen(
+                category = category, 
+                id = id,
+                authStateViewModel = authStateViewModel
+            )
         }
 
         composable(
