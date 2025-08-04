@@ -38,28 +38,37 @@ fun DetailsScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        state.isLoading.isTrue {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        state.error?.isValid { errorMessage ->
-            Text(
-                text = errorMessage,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        state.mainProduct?.let {
-            val allProducts = listOf(state.mainProduct!!) + state.relatedProducts
-            DetailsDataView(products = allProducts)
-        }
-        if (state.relatedProducts.isNotEmpty()) {
-            DetailsDataView(products = state.relatedProducts)
-        } else {
-            Text(
-                text = stringResource(R.string.no_product),
-                modifier = Modifier.align(Alignment.Center)
-            )
+        when {
+            state.isLoading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            state.error?.isNotEmpty() == true -> {
+                Text(
+                    text = state.error!!,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            state.mainProduct != null -> {
+                val allProducts = listOf(state.mainProduct!!) + state.relatedProducts
+                DetailsDataView(
+                    products = allProducts,
+                    onProductPageChanged = viewModel::onProductPageChanged
+                )
+            }
+            state.relatedProducts.isNotEmpty() -> {
+                DetailsDataView(
+                    products = state.relatedProducts,
+                    onProductPageChanged = viewModel::onProductPageChanged
+                )
+            }
+            else -> {
+                Text(
+                    text = stringResource(R.string.no_product),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
     }
 }

@@ -137,7 +137,7 @@ class ProductService(
         }
     }
 
-    // Obtener productos relacionados (paginación inicial)
+    // Obtener productos aleatorios (paginación inicial)
     suspend fun getRelatedProducts(limit: Int = 10, excludeProductId: String? = null): List<ProductResponse> {
         return try {
             val query = firestore.collection("products")

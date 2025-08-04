@@ -7,7 +7,6 @@ import com.refactoringlife.lizimportadosv2.features.details.domain.usecase.GetDe
 import com.refactoringlife.lizimportadosv2.features.details.data.repository.DetailsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
@@ -18,46 +17,41 @@ class DetailsViewModel(
     private val _state = MutableStateFlow(DetailsUiState())
     val state = _state.asStateFlow()
 
-    init {
-        // Observar el Flow del repository
-        viewModelScope.launch {
-            repository.productsFlow.collectLatest { products ->
-                _state.value = _state.value.copy(
-                    relatedProducts = products,
-                    hasMoreProducts = repository.hasMoreProducts(),
-                    isLoadingMore = repository.isLoading()
-                )
-            }
-        }
-    }
-
     fun loadProductDetails(productId: String) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
 
-            // Cargar producto principal
-            when (val productResult = getDetailsUseCase.getProductDetails(productId)) {
-                is Either.Success -> {
-                    _state.value = _state.value.copy(
-                        mainProduct = productResult.value,
-                        isLoading = false
-                    )
-                    
-                    // Cargar productos relacionados
-                    repository.loadInitialProducts()
+            try {
+                // Cargar producto principal
+                when (val productResult = getDetailsUseCase.getProductDetails(productId)) {
+                    is Either.Success -> {
+                        val mainProduct = productResult.value
+                        _state.value = _state.value.copy(
+                            mainProduct = mainProduct,
+                            isLoading = false
+                        )
+                        
+                        // Cargar productos aleatorios
+                        loadRandomProducts(productId)
+                    }
+                    is Either.Error -> {
+                        _state.value = _state.value.copy(
+                            error = productResult.value,
+                            isLoading = false
+                        )
+                    }
+                    else -> {
+                        _state.value = _state.value.copy(
+                            error = "Error desconocido",
+                            isLoading = false
+                        )
+                    }
                 }
-                is Either.Error -> {
-                    _state.value = _state.value.copy(
-                        error = productResult.value,
-                        isLoading = false
-                    )
-                }
-                else -> {
-                    _state.value = _state.value.copy(
-                        error = "Error desconocido",
-                        isLoading = false
-                    )
-                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    error = "Error al cargar detalles: ${e.message}",
+                    isLoading = false
+                )
             }
         }
     }
@@ -67,17 +61,11 @@ class DetailsViewModel(
             _state.value = _state.value.copy(isLoading = true, error = null, mainProduct = null)
             
             try {
-                repository.loadProductsByCategory(category)
-                
-                val products = repository.getCurrentProducts()
-                if (products.isEmpty()) {
-                    _state.value = _state.value.copy(
-                        error = "No se encontraron productos para la categoría: $category",
-                        isLoading = false
-                    )
-                } else {
-                    _state.value = _state.value.copy(isLoading = false)
-                }
+                val products = repository.loadProductsByCategory(category)
+                _state.value = _state.value.copy(
+                    relatedProducts = products,
+                    isLoading = false
+                )
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
                     error = "Error al cargar productos: ${e.message}",
@@ -87,26 +75,50 @@ class DetailsViewModel(
         }
     }
 
+    private suspend fun loadRandomProducts(excludeProductId: String) {
+        try {
+            val products = repository.loadRandomProducts(excludeProductId)
+            _state.value = _state.value.copy(relatedProducts = products)
+        } catch (e: Exception) {
+            _state.value = _state.value.copy(
+                error = "Error al cargar productos relacionados: ${e.message}"
+            )
+        }
+    }
+
     fun onProductPageChanged(currentIndex: Int) {
         viewModelScope.launch {
-            // Si no hay producto principal, cargar más productos por categoría
-            if (state.value.mainProduct == null) {
-                // TODO: Necesitamos pasar la categoría actual al repository
-                // Por ahora usamos el método existente
-                repository.loadMoreProductsIfNeeded(currentIndex)
-            } else {
-                // Si hay producto principal, cargar productos relacionados
-                repository.loadMoreProductsIfNeeded(currentIndex)
+            // Cargar más productos cuando el usuario llegue al 3er elemento (índice 2)
+            if (currentIndex >= 2 && !_state.value.isLoadingMore && _state.value.hasMoreProducts) {
+                _state.value = _state.value.copy(isLoadingMore = true)
+                
+                try {
+                    val currentProducts = _state.value.relatedProducts
+                    val newProducts = repository.loadMoreProducts(currentIndex)
+                    
+                    if (newProducts.isNotEmpty()) {
+                        _state.value = _state.value.copy(
+                            relatedProducts = currentProducts + newProducts,
+                            isLoadingMore = false
+                        )
+                    } else {
+                        _state.value = _state.value.copy(
+                            hasMoreProducts = false,
+                            isLoadingMore = false
+                        )
+                    }
+                } catch (e: Exception) {
+                    _state.value = _state.value.copy(
+                        isLoadingMore = false,
+                        error = "Error al cargar más productos: ${e.message}"
+                    )
+                }
             }
         }
     }
 
     fun clearError() {
         _state.value = _state.value.copy(error = null)
-    }
-
-    fun setError(errorMessage: String) {
-        _state.value = _state.value.copy(error = errorMessage, isLoading = false)
     }
 
     override fun onCleared() {

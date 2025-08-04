@@ -6,9 +6,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.refactoringlife.lizimportadosv2.core.dto.response.ProductResponse
 import com.refactoringlife.lizimportadosv2.core.network.service.ProductException
 import com.refactoringlife.lizimportadosv2.core.network.service.ProductService
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class DetailsRepository private constructor(
     private val service: ProductService = ProductService()
@@ -24,20 +21,19 @@ class DetailsRepository private constructor(
         }
     }
 
-    // Flow local para almacenar productos en memoria
-    private val _productsFlow = MutableStateFlow<List<ProductResponse>>(emptyList())
-    val productsFlow: StateFlow<List<ProductResponse>> = _productsFlow.asStateFlow()
-
     // Control de paginación
     private var lastDocument: DocumentSnapshot? = null
     private var hasMoreProducts = true
-    private var isLoading = false
     private var currentProductId: String? = null
+    
+    // Control de productos ya cargados para evitar duplicados
+    private val loadedProductIds = mutableSetOf<String>()
 
     suspend fun getProductById(id: String): Either<ProductResponse, String> {
         return try {
             val response = service.getProductById(id)
-            currentProductId = id // Guardamos el ID del producto principal
+            currentProductId = id
+            loadedProductIds.add(id) // Agregar el producto principal
             Either.Success(response)
         } catch (e: ProductException) {
             Log.e("DetailsRepository", "Error obteniendo producto por ID", e)
@@ -45,110 +41,78 @@ class DetailsRepository private constructor(
         }
     }
 
-    suspend fun loadInitialProducts() {
-        if (isLoading) return
+    suspend fun loadProductsByCategory(category: String): List<ProductResponse> {
+        lastDocument = null
+        hasMoreProducts = true
+        loadedProductIds.clear() // Limpiar productos cargados
         
-        isLoading = true
-        try {
-            // Filtramos directamente en Firestore para evitar traer el producto principal
-            val products = service.getRelatedProducts(limit = 10, excludeProductId = currentProductId)
+        return try {
+            val products = service.getProductsByCategory(category, limit = 10) // Traer más para filtrar
+            val filteredProducts = products.filter { !loadedProductIds.contains(it.id) }.take(2)
             
-            _productsFlow.value = products
-            hasMoreProducts = products.isNotEmpty()
-            Log.d("DetailsRepository", "✅ Cargados ${products.size} productos (excluyendo producto principal)")
+            // Agregar los productos cargados al set
+            filteredProducts.forEach { loadedProductIds.add(it.id) }
+            
+            hasMoreProducts = products.size >= 2
+            Log.d("DetailsRepository", "✅ Cargados ${filteredProducts.size} productos de categoría: $category")
+            filteredProducts
         } catch (e: Exception) {
-            Log.e("DetailsRepository", "❌ Error cargando productos iniciales", e)
-        } finally {
-            isLoading = false
+            Log.e("DetailsRepository", "❌ Error cargando productos por categoría: $category", e)
+            emptyList()
         }
     }
 
-    suspend fun loadMoreProductsIfNeeded(currentIndex: Int) {
-        // Cargar más productos cuando el usuario llegue al 8vo elemento
-        if (currentIndex >= 7 && hasMoreProducts && !isLoading) {
-            Log.d("DetailsRepository", "🔄 Cargando más productos desde índice $currentIndex")
-            loadMoreProducts()
-        }
-    }
-
-    private suspend fun loadMoreProducts() {
-        if (isLoading || !hasMoreProducts) return
+    suspend fun loadRandomProducts(excludeProductId: String): List<ProductResponse> {
+        currentProductId = excludeProductId
+        lastDocument = null
+        hasMoreProducts = true
+        loadedProductIds.clear() // Limpiar productos cargados
+        loadedProductIds.add(excludeProductId) // Agregar el producto principal
         
-        isLoading = true
-        try {
-            // Filtramos directamente en Firestore para evitar traer el producto principal
-            val newProducts = service.getMoreProducts(limit = 10, lastDocument, excludeProductId = currentProductId)
+        return try {
+            val products = service.getRelatedProducts(limit = 10, excludeProductId = excludeProductId) // Traer más para filtrar
+            val filteredProducts = products.filter { !loadedProductIds.contains(it.id) }.take(2)
             
-            if (newProducts.isNotEmpty()) {
-                val currentProducts = _productsFlow.value
-                _productsFlow.value = currentProducts + newProducts
-                Log.d("DetailsRepository", "✅ Agregados ${newProducts.size} productos más. Total: ${_productsFlow.value.size}")
+            // Agregar los productos cargados al set
+            filteredProducts.forEach { loadedProductIds.add(it.id) }
+            
+            hasMoreProducts = products.size >= 2
+            Log.d("DetailsRepository", "✅ Cargados ${filteredProducts.size} productos aleatorios")
+            filteredProducts
+        } catch (e: Exception) {
+            Log.e("DetailsRepository", "❌ Error cargando productos aleatorios", e)
+            emptyList()
+        }
+    }
+
+    suspend fun loadMoreProducts(currentIndex: Int): List<ProductResponse> {
+        if (!hasMoreProducts) return emptyList()
+        
+        return try {
+            val newProducts = service.getMoreProducts(limit = 10, lastDocument, currentProductId) // Traer más para filtrar
+            val filteredProducts = newProducts.filter { !loadedProductIds.contains(it.id) }.take(2)
+            
+            // Agregar los productos cargados al set
+            filteredProducts.forEach { loadedProductIds.add(it.id) }
+            
+            if (filteredProducts.isNotEmpty()) {
+                Log.d("DetailsRepository", "✅ Agregados ${filteredProducts.size} productos más (sin duplicados)")
             } else {
                 hasMoreProducts = false
                 Log.d("DetailsRepository", "📭 No hay más productos disponibles")
             }
+            
+            filteredProducts
         } catch (e: Exception) {
             Log.e("DetailsRepository", "❌ Error cargando más productos", e)
-        } finally {
-            isLoading = false
+            emptyList()
         }
     }
 
     fun clearProducts() {
-        _productsFlow.value = emptyList()
-        lastDocument = null
-        hasMoreProducts = true
-        isLoading = false
-        currentProductId = null
-    }
-
-    fun getCurrentProducts(): List<ProductResponse> = _productsFlow.value
-
-    fun hasMoreProducts(): Boolean = hasMoreProducts
-
-    fun isLoading(): Boolean = isLoading
-
-    suspend fun loadProductsByCategory(category: String) {
-        if (isLoading) return
-        
-        isLoading = true
-        _productsFlow.value = emptyList()
         lastDocument = null
         hasMoreProducts = true
         currentProductId = null
-        
-        try {
-            val products = service.getProductsByCategory(category, limit = 10)
-            _productsFlow.value = products
-            hasMoreProducts = products.isNotEmpty()
-        } catch (e: Exception) {
-            _productsFlow.value = emptyList()
-            hasMoreProducts = false
-            throw e
-        } finally {
-            isLoading = false
-        }
-    }
-
-    suspend fun loadMoreProductsByCategory(category: String) {
-        if (isLoading || !hasMoreProducts) return
-        
-        isLoading = true
-        try {
-            val newProducts = service.getMoreProductsByCategory(category, limit = 10, lastDocument)
-            
-            if (newProducts.isNotEmpty()) {
-                val currentProducts = _productsFlow.value
-                _productsFlow.value = currentProducts + newProducts
-                Log.d("DetailsRepository", "✅ Agregados ${newProducts.size} productos más de categoría: $category. Total: ${_productsFlow.value.size}")
-            } else {
-                hasMoreProducts = false
-                Log.d("DetailsRepository", "📭 No hay más productos disponibles para la categoría: $category")
-            }
-        } catch (e: Exception) {
-            Log.e("DetailsRepository", "❌ Error cargando más productos por categoría: $category", e)
-        } finally {
-            isLoading = false
-        }
+        loadedProductIds.clear() // Limpiar productos cargados
     }
 } 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.background
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,12 +33,21 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
 
 @Composable
-fun DetailsDataView(products: List<ProductResponse>) {
+fun DetailsDataView(
+    products: List<ProductResponse>,
+    onProductPageChanged: (Int) -> Unit = {}
+) {
     val productPagerState = rememberPagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { products.size }
     )
+    
+    // Detectar cambios de página para cargar más productos
+    LaunchedEffect(productPagerState.currentPage) {
+        onProductPageChanged(productPagerState.currentPage)
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -100,8 +110,7 @@ fun DetailsDataView(products: List<ProductResponse>) {
                                 .background(color)
                                 .padding(2.dp)
                         )
-                        if (index < (product.images?.size
-                                ?: 0) - 1
+                        if (index < (product.images?.size ?: 0) - 1
                         ) Spacer(modifier = Modifier.width(6.dp))
                     }
                 }
