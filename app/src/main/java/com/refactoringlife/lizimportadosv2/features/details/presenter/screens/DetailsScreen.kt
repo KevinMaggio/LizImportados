@@ -18,6 +18,7 @@ import com.refactoringlife.lizimportadosv2.core.utils.isTrue
 import com.refactoringlife.lizimportadosv2.core.utils.isValid
 import com.refactoringlife.lizimportadosv2.features.details.presenter.viewmodel.DetailsViewModel
 import com.refactoringlife.lizimportadosv2.features.details.presenter.views.DetailsDataView
+import android.util.Log
 
 @Composable
 fun DetailsScreen(
@@ -28,11 +29,15 @@ fun DetailsScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(id, category) {
-        if (id.isNullOrEmpty() || id == EMPTY) {
+        Log.d("DetailsScreen", "🎯 Navegación recibida - Category: '$category', ID: '$id'")
+        
+        if (id.isNullOrEmpty() || id == EMPTY || id == "empty") {
+            Log.d("DetailsScreen", "📋 Cargando por categoría: '$category'")
             category?.let { cat ->
                 viewModel.loadProductsByCategory(cat)
             }
         } else {
+            Log.d("DetailsScreen", "🆔 Cargando por ID: '$id'")
             viewModel.loadProductDetails(id)
         }
     }

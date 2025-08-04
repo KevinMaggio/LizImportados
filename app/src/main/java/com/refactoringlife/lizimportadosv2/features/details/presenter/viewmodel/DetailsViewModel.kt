@@ -8,6 +8,7 @@ import com.refactoringlife.lizimportadosv2.features.details.data.repository.Deta
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import android.util.Log
 
 class DetailsViewModel(
     private val getDetailsUseCase: GetDetailsUseCase = GetDetailsUseCase(),
@@ -58,15 +59,18 @@ class DetailsViewModel(
 
     fun loadProductsByCategory(category: String) {
         viewModelScope.launch {
+            Log.d("DetailsViewModel", "🚀 Iniciando carga por categoría: '$category'")
             _state.value = _state.value.copy(isLoading = true, error = null, mainProduct = null)
             
             try {
                 val products = repository.loadProductsByCategory(category)
+                Log.d("DetailsViewModel", "✅ Carga completada. Productos obtenidos: ${products.size}")
                 _state.value = _state.value.copy(
                     relatedProducts = products,
                     isLoading = false
                 )
             } catch (e: Exception) {
+                Log.e("DetailsViewModel", "❌ Error en carga por categoría: '$category'", e)
                 _state.value = _state.value.copy(
                     error = "Error al cargar productos: ${e.message}",
                     isLoading = false

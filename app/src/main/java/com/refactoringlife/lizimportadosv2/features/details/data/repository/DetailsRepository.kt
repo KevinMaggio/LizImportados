@@ -25,6 +25,7 @@ class DetailsRepository private constructor(
     private var lastDocument: DocumentSnapshot? = null
     private var hasMoreProducts = true
     private var currentProductId: String? = null
+    private var currentCategory: String? = null // Agregar control de categoría actual
     
     // Control de productos ya cargados para evitar duplicados
     private val loadedProductIds = mutableSetOf<String>()
@@ -33,6 +34,7 @@ class DetailsRepository private constructor(
         return try {
             val response = service.getProductById(id)
             currentProductId = id
+            currentCategory = null // Resetear categoría
             loadedProductIds.add(id) // Agregar el producto principal
             Either.Success(response)
         } catch (e: ProductException) {
@@ -44,26 +46,33 @@ class DetailsRepository private constructor(
     suspend fun loadProductsByCategory(category: String): List<ProductResponse> {
         lastDocument = null
         hasMoreProducts = true
+        currentCategory = category // Guardar categoría actual
+        currentProductId = null // Resetear producto principal
         loadedProductIds.clear() // Limpiar productos cargados
+        
+        Log.d("DetailsRepository", "🔍 Buscando productos por categoría: '$category'")
         
         return try {
             val products = service.getProductsByCategory(category, limit = 10) // Traer más para filtrar
+            Log.d("DetailsRepository", "📦 Encontrados ${products.size} productos de categoría '$category'")
+            
             val filteredProducts = products.filter { !loadedProductIds.contains(it.id) }.take(2)
             
             // Agregar los productos cargados al set
             filteredProducts.forEach { loadedProductIds.add(it.id) }
             
             hasMoreProducts = products.size >= 2
-            Log.d("DetailsRepository", "✅ Cargados ${filteredProducts.size} productos de categoría: $category")
+            Log.d("DetailsRepository", "✅ Cargados ${filteredProducts.size} productos de categoría: '$category'")
             filteredProducts
         } catch (e: Exception) {
-            Log.e("DetailsRepository", "❌ Error cargando productos por categoría: $category", e)
+            Log.e("DetailsRepository", "❌ Error cargando productos por categoría: '$category'", e)
             emptyList()
         }
     }
 
     suspend fun loadRandomProducts(excludeProductId: String): List<ProductResponse> {
         currentProductId = excludeProductId
+        currentCategory = null // Resetear categoría
         lastDocument = null
         hasMoreProducts = true
         loadedProductIds.clear() // Limpiar productos cargados
@@ -89,7 +98,16 @@ class DetailsRepository private constructor(
         if (!hasMoreProducts) return emptyList()
         
         return try {
-            val newProducts = service.getMoreProducts(limit = 10, lastDocument, currentProductId) // Traer más para filtrar
+            val newProducts = if (currentCategory != null) {
+                // Si hay categoría actual, cargar más productos de esa categoría
+                Log.d("DetailsRepository", "🔄 Cargando más productos de categoría: '$currentCategory'")
+                service.getMoreProductsByCategory(currentCategory!!, limit = 10, lastDocument)
+            } else {
+                // Si no hay categoría, cargar productos aleatorios
+                Log.d("DetailsRepository", "🔄 Cargando productos aleatorios")
+                service.getMoreProducts(limit = 10, lastDocument, currentProductId)
+            }
+            
             val filteredProducts = newProducts.filter { !loadedProductIds.contains(it.id) }.take(2)
             
             // Agregar los productos cargados al set
@@ -113,6 +131,7 @@ class DetailsRepository private constructor(
         lastDocument = null
         hasMoreProducts = true
         currentProductId = null
+        currentCategory = null // Limpiar categoría actual
         loadedProductIds.clear() // Limpiar productos cargados
     }
 } 
