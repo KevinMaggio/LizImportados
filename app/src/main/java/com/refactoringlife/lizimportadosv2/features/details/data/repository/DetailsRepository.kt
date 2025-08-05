@@ -53,15 +53,21 @@ class DetailsRepository private constructor(
         Log.d("DetailsRepository", "🔍 Buscando productos por categoría: '$category'")
         
         return try {
-            val products = service.getProductsByCategory(category, limit = 10) // Traer más para filtrar
-            Log.d("DetailsRepository", "📦 Encontrados ${products.size} productos de categoría '$category'")
+            // Primero traer productos sin filtro de disponibilidad
+            val allProducts = service.getProductsByCategoryForScroll(category, limit = 3)
+            Log.d("DetailsRepository", "📊 Total de productos encontrados en categoría '$category': ${allProducts.size}")
             
-            val filteredProducts = products.filter { !loadedProductIds.contains(it.id) }.take(2)
+            // Filtrar por disponibilidad
+            val availableProducts = allProducts.filter { it.isAvailable == true }
+            Log.d("DetailsRepository", "✅ Productos disponibles en categoría '$category': ${availableProducts.size}")
+            
+            val filteredProducts = availableProducts.filter { !loadedProductIds.contains(it.id) }.take(3)
             
             // Agregar los productos cargados al set
             filteredProducts.forEach { loadedProductIds.add(it.id) }
             
-            hasMoreProducts = products.size >= 2
+            // Si encontramos productos disponibles, asumimos que puede haber más
+            hasMoreProducts = availableProducts.isNotEmpty()
             Log.d("DetailsRepository", "✅ Cargados ${filteredProducts.size} productos de categoría: '$category'")
             filteredProducts
         } catch (e: Exception) {
@@ -79,13 +85,22 @@ class DetailsRepository private constructor(
         loadedProductIds.add(excludeProductId) // Agregar el producto principal
         
         return try {
-            val products = service.getRelatedProducts(limit = 10, excludeProductId = excludeProductId) // Traer más para filtrar
-            val filteredProducts = products.filter { !loadedProductIds.contains(it.id) }.take(2)
+            // Primero traer productos sin filtro de disponibilidad
+            val allProducts = service.getRelatedProductsForScroll(limit = 3, excludeProductId = excludeProductId)
+            Log.d("DetailsRepository", "📊 Total de productos encontrados: ${allProducts.size}")
+            
+            // Filtrar por disponibilidad
+            val availableProducts = allProducts.filter { it.isAvailable == true }
+            Log.d("DetailsRepository", "✅ Productos disponibles: ${availableProducts.size}")
+            
+            val filteredProducts = availableProducts.filter { !loadedProductIds.contains(it.id) }.take(3)
+            Log.d("DetailsRepository", "📦 Productos filtrados para mostrar: ${filteredProducts.size}")
             
             // Agregar los productos cargados al set
             filteredProducts.forEach { loadedProductIds.add(it.id) }
             
-            hasMoreProducts = products.size >= 2
+            // Si encontramos productos disponibles, asumimos que puede haber más
+            hasMoreProducts = availableProducts.isNotEmpty()
             Log.d("DetailsRepository", "✅ Cargados ${filteredProducts.size} productos aleatorios")
             filteredProducts
         } catch (e: Exception) {
@@ -94,33 +109,28 @@ class DetailsRepository private constructor(
         }
     }
 
+    // Cargar más productos cuando el usuario hace scroll
     suspend fun loadMoreProducts(currentIndex: Int): List<ProductResponse> {
-        if (!hasMoreProducts) return emptyList()
+        Log.d("DetailsRepository", "📱 Cargando más productos. Índice actual: $currentIndex")
         
         return try {
             val newProducts = if (currentCategory != null) {
-                // Si hay categoría actual, cargar más productos de esa categoría
-                Log.d("DetailsRepository", "🔄 Cargando más productos de categoría: '$currentCategory'")
-                service.getMoreProductsByCategory(currentCategory!!, limit = 10, lastDocument)
+                // Si estamos en una categoría específica, cargar más de esa categoría
+                val allProducts = service.getProductsByCategoryForScroll(currentCategory!!, limit = 3)
+                val availableProducts = allProducts.filter { it.isAvailable == true }
+                availableProducts.filter { !loadedProductIds.contains(it.id) }.take(3)
             } else {
                 // Si no hay categoría, cargar productos aleatorios
-                Log.d("DetailsRepository", "🔄 Cargando productos aleatorios")
-                service.getMoreProducts(limit = 10, lastDocument, currentProductId)
+                val allProducts = service.getRelatedProductsForScroll(limit = 3, excludeProductId = currentProductId)
+                val availableProducts = allProducts.filter { it.isAvailable == true }
+                availableProducts.filter { !loadedProductIds.contains(it.id) }.take(3)
             }
             
-            val filteredProducts = newProducts.filter { !loadedProductIds.contains(it.id) }.take(2)
+            // Agregar los nuevos productos al set
+            newProducts.forEach { loadedProductIds.add(it.id) }
             
-            // Agregar los productos cargados al set
-            filteredProducts.forEach { loadedProductIds.add(it.id) }
-            
-            if (filteredProducts.isNotEmpty()) {
-                Log.d("DetailsRepository", "✅ Agregados ${filteredProducts.size} productos más (sin duplicados)")
-            } else {
-                hasMoreProducts = false
-                Log.d("DetailsRepository", "📭 No hay más productos disponibles")
-            }
-            
-            filteredProducts
+            Log.d("DetailsRepository", "✅ Cargados ${newProducts.size} productos adicionales")
+            newProducts
         } catch (e: Exception) {
             Log.e("DetailsRepository", "❌ Error cargando más productos", e)
             emptyList()
@@ -133,5 +143,10 @@ class DetailsRepository private constructor(
         currentProductId = null
         currentCategory = null // Limpiar categoría actual
         loadedProductIds.clear() // Limpiar productos cargados
+    }
+
+    // Obtener el estado de si hay más productos disponibles
+    fun hasMoreProducts(): Boolean {
+        return hasMoreProducts
     }
 } 

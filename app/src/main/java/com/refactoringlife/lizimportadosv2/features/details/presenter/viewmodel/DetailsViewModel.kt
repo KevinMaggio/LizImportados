@@ -59,18 +59,16 @@ class DetailsViewModel(
 
     fun loadProductsByCategory(category: String) {
         viewModelScope.launch {
-            Log.d("DetailsViewModel", "🚀 Iniciando carga por categoría: '$category'")
             _state.value = _state.value.copy(isLoading = true, error = null, mainProduct = null)
             
             try {
                 val products = repository.loadProductsByCategory(category)
-                Log.d("DetailsViewModel", "✅ Carga completada. Productos obtenidos: ${products.size}")
                 _state.value = _state.value.copy(
                     relatedProducts = products,
-                    isLoading = false
+                    isLoading = false,
+                    hasMoreProducts = repository.hasMoreProducts()
                 )
             } catch (e: Exception) {
-                Log.e("DetailsViewModel", "❌ Error en carga por categoría: '$category'", e)
                 _state.value = _state.value.copy(
                     error = "Error al cargar productos: ${e.message}",
                     isLoading = false
@@ -82,7 +80,10 @@ class DetailsViewModel(
     private suspend fun loadRandomProducts(excludeProductId: String) {
         try {
             val products = repository.loadRandomProducts(excludeProductId)
-            _state.value = _state.value.copy(relatedProducts = products)
+            _state.value = _state.value.copy(
+                relatedProducts = products,
+                hasMoreProducts = repository.hasMoreProducts()
+            )
         } catch (e: Exception) {
             _state.value = _state.value.copy(
                 error = "Error al cargar productos relacionados: ${e.message}"
@@ -92,17 +93,20 @@ class DetailsViewModel(
 
     fun onProductPageChanged(currentIndex: Int) {
         viewModelScope.launch {
-            // Cargar más productos cuando el usuario llegue al 3er elemento (índice 2)
-            if (currentIndex >= 2 && !_state.value.isLoadingMore && _state.value.hasMoreProducts) {
+            val currentProducts = _state.value.relatedProducts
+            val lastIndex = currentProducts.size - 1
+            
+            // Cargar más productos cuando el usuario llegue al último elemento del array actual
+            if (currentIndex >= lastIndex && !_state.value.isLoadingMore && repository.hasMoreProducts()) {
                 _state.value = _state.value.copy(isLoadingMore = true)
                 
                 try {
-                    val currentProducts = _state.value.relatedProducts
                     val newProducts = repository.loadMoreProducts(currentIndex)
                     
                     if (newProducts.isNotEmpty()) {
+                        val updatedProducts = currentProducts + newProducts
                         _state.value = _state.value.copy(
-                            relatedProducts = currentProducts + newProducts,
+                            relatedProducts = updatedProducts,
                             isLoadingMore = false
                         )
                     } else {

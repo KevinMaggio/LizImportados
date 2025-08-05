@@ -141,6 +141,50 @@ class ProductService(
     suspend fun getRelatedProducts(limit: Int = 10, excludeProductId: String? = null): List<ProductResponse> {
         return try {
             val query = firestore.collection("products")
+                .whereEqualTo("is_available", true)
+                .limit(limit.toLong())
+            
+            // Si tenemos un ID para excluir, lo filtramos en Firestore
+            val finalQuery = if (excludeProductId != null) {
+                query.whereNotEqualTo("id", excludeProductId)
+            } else {
+                query
+            }
+            
+            val snapshot = finalQuery.get().await()
+            snapshot.documents.mapNotNull { doc ->
+                try {
+                    ProductResponse(
+                        id = doc.getString("id") ?: "",
+                        name = doc.getString("name"),
+                        description = doc.getString("description"),
+                        size = doc.getString("size"),
+                        brand = doc.getString("brand"),
+                        categories = doc.get("categories") as? List<String>,
+                        comboId = doc.get("combo_id") as? List<String>,
+                        comboPrice = doc.getLong("combo_price")?.toInt(),
+                        gender = doc.getString("gender"),
+                        images = doc.get("images") as? List<String>,
+                        isAvailable = doc.getBoolean("is_available"),
+                        isOffer = doc.getBoolean("is_offer"),
+                        offerPrice = doc.getLong("offer_price")?.toInt(),
+                        price = doc.getLong("price")?.toInt(),
+                        season = doc.getString("season"),
+                        circleOptionFilter = doc.getString("circle_option_filter")
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    // Obtener productos aleatorios sin filtro de disponibilidad (para scroll)
+    suspend fun getRelatedProductsForScroll(limit: Int = 10, excludeProductId: String? = null): List<ProductResponse> {
+        return try {
+            val query = firestore.collection("products")
                 .limit(limit.toLong())
             
             // Si tenemos un ID para excluir, lo filtramos en Firestore
@@ -184,6 +228,7 @@ class ProductService(
     suspend fun getMoreProducts(limit: Int = 10, lastDocument: DocumentSnapshot?, excludeProductId: String? = null): List<ProductResponse> {
         return try {
             val query = firestore.collection("products")
+                .whereEqualTo("is_available", true)
                 .limit(limit.toLong())
             
             // Si tenemos un ID para excluir, lo filtramos en Firestore
@@ -234,6 +279,7 @@ class ProductService(
         return try {
             val snapshot = firestore.collection("products")
                 .whereEqualTo("is_offer", true)
+                .whereEqualTo("is_available", true)
                 .get()
                 .await()
             
@@ -266,6 +312,7 @@ class ProductService(
         return try {
             val snapshot = firestore.collection("products")
                 .whereEqualTo("gender", "Hombre")
+                .whereEqualTo("is_available", true)
                 .get()
                 .await()
 
@@ -302,6 +349,7 @@ class ProductService(
         return try {
             val snapshot = firestore.collection("products")
                 .whereEqualTo("gender", "Mujer")
+                .whereEqualTo("is_available", true)
                 .get()
                 .await()
 
@@ -338,6 +386,7 @@ class ProductService(
         return try {
             val snapshot = firestore.collection("products")
                 .whereEqualTo("gender", "Niño")
+                .whereEqualTo("is_available", true)
                 .get()
                 .await()
 
@@ -373,6 +422,7 @@ class ProductService(
     suspend fun getProductsByCategory(category: String, limit: Int = 10): List<ProductResponse> {
         val snapshot = firestore.collection("products")
             .whereArrayContains("categories", category)
+            .whereEqualTo("is_available", true)
             .limit(limit.toLong())
             .get()
             .await()
@@ -411,6 +461,7 @@ class ProductService(
         return try {
             val query = firestore.collection("products")
                 .whereArrayContains("categories", category)
+                .whereEqualTo("is_available", true)
                 .limit(limit.toLong())
             
             val finalQuery = if (lastDocument != null) {
@@ -442,6 +493,39 @@ class ProductService(
             }
         } catch (e: Exception) {
             throw ProductException("Error al obtener más productos por categoría: $category", e)
+        }
+    }
+
+    suspend fun getProductsByCategoryForScroll(category: String, limit: Int = 10): List<ProductResponse> {
+        val snapshot = firestore.collection("products")
+            .whereArrayContains("categories", category)
+            .limit(limit.toLong())
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { doc ->
+            try {
+                ProductResponse(
+                    id = doc.getString("id") ?: "",
+                    name = doc.getString("name"),
+                    description = doc.getString("description"),
+                    size = doc.getString("size"),
+                    brand = doc.getString("brand"),
+                    categories = doc.get("categories") as? List<String>,
+                    comboId = doc.get("combo_id") as? List<String>,
+                    comboPrice = doc.getLong("combo_price")?.toInt(),
+                    gender = doc.getString("gender"),
+                    images = doc.get("images") as? List<String>,
+                    isAvailable = doc.getBoolean("is_available"),
+                    isOffer = doc.getBoolean("is_offer"),
+                    offerPrice = doc.getLong("offer_price")?.toInt(),
+                    price = doc.getLong("price")?.toInt(),
+                    season = doc.getString("season"),
+                    circleOptionFilter = doc.getString("circle_option_filter")
+                )
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 }
