@@ -101,24 +101,35 @@ class ProductService(
                 null
             }
             
+            // Verificar que ambos productos existan y estén disponibles
+            if (product1 == null || product2 == null || 
+                !(product1.isAvailable == true && product2.isAvailable == true)) {
+                Log.d("ProductService", "🚫 Combo $comboId no disponible: " +
+                    "Producto1 (${product1?.id}) disponible: ${product1?.isAvailable}, " +
+                    "Producto2 (${product2?.id}) disponible: ${product2?.isAvailable}")
+                return null
+            }
+
+            Log.d("ProductService", "✅ Combo $comboId disponible con productos: ${product1.id} y ${product2.id}")
+            
             // Crear ComboProductResponse para cada producto
             val firstProduct = ComboProductResponse(
-                id = product1?.id ?: product1Id,
-                brand = product1?.brand ?: "",
-                description = product1?.name ?: "",
-                image = product1?.images?.firstOrNull() ?: ""
+                id = product1.id,
+                brand = product1.brand ?: "",
+                description = product1.name ?: "",
+                image = product1.images?.firstOrNull() ?: ""
             )
             
             val secondProduct = ComboProductResponse(
-                id = product2?.id ?: product2Id,
-                brand = product2?.brand ?: "",
-                description = product2?.name ?: "",
-                image = product2?.images?.firstOrNull() ?: ""
+                id = product2.id,
+                brand = product2.brand ?: "",
+                description = product2.name ?: "",
+                image = product2.images?.firstOrNull() ?: ""
             )
             
             ComboResponse(
                 id = comboId,
-                available = available,
+                available = available && product1.isAvailable == true && product2.isAvailable == true,
                 oldPrice = oldPrice,
                 price = newPrice,
                 firstProduct = firstProduct,

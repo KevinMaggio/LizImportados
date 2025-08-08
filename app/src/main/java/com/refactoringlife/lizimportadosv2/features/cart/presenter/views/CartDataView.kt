@@ -34,7 +34,8 @@ fun CartDataView(
     product: ProductCartModel,
     cartStatus: CartResponse.CartStatus = CartResponse.CartStatus.AVAILABLE,
     onRemoveItem: (String) -> Unit = {},
-    onClearCart: () -> Unit = {}
+    onClearCart: () -> Unit = {},
+    onNavigateToHome: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val availableProducts = product.products.filter { it.available }
@@ -236,7 +237,7 @@ fun CartDataView(
             Spacer(Modifier.height(20.dp))
 
             LipsyMoreItems(
-                action = { /* TODO: Navegar a más productos */ }
+                action = onNavigateToHome
             )
 
             Spacer(Modifier.height(20.dp))

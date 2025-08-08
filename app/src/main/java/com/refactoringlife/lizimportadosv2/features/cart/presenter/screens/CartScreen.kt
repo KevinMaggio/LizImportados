@@ -22,7 +22,10 @@ import com.refactoringlife.lizimportadosv2.features.cart.presenter.views.CartDat
 import com.refactoringlife.lizimportadosv2.core.auth.AuthStateViewModel
 
 @Composable
-fun CartScreen(authStateViewModel: AuthStateViewModel) {
+fun CartScreen(
+    authStateViewModel: AuthStateViewModel,
+    onNavigateToHome: () -> Unit = {}
+) {
     val cartViewModel: CartViewModel = viewModel()
     val state by cartViewModel.state.collectAsState()
     val userEmail by authStateViewModel.userEmail.collectAsState()
@@ -63,7 +66,8 @@ fun CartScreen(authStateViewModel: AuthStateViewModel) {
                         userEmail?.let { email ->
                             cartViewModel.clearCart(email)
                         }
-                    }
+                    },
+                    onNavigateToHome = onNavigateToHome
                 )
             }
         }

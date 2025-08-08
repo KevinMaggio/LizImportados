@@ -65,7 +65,15 @@ fun AppNavHost(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            CartScreen(authStateViewModel = authStateViewModel)
+            CartScreen(
+                authStateViewModel = authStateViewModel,
+                onNavigateToHome = {
+                    navController.navigate(AppRoutes.HOME) {
+                        // Limpiar el back stack para que no pueda volver al carrito
+                        popUpTo(AppRoutes.HOME) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable(
