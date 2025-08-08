@@ -33,6 +33,8 @@ class CartService(
                         season = productMap["season"] as? String ?: "",
                         available = productMap["available"] as? Boolean ?: false,
                         price = (productMap["price"] as? Long)?.toInt() ?: 0,
+                        isOffer = productMap["isOffer"] as? Boolean ?: false,
+                        offerPrice = (productMap["offerPrice"] as? Long)?.toInt(),
                         addedAt = (productMap["addedAt"] as? Long) ?: System.currentTimeMillis()
                     )
                 } catch (e: Exception) {
@@ -40,12 +42,17 @@ class CartService(
                 }
             }
 
+            // Recalcular totales para asegurar consistencia
+            val (recalculatedSubTotal, recalculatedDiscount, recalculatedTotal) = calculateCartTotals(cartProducts)
+            
+            Log.d("CartService", "📊 Totales recalculados - SubTotal: $recalculatedSubTotal, Discount: $recalculatedDiscount, Total: $recalculatedTotal")
+            
             CartResponse(
                 email = email,
                 products = cartProducts,
-                subTotal = (cartDoc.getLong("subTotal") ?: 0).toInt(),
-                discount = (cartDoc.getLong("discount") ?: 0).toInt(),
-                total = (cartDoc.getLong("total") ?: 0).toInt(),
+                subTotal = recalculatedSubTotal,
+                discount = recalculatedDiscount,
+                total = recalculatedTotal,
                 lastUpdated = cartDoc.getLong("lastUpdated") ?: System.currentTimeMillis()
             )
         } catch (e: Exception) {
@@ -88,20 +95,21 @@ class CartService(
                 image = product.images?.firstOrNull() ?: "",
                 season = product.size ?: "",
                 available = product.isAvailable ?: false,
-                price = product.price ?: 0
+                price = product.price ?: 0,
+                isOffer = product.isOffer ?: false,
+                offerPrice = product.offerPrice
             )
             Log.d("CartService", "🆕 Nuevo item del carrito creado: ${newCartProduct.name}")
 
             // Agregar producto al carrito
             val updatedProducts = currentCart.products + newCartProduct
-            val newSubTotal = updatedProducts.sumOf { it.price }
-            val newTotal = newSubTotal // Por ahora sin descuento
+            val (newSubTotal, newDiscount, newTotal) = calculateCartTotals(updatedProducts)
 
             val updatedCart = CartResponse(
                 email = email,
                 products = updatedProducts,
                 subTotal = newSubTotal,
-                discount = 0,
+                discount = newDiscount,
                 total = newTotal
             )
 
@@ -122,14 +130,13 @@ class CartService(
             val currentCart = getCart(email) ?: return null
 
             val updatedProducts = currentCart.products.filter { it.productId != productId }
-            val newSubTotal = updatedProducts.sumOf { it.price }
-            val newTotal = newSubTotal
+            val (newSubTotal, newDiscount, newTotal) = calculateCartTotals(updatedProducts)
 
             val updatedCart = CartResponse(
                 email = email,
                 products = updatedProducts,
                 subTotal = newSubTotal,
-                discount = 0,
+                discount = newDiscount,
                 total = newTotal
             )
 
@@ -158,6 +165,34 @@ class CartService(
         }
     }
 
+    private fun calculateCartTotals(products: List<CartResponse.CartProductResponse>): Triple<Int, Int, Int> {
+        var subTotal = 0
+        var totalDiscount = 0
+        
+        Log.d("CartService", "🧮 Calculando totales para ${products.size} productos")
+        
+        products.forEach { product ->
+            // Subtotal siempre usa el precio original
+            subTotal += product.price
+            
+            // Calcular descuento si está en oferta
+            if (product.isOffer && product.offerPrice != null) {
+                val productDiscount = product.price - product.offerPrice
+                totalDiscount += productDiscount
+                Log.d("CartService", "🏷️ Producto en oferta: ${product.name} - Original: ${product.price}, Oferta: ${product.offerPrice}, Descuento: $productDiscount")
+            } else {
+                Log.d("CartService", "💰 Producto normal: ${product.name} - Precio: ${product.price}")
+            }
+        }
+        
+        // Total = Subtotal - Descuento
+        val total = subTotal - totalDiscount
+        
+        Log.d("CartService", "📊 Totales finales - SubTotal: $subTotal, Discount: $totalDiscount, Total: $total")
+        
+        return Triple(subTotal, totalDiscount, total)
+    }
+
     private suspend fun saveCart(cart: CartResponse) {
         val cartData = hashMapOf(
             "email" to cart.email,
@@ -169,6 +204,8 @@ class CartService(
                     "season" to product.season,
                     "available" to product.available,
                     "price" to product.price,
+                    "isOffer" to product.isOffer,
+                    "offerPrice" to product.offerPrice,
                     "addedAt" to product.addedAt
                 )
             },

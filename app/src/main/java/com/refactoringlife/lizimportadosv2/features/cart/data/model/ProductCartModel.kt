@@ -12,6 +12,8 @@ data class ProductCartModel (
         val name: String?,
         val season: String?,
         val available: Boolean,
-        val price: Int
+        val price: Int,
+        val isOffer: Boolean = false,
+        val offerPrice: Int? = null
     )
 }

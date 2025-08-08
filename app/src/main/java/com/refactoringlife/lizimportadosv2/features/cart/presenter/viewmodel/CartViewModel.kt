@@ -167,7 +167,9 @@ class CartViewModel(
                 name = product.name,
                 season = product.season,
                 available = product.available,
-                price = product.price
+                price = product.price,
+                isOffer = product.isOffer,
+                offerPrice = product.offerPrice
             )
         }
 

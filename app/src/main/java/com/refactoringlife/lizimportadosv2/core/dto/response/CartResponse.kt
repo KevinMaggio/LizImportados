@@ -15,6 +15,8 @@ data class CartResponse(
         val season: String,
         val available: Boolean,
         val price: Int,
+        val isOffer: Boolean = false,
+        val offerPrice: Int? = null,
         val addedAt: Long = System.currentTimeMillis()
     )
 } 

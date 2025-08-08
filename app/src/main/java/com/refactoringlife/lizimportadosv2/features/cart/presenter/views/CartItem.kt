@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -99,12 +100,34 @@ fun CartItem(
             )
         }
 
-        Text(
-            text = "$" + cartItemModel.price.toString(),
-            fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-            fontSize = 12.sp,
-            color = TextPrimary,
-            modifier = Modifier.padding(end = 20.dp)
-        )
+        Column(
+            modifier = Modifier.padding(end = 20.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            if (cartItemModel.isOffer && cartItemModel.offerPrice != null) {
+                // Mostrar precio tachado y precio de oferta
+                Text(
+                    text = "$" + cartItemModel.price.toString(),
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    fontSize = 10.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(bottom = 2.dp)
+                )
+                Text(
+                    text = "$" + cartItemModel.offerPrice.toString(),
+                    fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                    fontSize = 14.sp,
+                    color = TextBlue
+                )
+            } else {
+                // Mostrar precio normal
+                Text(
+                    text = "$" + cartItemModel.price.toString(),
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    fontSize = 12.sp,
+                    color = TextPrimary
+                )
+            }
+        }
     }
 }

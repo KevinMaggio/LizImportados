@@ -43,7 +43,17 @@ fun CartDataView(
             appendLine()
             appendLine("*Productos:*")
             availableProducts.forEach { item ->
-                appendLine("• ${item.name} - Talle: ${item.season} - $${item.price}")
+                val displayPrice = if (item.isOffer && item.offerPrice != null) {
+                    item.offerPrice
+                } else {
+                    item.price
+                }
+                val priceText = if (item.isOffer && item.offerPrice != null) {
+                    "$${item.price} → $$displayPrice"
+                } else {
+                    "$$displayPrice"
+                }
+                appendLine("• ${item.name} - Talle: ${item.season} - $priceText")
             }
             appendLine()
             appendLine("*Resumen:*")

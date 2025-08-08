@@ -46,22 +46,24 @@ fun TotalSection(
             )
         }
 
-        Row(Modifier.fillMaxWidth()) {
-            Text(
-                text = "Descuento",
-                fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                fontSize = 10.sp,
-                color = TextPrimary
-            )
+        if (discount > 0) {
+            Row(Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Descuento",
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    fontSize = 10.sp,
+                    color = TextPrimary
+                )
 
-            Spacer(Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
 
-            Text(
-                text = "$${discount}",
-                fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                fontSize = 10.sp,
-                color = TextPrimary
-            )
+                Text(
+                    text = "$${discount}",
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    fontSize = 10.sp,
+                    color = TextPrimary
+                )
+            }
         }
 
         Row(Modifier.fillMaxWidth()) {
