@@ -26,12 +26,14 @@ class CartService(
             }
 
             val productIds = cartDoc.get("productIds") as? List<String> ?: emptyList()
+            val comboIds = cartDoc.get("comboIds") as? List<String> ?: emptyList()
             val statusString = cartDoc.getString("status") ?: "AVAILABLE"
             val status = CartResponse.CartStatus.valueOf(statusString)
 
             CartResponse(
                 email = email,
                 productIds = productIds,
+                comboIds = comboIds,
                 status = status,
                 lastUpdated = cartDoc.getLong("lastUpdated") ?: System.currentTimeMillis()
             )
@@ -92,22 +94,92 @@ class CartService(
                 }
             }
 
-            // Remover productos inválidos del carrito si los hay
-            if (invalidProductIds.isNotEmpty()) {
-                Log.d("CartService", "🧹 Removiendo ${invalidProductIds.size} productos inválidos del carrito")
+            // Obtener combos completos y validar disponibilidad
+            val combos = mutableListOf<CartFullResponse.CartComboResponse>()
+            val invalidComboIds = mutableListOf<String>()
+            
+            cart.comboIds.forEach { comboId ->
+                try {
+                    val combo = productService.getComboById(comboId)
+                    
+                    // Validar que el combo existe y está disponible
+                    if (combo.available) {
+                        // Verificar que ambos productos del combo estén disponibles
+                        val firstProduct = try {
+                            productService.getProductById(combo.firstProduct.id)
+                        } catch (e: Exception) {
+                            null
+                        }
+                        
+                        val secondProduct = try {
+                            productService.getProductById(combo.secondProduct.id)
+                        } catch (e: Exception) {
+                            null
+                        }
+                        
+                        if (firstProduct?.isAvailable == true && secondProduct?.isAvailable == true) {
+                            val cartCombo = CartFullResponse.CartComboResponse(
+                                comboId = combo.id,
+                                name = "Combo ${combo.firstProduct.brand} + ${combo.secondProduct.brand}",
+                                firstProduct = CartFullResponse.CartProductResponse(
+                                    productId = firstProduct.id,
+                                    name = firstProduct.name ?: "",
+                                    image = firstProduct.images?.firstOrNull() ?: "",
+                                    season = firstProduct.size ?: "",
+                                    available = true,
+                                    price = firstProduct.price ?: 0,
+                                    isOffer = firstProduct.isOffer ?: false,
+                                    offerPrice = firstProduct.offerPrice
+                                ),
+                                secondProduct = CartFullResponse.CartProductResponse(
+                                    productId = secondProduct.id,
+                                    name = secondProduct.name ?: "",
+                                    image = secondProduct.images?.firstOrNull() ?: "",
+                                    season = secondProduct.size ?: "",
+                                    available = true,
+                                    price = secondProduct.price ?: 0,
+                                    isOffer = secondProduct.isOffer ?: false,
+                                    offerPrice = secondProduct.offerPrice
+                                ),
+                                originalPrice = combo.oldPrice,
+                                comboPrice = combo.price,
+                                discount = combo.oldPrice - combo.price,
+                                available = true
+                            )
+                            combos.add(cartCombo)
+                            Log.d("CartService", "✅ Combo válido: ${cartCombo.name} - Precio: ${combo.price}")
+                        } else {
+                            Log.d("CartService", "❌ Combo no disponible: $comboId - Productos no disponibles")
+                            invalidComboIds.add(comboId)
+                        }
+                    } else {
+                        Log.d("CartService", "❌ Combo no disponible: $comboId")
+                        invalidComboIds.add(comboId)
+                    }
+                } catch (e: Exception) {
+                    Log.e("CartService", "❌ Error obteniendo combo $comboId", e)
+                    invalidComboIds.add(comboId)
+                }
+            }
+
+            // Remover productos y combos inválidos del carrito si los hay
+            if (invalidProductIds.isNotEmpty() || invalidComboIds.isNotEmpty()) {
+                Log.d("CartService", "🧹 Removiendo ${invalidProductIds.size} productos y ${invalidComboIds.size} combos inválidos del carrito")
                 val validProductIds = cart.productIds.filter { it !in invalidProductIds }
-                val updatedCart = cart.copy(productIds = validProductIds)
+                val validComboIds = cart.comboIds.filter { it !in invalidComboIds }
+                val updatedCart = cart.copy(productIds = validProductIds, comboIds = validComboIds)
                 saveCart(updatedCart)
             }
 
-            // Calcular totales con productos válidos
-            val (subTotal, discount, total) = calculateCartTotals(products)
+            // Calcular totales con productos y combos válidos
+            val (subTotal, discount, total) = calculateCartTotals(products, combos)
 
-            Log.d("CartService", "📊 Carrito final - Productos válidos: ${products.size}, Inválidos removidos: ${invalidProductIds.size}")
+            Log.d("CartService", "📊 Carrito final - Productos válidos: ${products.size}, Combos válidos: ${combos.size}, Inválidos removidos: ${invalidProductIds.size + invalidComboIds.size}")
 
             CartFullResponse(
                 email = email,
                 products = products,
+                combos = combos,
                 subTotal = subTotal,
                 discount = discount,
                 total = total,
@@ -295,12 +367,16 @@ class CartService(
         }
     }
 
-    private fun calculateCartTotals(products: List<CartFullResponse.CartProductResponse>): Triple<Int, Int, Int> {
+    private fun calculateCartTotals(
+        products: List<CartFullResponse.CartProductResponse>,
+        combos: List<CartFullResponse.CartComboResponse> = emptyList()
+    ): Triple<Int, Int, Int> {
         var subTotal = 0
         var totalDiscount = 0
         
-        Log.d("CartService", "🧮 Calculando totales para ${products.size} productos")
+        Log.d("CartService", "🧮 Calculando totales para ${products.size} productos y ${combos.size} combos")
         
+        // Calcular productos individuales
         products.forEach { product ->
             // Subtotal siempre usa el precio original
             subTotal += product.price
@@ -315,6 +391,16 @@ class CartService(
             }
         }
         
+        // Calcular combos
+        combos.forEach { combo ->
+            // Subtotal usa el precio original del combo
+            subTotal += combo.originalPrice
+            
+            // Descuento del combo
+            totalDiscount += combo.discount
+            Log.d("CartService", "🎁 Combo: ${combo.name} - Original: ${combo.originalPrice}, Combo: ${combo.comboPrice}, Descuento: ${combo.discount}")
+        }
+        
         // Total = Subtotal - Descuento
         val total = subTotal - totalDiscount
         
@@ -327,6 +413,7 @@ class CartService(
         val cartData = hashMapOf(
             "email" to cart.email,
             "productIds" to cart.productIds,
+            "comboIds" to cart.comboIds,
             "status" to cart.status.name,
             "lastUpdated" to cart.lastUpdated
         )
@@ -335,6 +422,77 @@ class CartService(
             .document(cart.email)
             .set(cartData)
             .await()
+    }
+
+    suspend fun addComboToCart(email: String, comboId: String): CartAddResult {
+        return try {
+            Log.d("CartService", "🛒 Iniciando addComboToCart - Email: $email, ComboId: $comboId")
+            
+            // Validar que el combo existe y está disponible ANTES de agregarlo
+            try {
+                val combo = productService.getComboById(comboId)
+                if (!combo.available) {
+                    Log.d("CartService", "❌ Combo $comboId no está disponible")
+                    return CartAddResult.Error("Este combo no está disponible en este momento")
+                }
+                
+                // Verificar que ambos productos del combo estén disponibles
+                val firstProduct = productService.getProductById(combo.firstProduct.id)
+                val secondProduct = productService.getProductById(combo.secondProduct.id)
+                
+                if (firstProduct.isAvailable != true || secondProduct.isAvailable != true) {
+                    Log.d("CartService", "❌ Productos del combo no están disponibles")
+                    return CartAddResult.Error("Los productos de este combo no están disponibles")
+                }
+                
+                Log.d("CartService", "✅ Combo validado: ${combo.firstProduct.brand} + ${combo.secondProduct.brand} - Precio: ${combo.price}")
+            } catch (e: Exception) {
+                Log.e("CartService", "❌ Combo $comboId no existe", e)
+                return CartAddResult.Error("Este combo ya no está disponible")
+            }
+            
+            // Obtener carrito actual
+            val currentCart = getCart(email) ?: CartResponse(
+                email = email,
+                productIds = emptyList(),
+                comboIds = emptyList(),
+                status = CartResponse.CartStatus.AVAILABLE
+            )
+
+            // Verificar si el carrito está disponible
+            if (currentCart.status == CartResponse.CartStatus.PROCESSING) {
+                Log.d("CartService", "❌ Carrito en procesamiento, no se puede agregar combos")
+                return CartAddResult.Error("El carrito está siendo procesado y no se puede modificar")
+            }
+
+            // Verificar si el combo ya está en el carrito
+            if (currentCart.comboIds.contains(comboId)) {
+                Log.d("CartService", "⚠️ Combo $comboId ya está en el carrito")
+                val fullCart = getCartFull(email)
+                return CartAddResult.AlreadyInCart(fullCart)
+            }
+
+            // Agregar combo al carrito
+            val updatedComboIds = currentCart.comboIds + comboId
+            val updatedCart = CartResponse(
+                email = email,
+                productIds = currentCart.productIds,
+                comboIds = updatedComboIds,
+                status = currentCart.status
+            )
+
+            // Guardar en Firestore
+            saveCart(updatedCart)
+
+            // Obtener carrito completo para la respuesta
+            val fullCart = getCartFull(email)
+            
+            Log.d("CartService", "✅ Combo $comboId agregado al carrito de $email")
+            CartAddResult.Success(fullCart)
+        } catch (e: Exception) {
+            Log.e("CartService", "❌ Error agregando combo $comboId al carrito de $email", e)
+            CartAddResult.Error(e.message ?: "Error desconocido")
+        }
     }
 
     sealed class CartAddResult {

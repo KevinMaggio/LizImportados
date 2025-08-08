@@ -26,7 +26,8 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 
 @Composable
 fun ComboSection(
-    combos: List<ComboResponse>
+    combos: List<ComboResponse>,
+    onAddComboToCart: (String) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -57,7 +58,8 @@ fun ComboSection(
                 combos.forEachIndexed { index, comboItem ->
                     ComboItem(
                         combo = comboItem,
-                        lastItem = index == combos.size - 1
+                        lastItem = index == combos.size - 1,
+                        onAddToCart = onAddComboToCart
                     )
                 }
             }

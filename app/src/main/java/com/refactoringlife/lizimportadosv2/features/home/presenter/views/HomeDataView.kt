@@ -30,7 +30,8 @@ typealias id = String
 fun HomeDataView(
     modifier: Modifier = Modifier,
     state: HomeUiState,
-    action: (category, id) -> Unit
+    action: (category, id) -> Unit,
+    onAddComboToCart: (String) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier
@@ -75,7 +76,10 @@ fun HomeDataView(
 
         state.config?.hasCombo?.isTrue { combos ->
             item {
-                ComboSection(state.combosModel)
+                ComboSection(
+                    combos = state.combosModel,
+                    onAddComboToCart = onAddComboToCart
+                )
             }
         }
 

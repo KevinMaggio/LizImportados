@@ -33,6 +33,18 @@ class CartRepository(
         }
     }
 
+    suspend fun addComboToCart(email: String, comboId: String): CartService.CartAddResult {
+        return try {
+            Log.d("CartRepository", "🎁 Agregando combo $comboId al carrito")
+            val result = cartService.addComboToCart(email, comboId)
+            Log.d("CartRepository", "📦 Resultado: $result")
+            result
+        } catch (e: Exception) {
+            Log.e("CartRepository", "❌ Error agregando combo al carrito", e)
+            CartService.CartAddResult.Error("Error al agregar combo: ${e.message}")
+        }
+    }
+
     suspend fun removeFromCart(email: String, productId: String): CartFullResponse? {
         return try {
             Log.d("CartRepository", "➖ Removiendo producto $productId del carrito")

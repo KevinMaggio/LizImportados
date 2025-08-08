@@ -4,7 +4,8 @@ data class ProductCartModel (
     val subTotal:Int,
     val discount: Int,
     val total:Int,
-    val products: List<CartItemModel>
+    val products: List<CartItemModel>,
+    val combos: List<CartComboModel> = emptyList()
 ){
     data class CartItemModel(
         val productId: String,
@@ -15,5 +16,16 @@ data class ProductCartModel (
         val price: Int,
         val isOffer: Boolean = false,
         val offerPrice: Int? = null
+    )
+    
+    data class CartComboModel(
+        val comboId: String,
+        val name: String,
+        val firstProduct: CartItemModel,
+        val secondProduct: CartItemModel,
+        val originalPrice: Int,
+        val comboPrice: Int,
+        val discount: Int,
+        val available: Boolean
     )
 }

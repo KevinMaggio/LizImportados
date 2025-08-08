@@ -3,6 +3,8 @@ package com.refactoringlife.lizimportadosv2.core.dto.response
 import kotlinx.serialization.SerialName
 
 data class ComboResponse(
+    @SerialName("id")
+    val id: String = "", // Nuevo: ID único del combo
     @SerialName("available")
     val available: Boolean,
     @SerialName("old_price")

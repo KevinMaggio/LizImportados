@@ -55,51 +55,77 @@ class ProductService(
                 .await()
 
             combosSnapshot.documents.mapNotNull { doc ->
-                // Mapear manualmente desde Firestore
-                val available = doc.getBoolean("available") ?: false
-                val oldPrice = doc.getLong("oldPrice")?.toInt() ?: 0
-                val newPrice = doc.getLong("newPrice")?.toInt() ?: 0
-                val product1Id = doc.getString("product1Id") ?: ""
-                val product2Id = doc.getString("product2Id") ?: ""
-                
-                // Obtener productos completos
-                val product1 = try {
-                    getProductById(product1Id)
-                } catch (e: Exception) {
-                    null
-                }
-                
-                val product2 = try {
-                    getProductById(product2Id)
-                } catch (e: Exception) {
-                    null
-                }
-                
-                // Crear ComboProductResponse para cada producto
-                val firstProduct = ComboProductResponse(
-                    id = product1?.id ?: product1Id,
-                    brand = product1?.brand ?: "",
-                    description = product1?.name ?: "",
-                    image = product1?.images?.firstOrNull() ?: ""
-                )
-                
-                val secondProduct = ComboProductResponse(
-                    id = product2?.id ?: product2Id,
-                    brand = product2?.brand ?: "",
-                    description = product2?.name ?: "",
-                    image = product2?.images?.firstOrNull() ?: ""
-                )
-                
-                ComboResponse(
-                    available = available,
-                    oldPrice = oldPrice,
-                    price = newPrice,
-                    firstProduct = firstProduct,
-                    secondProduct = secondProduct
-                )
+                mapComboFromDocument(doc)
             }
         } catch (e: Exception) {
             throw ProductException("Error al obtener combos", e)
+        }
+    }
+
+    suspend fun getComboById(comboId: String): ComboResponse {
+        return try {
+            val comboDoc = firestore.collection("combos")
+                .document(comboId)
+                .get()
+                .await()
+
+            if (!comboDoc.exists()) {
+                throw ProductException("Combo no encontrado")
+            }
+
+            mapComboFromDocument(comboDoc) ?: throw ProductException("Error mapeando combo")
+        } catch (e: Exception) {
+            throw ProductException("Error al obtener combo por ID", e)
+        }
+    }
+
+    private suspend fun mapComboFromDocument(doc: DocumentSnapshot): ComboResponse? {
+        return try {
+            val comboId = doc.id
+            val available = doc.getBoolean("available") ?: false
+            val oldPrice = doc.getLong("oldPrice")?.toInt() ?: 0
+            val newPrice = doc.getLong("newPrice")?.toInt() ?: 0
+            val product1Id = doc.getString("product1Id") ?: ""
+            val product2Id = doc.getString("product2Id") ?: ""
+            
+            // Obtener productos completos
+            val product1 = try {
+                getProductById(product1Id)
+            } catch (e: Exception) {
+                null
+            }
+            
+            val product2 = try {
+                getProductById(product2Id)
+            } catch (e: Exception) {
+                null
+            }
+            
+            // Crear ComboProductResponse para cada producto
+            val firstProduct = ComboProductResponse(
+                id = product1?.id ?: product1Id,
+                brand = product1?.brand ?: "",
+                description = product1?.name ?: "",
+                image = product1?.images?.firstOrNull() ?: ""
+            )
+            
+            val secondProduct = ComboProductResponse(
+                id = product2?.id ?: product2Id,
+                brand = product2?.brand ?: "",
+                description = product2?.name ?: "",
+                image = product2?.images?.firstOrNull() ?: ""
+            )
+            
+            ComboResponse(
+                id = comboId,
+                available = available,
+                oldPrice = oldPrice,
+                price = newPrice,
+                firstProduct = firstProduct,
+                secondProduct = secondProduct
+            )
+        } catch (e: Exception) {
+            null
         }
     }
 

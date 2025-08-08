@@ -23,6 +23,7 @@ import com.refactoringlife.lizimportadosv2.R
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyDivider
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyMoreItems
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyWhatsAppButton
+import com.refactoringlife.lizimportadosv2.features.cart.presenter.views.CartComboItem
 import com.refactoringlife.lizimportadosv2.features.cart.data.model.ProductCartModel
 import com.refactoringlife.lizimportadosv2.core.dto.response.CartResponse
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
@@ -38,6 +39,7 @@ fun CartDataView(
     val context = LocalContext.current
     val availableProducts = product.products.filter { it.available }
     val sealedProducts = product.products.filter { !it.available }
+    val availableCombos = product.combos.filter { it.available }
 
     fun sendWhatsAppMessage() {
         val message = buildString {
@@ -56,6 +58,14 @@ fun CartDataView(
                     "$$displayPrice"
                 }
                 appendLine("• ${item.name} - Talle: ${item.season} - $priceText")
+            }
+            
+            if (availableCombos.isNotEmpty()) {
+                appendLine()
+                appendLine("*Combos:*")
+                availableCombos.forEach { combo ->
+                    appendLine("• 🎁 ${combo.name} - ~~$${combo.originalPrice}~~ → $${combo.comboPrice}")
+                }
             }
             appendLine()
             appendLine("*Resumen:*")
@@ -134,6 +144,22 @@ fun CartDataView(
                             onRemoveItem(item.productId)
                         }
                     )
+                }
+            }
+            
+            // Mostrar combos si el carrito está disponible
+            if (availableCombos.isNotEmpty()) {
+                item {
+                    availableCombos.forEach { combo ->
+                        LipsyDivider()
+                        CartComboItem(
+                            cartComboModel = combo,
+                            onRemove = {
+                                // TODO: Implementar removeComboFromCart
+                                // onRemoveCombo(combo.comboId)
+                            }
+                        )
+                    }
                 }
             }
 

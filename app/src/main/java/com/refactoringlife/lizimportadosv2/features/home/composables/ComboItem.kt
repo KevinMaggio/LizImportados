@@ -2,6 +2,9 @@ package com.refactoringlife.lizimportadosv2.features.home.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,10 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -32,7 +37,8 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
 @Composable
 fun ComboItem(
     combo: ComboResponse,
-    lastItem: Boolean
+    lastItem: Boolean,
+    onAddToCart: (String) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -109,6 +115,36 @@ fun ComboItem(
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 color = TextSecondary
             )
+        }
+        
+        Spacer(Modifier.height(8.dp))
+        
+        // Botón Agregar Combo (mismo diseño que Details)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { onAddToCart(combo.id) }
+            ) {
+                Text(
+                    text = "Agregar a carrito",
+                    fontSize = 14.sp,
+                    color = TextPrimary,
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                )
+
+                Image(
+                    painter = painterResource(R.drawable.icon_more),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .size(20.dp)
+                )
+            }
         }
     }
 

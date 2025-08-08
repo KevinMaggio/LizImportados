@@ -115,6 +115,62 @@ class CartViewModel(
         }
     }
 
+    fun addComboToCart(email: String, comboId: String) {
+        viewModelScope.launch {
+            Log.d("CartViewModel", "🎁 Agregando combo $comboId al carrito")
+            _state.value = _state.value.copy(isAddingToCart = true)
+            
+            try {
+                val result = repository.addComboToCart(email, comboId)
+                Log.d("CartViewModel", "📦 Resultado recibido: $result")
+                
+                when (result) {
+                    is CartService.CartAddResult.Success -> {
+                        val cartModel = result.cart?.let { mapToCartModel(it) }
+                        val message = "✓ Combo agregado al carrito"
+                        Log.d("CartViewModel", "✅ Estableciendo mensaje: '$message'")
+                        _state.value = _state.value.copy(
+                            cart = cartModel ?: _state.value.cart,
+                            isAddingToCart = false,
+                            addToCartMessage = message,
+                            cartStatus = result.cart?.status ?: _state.value.cartStatus
+                        )
+                        Log.d("CartViewModel", "✅ Combo agregado al carrito")
+                    }
+                    is CartService.CartAddResult.AlreadyInCart -> {
+                        val cartModel = result.cart?.let { mapToCartModel(it) }
+                        val message = "⚠️ Este combo ya está en tu carrito"
+                        Log.d("CartViewModel", "⚠️ Estableciendo mensaje: '$message'")
+                        _state.value = _state.value.copy(
+                            cart = cartModel ?: _state.value.cart,
+                            isAddingToCart = false,
+                            addToCartMessage = message,
+                            cartStatus = result.cart?.status ?: _state.value.cartStatus
+                        )
+                        Log.d("CartViewModel", "⚠️ Combo ya estaba en el carrito")
+                    }
+                    is CartService.CartAddResult.Error -> {
+                        val message = "❌ Error: ${result.message}"
+                        Log.d("CartViewModel", "❌ Estableciendo mensaje: '$message'")
+                        _state.value = _state.value.copy(
+                            isAddingToCart = false,
+                            addToCartMessage = message
+                        )
+                        Log.e("CartViewModel", "❌ Error agregando combo: ${result.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("CartViewModel", "❌ Error agregando combo al carrito", e)
+                val message = "❌ Error al agregar combo"
+                Log.d("CartViewModel", "❌ Estableciendo mensaje de error: '$message'")
+                _state.value = _state.value.copy(
+                    isAddingToCart = false,
+                    addToCartMessage = message
+                )
+            }
+        }
+    }
+
     fun removeFromCart(email: String, productId: String) {
         viewModelScope.launch {
             Log.d("CartViewModel", "➖ Removiendo producto $productId del carrito")
@@ -183,12 +239,44 @@ class CartViewModel(
                 offerPrice = product.offerPrice
             )
         }
+        
+        val cartCombos = cartResponse.combos.map { combo ->
+            ProductCartModel.CartComboModel(
+                comboId = combo.comboId,
+                name = combo.name,
+                firstProduct = ProductCartModel.CartItemModel(
+                    productId = combo.firstProduct.productId,
+                    image = combo.firstProduct.image,
+                    name = combo.firstProduct.name,
+                    season = combo.firstProduct.season,
+                    available = combo.firstProduct.available,
+                    price = combo.firstProduct.price,
+                    isOffer = combo.firstProduct.isOffer,
+                    offerPrice = combo.firstProduct.offerPrice
+                ),
+                secondProduct = ProductCartModel.CartItemModel(
+                    productId = combo.secondProduct.productId,
+                    image = combo.secondProduct.image,
+                    name = combo.secondProduct.name,
+                    season = combo.secondProduct.season,
+                    available = combo.secondProduct.available,
+                    price = combo.secondProduct.price,
+                    isOffer = combo.secondProduct.isOffer,
+                    offerPrice = combo.secondProduct.offerPrice
+                ),
+                originalPrice = combo.originalPrice,
+                comboPrice = combo.comboPrice,
+                discount = combo.discount,
+                available = combo.available
+            )
+        }
 
         return ProductCartModel(
             subTotal = cartResponse.subTotal,
             discount = cartResponse.discount,
             total = cartResponse.total,
-            products = cartItems
+            products = cartItems,
+            combos = cartCombos
         )
     }
 }
