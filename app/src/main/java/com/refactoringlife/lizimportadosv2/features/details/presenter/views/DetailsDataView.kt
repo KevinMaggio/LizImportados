@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyAsyncImage
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyZoomableImage
 import com.refactoringlife.lizimportadosv2.features.home.data.model.ProductModel
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.VerticalPager
@@ -32,6 +33,7 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.Icon
 
 @Composable
 fun DetailsDataView(
@@ -40,6 +42,8 @@ fun DetailsDataView(
     onAddToCart: (String) -> Unit = {},
     isAddingToCart: Boolean = false
 ) {
+    var showZoomDialog by remember { mutableStateOf(false) }
+    var selectedImageIndex by remember { mutableStateOf(0) }
     val productPagerState = rememberPagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f,
@@ -81,15 +85,41 @@ fun DetailsDataView(
                         .weight(1.7f)
                         .padding(horizontal = 20.dp)
                 ) { imagePage ->
-                    Surface(
-                        modifier = Modifier
-                            .shadow(elevation = 5.dp, shape = RoundedCornerShape(12.dp))
-                            .background(Color.White)
-                    ) {
-                        LipsyAsyncImage(
-                            modifier = Modifier.fillMaxSize(),
-                            url = product.images?.get(imagePage) ?: ""
-                        )
+                    Box {
+                        Surface(
+                            modifier = Modifier
+                                .shadow(elevation = 5.dp, shape = RoundedCornerShape(12.dp))
+                                .background(Color.White)
+                                .clickable {
+                                    selectedImageIndex = imagePage
+                                    showZoomDialog = true
+                                }
+                        ) {
+                            LipsyAsyncImage(
+                                modifier = Modifier.fillMaxSize(),
+                                url = product.images?.get(imagePage) ?: ""
+                            )
+                        }
+                        
+                        // Icono de zoom en la esquina
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
+                                .size(32.dp)
+                                .background(
+                                    color = Color.Black.copy(alpha = 0.6f),
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.icon_more),
+                                contentDescription = "Zoom",
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -208,6 +238,18 @@ fun DetailsDataView(
                     )
                 }
             }
+        }
+    }
+    
+    // Diálogo de zoom
+    if (showZoomDialog && products.isNotEmpty()) {
+        val currentProduct = products[productPagerState.currentPage]
+        currentProduct.images?.let { images ->
+            LipsyZoomableImage(
+                images = images,
+                initialImageIndex = selectedImageIndex,
+                onDismiss = { showZoomDialog = false }
+            )
         }
     }
 }
