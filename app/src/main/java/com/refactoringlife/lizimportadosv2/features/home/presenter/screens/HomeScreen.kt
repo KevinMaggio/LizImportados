@@ -3,8 +3,7 @@ package com.refactoringlife.lizimportadosv2.features.home.presenter.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyLoading
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -42,11 +41,8 @@ fun HomeScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             uiState.showLoading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.Center),
-                    color = TextBlue
+                LipsyLoading(
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             uiState.showError -> {

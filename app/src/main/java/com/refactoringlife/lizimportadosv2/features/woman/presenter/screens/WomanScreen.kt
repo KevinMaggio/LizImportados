@@ -12,6 +12,7 @@ import com.refactoringlife.lizimportadosv2.core.navigator.WOMAN
 import com.refactoringlife.lizimportadosv2.core.navigator.navigateToDetails
 import com.refactoringlife.lizimportadosv2.features.woman.presenter.viewmodel.WomanViewModel
 import com.refactoringlife.lizimportadosv2.features.woman.presenter.views.WomanDataView
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyLoading
 
 @Composable
 fun WomanScreen(
@@ -24,7 +25,9 @@ fun WomanScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             uiState.showLoading -> {
-                // TODO: Mostrar loading
+                LipsyLoading(
+                    modifier = Modifier.fillMaxSize()
+                )
             }
             uiState.showError -> {
                 // TODO: Mostrar error

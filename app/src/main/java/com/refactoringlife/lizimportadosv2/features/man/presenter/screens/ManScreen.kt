@@ -12,6 +12,7 @@ import com.refactoringlife.lizimportadosv2.core.navigator.MAN
 import com.refactoringlife.lizimportadosv2.core.navigator.navigateToDetails
 import com.refactoringlife.lizimportadosv2.features.man.presenter.viewmodel.ManViewModel
 import com.refactoringlife.lizimportadosv2.features.man.presenter.views.ManDataView
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyLoading
 
 @Composable
 fun ManScreen(
@@ -23,7 +24,9 @@ fun ManScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             uiState.showLoading -> {
-                // TODO: Mostrar loading
+                LipsyLoading(
+                    modifier = Modifier.fillMaxSize()
+                )
             }
             uiState.showError -> {
                 // TODO: Mostrar error
