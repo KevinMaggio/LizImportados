@@ -1,61 +1,43 @@
 package com.refactoringlife.lizimportadosv2.features.cart.data.repository
 
-import com.refactoringlife.lizimportadosv2.core.dto.response.CartResponse
 import com.refactoringlife.lizimportadosv2.core.network.service.CartService
+import com.refactoringlife.lizimportadosv2.core.dto.response.CartFullResponse
 import android.util.Log
-
-// Alias para el resultado del carrito
-typealias CartAddResult = CartService.CartAddResult
+import com.refactoringlife.lizimportadosv2.core.dto.response.CartResponse
 
 class CartRepository(
     private val cartService: CartService = CartService()
 ) {
     
-    suspend fun getCart(email: String): CartResponse? {
+    suspend fun getCart(email: String): CartFullResponse? {
         return try {
-            Log.d("CartRepository", "🛒 Obteniendo carrito para: $email")
-            val cart = cartService.getCart(email)
-            if (cart != null) {
-                Log.d("CartRepository", "✅ Carrito obtenido con ${cart.products.size} productos")
-            } else {
-                Log.d("CartRepository", "📭 No hay carrito para: $email")
-            }
+            Log.d("CartRepository", "🛒 Obteniendo carrito completo para: $email")
+            val cart = cartService.getCartFull(email)
+            Log.d("CartRepository", "✅ Carrito obtenido: ${cart?.products?.size ?: 0} productos")
             cart
         } catch (e: Exception) {
-            Log.e("CartRepository", "❌ Error obteniendo carrito para: $email", e)
+            Log.e("CartRepository", "❌ Error obteniendo carrito", e)
             null
         }
     }
 
-    suspend fun addToCart(email: String, productId: String): CartAddResult {
+    suspend fun addToCart(email: String, productId: String): CartService.CartAddResult {
         return try {
             Log.d("CartRepository", "➕ Agregando producto $productId al carrito")
             val result = cartService.addToCart(email, productId)
-            when (result) {
-                is CartService.CartAddResult.Success -> {
-                    Log.d("CartRepository", "✅ Producto agregado. Total productos: ${result.cart.products.size}")
-                }
-                is CartService.CartAddResult.AlreadyInCart -> {
-                    Log.d("CartRepository", "⚠️ Producto ya estaba en el carrito")
-                }
-                is CartService.CartAddResult.Error -> {
-                    Log.e("CartRepository", "❌ Error agregando producto: ${result.message}")
-                }
-            }
+            Log.d("CartRepository", "📦 Resultado: $result")
             result
         } catch (e: Exception) {
             Log.e("CartRepository", "❌ Error agregando producto al carrito", e)
-            CartService.CartAddResult.Error(e.message ?: "Error desconocido")
+            CartService.CartAddResult.Error("Error al agregar producto: ${e.message}")
         }
     }
 
-    suspend fun removeFromCart(email: String, productId: String): CartResponse? {
+    suspend fun removeFromCart(email: String, productId: String): CartFullResponse? {
         return try {
             Log.d("CartRepository", "➖ Removiendo producto $productId del carrito")
             val cart = cartService.removeFromCart(email, productId)
-            if (cart != null) {
-                Log.d("CartRepository", "✅ Producto removido. Total productos: ${cart.products.size}")
-            }
+            Log.d("CartRepository", "✅ Producto removido del carrito")
             cart
         } catch (e: Exception) {
             Log.e("CartRepository", "❌ Error removiendo producto del carrito", e)
@@ -65,16 +47,36 @@ class CartRepository(
 
     suspend fun clearCart(email: String): Boolean {
         return try {
-            Log.d("CartRepository", "🗑️ Limpiando carrito de $email")
+            Log.d("CartRepository", "🗑️ Limpiando carrito")
             val success = cartService.clearCart(email)
-            if (success) {
-                Log.d("CartRepository", "✅ Carrito limpiado exitosamente")
-            } else {
-                Log.e("CartRepository", "❌ Error limpiando carrito")
-            }
+            Log.d("CartRepository", "✅ Carrito limpiado: $success")
             success
         } catch (e: Exception) {
             Log.e("CartRepository", "❌ Error limpiando carrito", e)
+            false
+        }
+    }
+
+    suspend fun updateCartStatus(email: String, status: CartResponse.CartStatus): Boolean {
+        return try {
+            Log.d("CartRepository", "🔄 Actualizando estado del carrito a: $status")
+            val success = cartService.updateCartStatus(email, status)
+            Log.d("CartRepository", "✅ Estado actualizado: $success")
+            success
+        } catch (e: Exception) {
+            Log.e("CartRepository", "❌ Error actualizando estado del carrito", e)
+            false
+        }
+    }
+
+    suspend fun cleanInvalidProductsFromAllCarts(): Boolean {
+        return try {
+            Log.d("CartRepository", "🧹 Limpiando productos inválidos de todos los carritos")
+            val success = cartService.cleanInvalidProductsFromAllCarts()
+            Log.d("CartRepository", "✅ Limpieza completada: $success")
+            success
+        } catch (e: Exception) {
+            Log.e("CartRepository", "❌ Error limpiando productos inválidos", e)
             false
         }
     }

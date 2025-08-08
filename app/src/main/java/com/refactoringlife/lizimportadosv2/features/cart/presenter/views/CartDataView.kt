@@ -24,12 +24,14 @@ import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyDivider
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyMoreItems
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyWhatsAppButton
 import com.refactoringlife.lizimportadosv2.features.cart.data.model.ProductCartModel
+import com.refactoringlife.lizimportadosv2.core.dto.response.CartResponse
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
 import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 
 @Composable
 fun CartDataView(
     product: ProductCartModel,
+    cartStatus: CartResponse.CartStatus = CartResponse.CartStatus.AVAILABLE,
     onRemoveItem: (String) -> Unit = {},
     onClearCart: () -> Unit = {}
 ) {
@@ -96,36 +98,64 @@ fun CartDataView(
             Spacer(Modifier.height(20.dp))
         }
 
-        item {
-            availableProducts.forEach { item ->
-                LipsyDivider()
-                CartItem(
-                    cartItemModel = item,
-                    onRemove = {
-                        onRemoveItem(item.productId)
-                    }
+        // Mostrar mensaje si el carrito está en procesamiento
+        if (cartStatus == CartResponse.CartStatus.PROCESSING) {
+            item {
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    text = "🔄 Tu carrito está siendo procesado",
+                    fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                    fontSize = 16.sp,
+                    color = TextBlue,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = "No puedes modificar tu carrito mientras se procesa tu pedido anterior. Te notificaremos cuando esté listo.",
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    fontSize = 14.sp,
+                    color = TextPrimary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(20.dp))
+            }
+        } else {
+            // Mostrar productos solo si el carrito está disponible
+            item {
+                availableProducts.forEach { item ->
+                    LipsyDivider()
+                    CartItem(
+                        cartItemModel = item,
+                        onRemove = {
+                            onRemoveItem(item.productId)
+                        }
+                    )
+                }
+            }
+
+            item {
+                Spacer(Modifier.height(20.dp))
+
+                TotalSection(
+                    subtotal = product.subTotal,
+                    discount = product.discount,
+                    total = product.total
                 )
             }
-        }
 
-        item {
-            Spacer(Modifier.height(20.dp))
+            item {
+                Spacer(Modifier.height(20.dp))
 
-            TotalSection(
-                subtotal = product.subTotal,
-                discount = product.discount,
-                total = product.total
-            )
-        }
+                LipsyWhatsAppButton(
+                    action = { sendWhatsAppMessage() }
+                )
 
-        item {
-            Spacer(Modifier.height(20.dp))
-
-            LipsyWhatsAppButton(
-                action = { sendWhatsAppMessage() }
-            )
-
-            Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(20.dp))
+            }
         }
 
         if (sealedProducts.isNotEmpty()) {

@@ -53,6 +53,7 @@ fun CartScreen(authStateViewModel: AuthStateViewModel) {
             else -> {
                 CartDataView(
                     product = state.cart,
+                    cartStatus = state.cartStatus,
                     onRemoveItem = { productId ->
                         userEmail?.let { email ->
                             cartViewModel.removeFromCart(email, productId)

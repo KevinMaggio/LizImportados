@@ -2,6 +2,7 @@ package com.refactoringlife.lizimportadosv2.features.cart.presenter.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.refactoringlife.lizimportadosv2.core.dto.response.CartFullResponse
 import com.refactoringlife.lizimportadosv2.core.dto.response.CartResponse
 import com.refactoringlife.lizimportadosv2.features.cart.data.model.ProductCartModel
 import com.refactoringlife.lizimportadosv2.features.cart.data.repository.CartRepository
@@ -29,9 +30,10 @@ class CartViewModel(
                     val cartModel = mapToCartModel(cartResponse)
                     _state.value = _state.value.copy(
                         cart = cartModel,
-                        isLoading = false
+                        isLoading = false,
+                        cartStatus = cartResponse.status
                     )
-                    Log.d("CartViewModel", "✅ Carrito cargado con ${cartModel.products.size} productos")
+                    Log.d("CartViewModel", "✅ Carrito cargado con ${cartModel.products.size} productos, estado: ${cartResponse.status}")
                 } else {
                     // Carrito vacío
                     val emptyCart = ProductCartModel(
@@ -42,7 +44,8 @@ class CartViewModel(
                     )
                     _state.value = _state.value.copy(
                         cart = emptyCart,
-                        isLoading = false
+                        isLoading = false,
+                        cartStatus = CartResponse.CartStatus.AVAILABLE
                     )
                     Log.d("CartViewModel", "📭 Carrito vacío para: $email")
                 }
@@ -67,24 +70,26 @@ class CartViewModel(
                 
                 when (result) {
                     is CartService.CartAddResult.Success -> {
-                        val cartModel = mapToCartModel(result.cart)
+                        val cartModel = result.cart?.let { mapToCartModel(it) }
                         val message = "✓ Producto agregado al carrito"
                         Log.d("CartViewModel", "✅ Estableciendo mensaje: '$message'")
                         _state.value = _state.value.copy(
-                            cart = cartModel,
+                            cart = cartModel ?: _state.value.cart,
                             isAddingToCart = false,
-                            addToCartMessage = message
+                            addToCartMessage = message,
+                            cartStatus = result.cart?.status ?: _state.value.cartStatus
                         )
                         Log.d("CartViewModel", "✅ Producto agregado al carrito")
                     }
                     is CartService.CartAddResult.AlreadyInCart -> {
-                        val cartModel = mapToCartModel(result.cart)
+                        val cartModel = result.cart?.let { mapToCartModel(it) }
                         val message = "⚠️ Este producto ya está en tu carrito"
                         Log.d("CartViewModel", "⚠️ Estableciendo mensaje: '$message'")
                         _state.value = _state.value.copy(
-                            cart = cartModel,
+                            cart = cartModel ?: _state.value.cart,
                             isAddingToCart = false,
-                            addToCartMessage = message
+                            addToCartMessage = message,
+                            cartStatus = result.cart?.status ?: _state.value.cartStatus
                         )
                         Log.d("CartViewModel", "⚠️ Producto ya estaba en el carrito")
                     }
@@ -117,7 +122,10 @@ class CartViewModel(
                 val cartResponse = repository.removeFromCart(email, productId)
                 if (cartResponse != null) {
                     val cartModel = mapToCartModel(cartResponse)
-                    _state.value = _state.value.copy(cart = cartModel)
+                    _state.value = _state.value.copy(
+                        cart = cartModel,
+                        cartStatus = cartResponse.status
+                    )
                     Log.d("CartViewModel", "✅ Producto removido del carrito")
                 } else {
                     Log.e("CartViewModel", "❌ Error removiendo producto del carrito")
@@ -140,7 +148,10 @@ class CartViewModel(
                         total = 0,
                         products = emptyList()
                     )
-                    _state.value = _state.value.copy(cart = emptyCart)
+                    _state.value = _state.value.copy(
+                        cart = emptyCart,
+                        cartStatus = CartResponse.CartStatus.AVAILABLE
+                    )
                     Log.d("CartViewModel", "✅ Carrito limpiado exitosamente")
                 } else {
                     Log.e("CartViewModel", "❌ Error limpiando carrito")
@@ -159,7 +170,7 @@ class CartViewModel(
         _state.value = _state.value.copy(error = null)
     }
 
-    private fun mapToCartModel(cartResponse: CartResponse): ProductCartModel {
+    private fun mapToCartModel(cartResponse: CartFullResponse): ProductCartModel {
         val cartItems = cartResponse.products.map { product ->
             ProductCartModel.CartItemModel(
                 productId = product.productId,
@@ -192,5 +203,6 @@ data class CartUiState(
     val isLoading: Boolean = false,
     val isAddingToCart: Boolean = false,
     val error: String? = null,
-    val addToCartMessage: String? = null
+    val addToCartMessage: String? = null,
+    val cartStatus: CartResponse.CartStatus = CartResponse.CartStatus.AVAILABLE
 ) 
