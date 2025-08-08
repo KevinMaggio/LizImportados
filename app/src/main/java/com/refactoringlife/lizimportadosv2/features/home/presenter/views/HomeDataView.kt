@@ -37,10 +37,12 @@ fun HomeDataView(
         modifier = modifier
             .fillMaxSize()
             .background(ColorWhiteLipsy)
-            .padding(start = 20.dp, end = 20.dp, top = 40.dp)
+            .padding(start = 20.dp, top = 40.dp)
     ) {
         item {
-            Column {
+            Column(
+                modifier = Modifier.padding(end = 20.dp)
+            ) {
                 Image(
                     painter = painterResource(R.drawable.liz_importados),
                     contentDescription = "",

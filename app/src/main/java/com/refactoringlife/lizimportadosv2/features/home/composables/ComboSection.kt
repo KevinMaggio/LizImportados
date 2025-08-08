@@ -32,6 +32,7 @@ fun ComboSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(end = 20.dp)
     ) {
         Text(
             text = stringResource(R.string.unmissable_combo),
