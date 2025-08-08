@@ -57,6 +57,7 @@ fun CartScreen(
                 CartDataView(
                     product = state.cart,
                     cartStatus = state.cartStatus,
+                    userEmail = userEmail,
                     onRemoveItem = { productId ->
                         userEmail?.let { email ->
                             cartViewModel.removeFromCart(email, productId)

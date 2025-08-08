@@ -33,6 +33,7 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 fun CartDataView(
     product: ProductCartModel,
     cartStatus: CartResponse.CartStatus = CartResponse.CartStatus.AVAILABLE,
+    userEmail: String? = null,
     onRemoveItem: (String) -> Unit = {},
     onClearCart: () -> Unit = {},
     onNavigateToHome: () -> Unit = {}
@@ -44,39 +45,12 @@ fun CartDataView(
 
     fun sendWhatsAppMessage() {
         val message = buildString {
-            appendLine("🛒 *Carrito de Compras - Liz Importados*")
+            appendLine("¡Hola! 👋")
             appendLine()
-            appendLine("*Productos:*")
-            availableProducts.forEach { item ->
-                val displayPrice = if (item.isOffer && item.offerPrice != null) {
-                    item.offerPrice
-                } else {
-                    item.price
-                }
-                val priceText = if (item.isOffer && item.offerPrice != null) {
-                    "$${item.price} → $$displayPrice"
-                } else {
-                    "$$displayPrice"
-                }
-                appendLine("• ${item.name} - Talle: ${item.season} - $priceText")
-            }
-            
-            if (availableCombos.isNotEmpty()) {
-                appendLine()
-                appendLine("*Combos:*")
-                availableCombos.forEach { combo ->
-                    appendLine("• 🎁 ${combo.name} - ~~$${combo.originalPrice}~~ → $${combo.comboPrice}")
-                }
-            }
+            appendLine("Mi email es: *${userEmail}*")
+            appendLine("Quiero pedirte los productos de mi carrito.")
             appendLine()
-            appendLine("*Resumen:*")
-            appendLine("Subtotal: $${product.subTotal}")
-            if (product.discount > 0) {
-                appendLine("Descuento: $${product.discount}")
-            }
-            appendLine("*Total: $${product.total}*")
-            appendLine()
-            appendLine("Por favor, confirma mi pedido. ¡Gracias! 🛍️")
+            appendLine("¡Gracias! 🛍️")
         }
 
         val encodedMessage = Uri.encode(message)
