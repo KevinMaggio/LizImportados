@@ -54,14 +54,14 @@ fun CartDataView(
         }
 
         val encodedMessage = Uri.encode(message)
-        val whatsappUrl = "https://wa.me/5401162399695?text=$encodedMessage"
+        val whatsappUrl = "https://wa.me/5491164035632?text=$encodedMessage"
         
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl))
             context.startActivity(intent)
         } catch (e: Exception) {
             // Fallback: abrir WhatsApp con el número
-            val fallbackUrl = "https://wa.me/5401162399695"
+            val fallbackUrl = "https://wa.me/5491164035632"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl))
             context.startActivity(intent)
         }
