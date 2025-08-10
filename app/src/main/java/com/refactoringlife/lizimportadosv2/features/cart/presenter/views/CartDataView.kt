@@ -66,6 +66,30 @@ fun CartDataView(
             context.startActivity(intent)
         }
     }
+    
+    fun sendProcessedCartWhatsAppMessage() {
+        val message = buildString {
+            appendLine("¡Hola! 👋")
+            appendLine()
+            appendLine("Mi email es: *${userEmail}*")
+            appendLine("Quería saber sobre mi compra.")
+            appendLine()
+            appendLine("¡Gracias! 🛍️")
+        }
+
+        val encodedMessage = Uri.encode(message)
+        val whatsappUrl = "https://wa.me/5491164035632?text=$encodedMessage"
+        
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl))
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            // Fallback: abrir WhatsApp con el número
+            val fallbackUrl = "https://wa.me/5491164035632"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl))
+            context.startActivity(intent)
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -83,21 +107,21 @@ fun CartDataView(
             Spacer(Modifier.height(20.dp))
         }
 
-        // Mostrar mensaje si el carrito está en procesamiento
-        if (cartStatus == CartResponse.CartStatus.PROCESSING) {
+        // Mostrar mensaje si el carrito está procesado
+        if (cartStatus == CartResponse.CartStatus.PROCESSED) {
             item {
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(40.dp))
                 Text(
-                    text = "🔄 Tu carrito está siendo procesado",
+                    text = "🔍 Tu carrito está en proceso de compra",
                     fontFamily = FontFamily(Font(R.font.montserrat_bold)),
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     color = TextBlue,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(20.dp))
                 Text(
-                    text = "No puedes modificar tu carrito mientras se procesa tu pedido anterior. Te notificaremos cuando esté listo.",
+                    text = "Tu pedido está siendo analizado por nuestro equipo. Sigamos por WhatsApp para coordinar tu compra.",
                     fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                     fontSize = 14.sp,
                     color = TextPrimary,
@@ -106,6 +130,12 @@ fun CartDataView(
                         .padding(horizontal = 20.dp),
                     textAlign = TextAlign.Center
                 )
+                Spacer(Modifier.height(30.dp))
+                
+                LipsyWhatsAppButton(
+                    action = { sendProcessedCartWhatsAppMessage() }
+                )
+                
                 Spacer(Modifier.height(20.dp))
             }
         } else {

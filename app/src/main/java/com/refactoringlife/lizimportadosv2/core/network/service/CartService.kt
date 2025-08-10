@@ -49,7 +49,7 @@ class CartService(
             val cart = getCart(email) ?: return null
             
             // Verificar estado del carrito
-            if (cart.status == CartResponse.CartStatus.PROCESSING) {
+            if (cart.status == CartResponse.CartStatus.PROCESSED) {
                 Log.d("CartService", "🔄 Carrito en procesamiento para: $email")
                 return CartFullResponse(
                     email = email,
@@ -217,9 +217,9 @@ class CartService(
             )
 
             // Verificar si el carrito está disponible
-            if (currentCart.status == CartResponse.CartStatus.PROCESSING) {
-                Log.d("CartService", "❌ Carrito en procesamiento, no se puede agregar productos")
-                return CartAddResult.Error("El carrito está siendo procesado y no se puede modificar")
+            if (currentCart.status == CartResponse.CartStatus.PROCESSED) {
+                Log.d("CartService", "❌ Carrito en análisis, no se puede agregar productos")
+                return CartAddResult.Error("Tu carrito está en análisis")
             }
 
             // Verificar si el producto ya está en el carrito
@@ -256,7 +256,7 @@ class CartService(
             val currentCart = getCart(email) ?: return null
 
             // Verificar si el carrito está disponible
-            if (currentCart.status == CartResponse.CartStatus.PROCESSING) {
+            if (currentCart.status == CartResponse.CartStatus.PROCESSED) {
                 Log.d("CartService", "❌ Carrito en procesamiento, no se puede remover productos")
                 return null
             }
@@ -460,9 +460,9 @@ class CartService(
             )
 
             // Verificar si el carrito está disponible
-            if (currentCart.status == CartResponse.CartStatus.PROCESSING) {
-                Log.d("CartService", "❌ Carrito en procesamiento, no se puede agregar combos")
-                return CartAddResult.Error("El carrito está siendo procesado y no se puede modificar")
+            if (currentCart.status == CartResponse.CartStatus.PROCESSED) {
+                Log.d("CartService", "❌ Carrito en análisis, no se puede agregar combos")
+                return CartAddResult.Error("Tu carrito está en análisis")
             }
 
             // Verificar si el combo ya está en el carrito

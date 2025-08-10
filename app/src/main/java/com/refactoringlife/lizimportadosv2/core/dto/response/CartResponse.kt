@@ -9,7 +9,7 @@ data class CartResponse(
 ) {
     enum class CartStatus {
         AVAILABLE,    // Carrito disponible para editar
-        PROCESSING    // Carrito en procesamiento (no editable)
+        PROCESSED     // Carrito procesado/analizado (no editable)
     }
 }
 
