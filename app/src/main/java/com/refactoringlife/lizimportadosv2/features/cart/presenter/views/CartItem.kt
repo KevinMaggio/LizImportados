@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.refactoringlife.lizimportadosv2.R
+import com.refactoringlife.lizimportadosv2.core.utils.capitalizeWords
 import com.refactoringlife.lizimportadosv2.features.cart.data.model.ProductCartModel
 import com.refactoringlife.lizimportadosv2.ui.theme.CardBackGround
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
@@ -76,14 +77,14 @@ fun CartItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = cartItemModel.name.orEmpty(),
+                text = cartItemModel.name.orEmpty().capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                 fontSize = 14.sp,
                 color = TextPrimary
             )
 
             Text(
-                text = "Talla: " + cartItemModel.season.orEmpty(),
+                text = "Talla: " + cartItemModel.season.orEmpty().capitalizeWords(),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 fontSize = 12.sp,
                 color = TextPrimary

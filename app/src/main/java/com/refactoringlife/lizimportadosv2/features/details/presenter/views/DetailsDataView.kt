@@ -34,6 +34,11 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextPrimary
 import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Icon
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import com.google.common.io.Files.append
 
 @Composable
 fun DetailsDataView(
@@ -49,12 +54,12 @@ fun DetailsDataView(
         initialPageOffsetFraction = 0f,
         pageCount = { products.size }
     )
-    
+
     // Detectar cambios de página para cargar más productos
     LaunchedEffect(productPagerState.currentPage) {
         onProductPageChanged(productPagerState.currentPage)
     }
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -100,7 +105,7 @@ fun DetailsDataView(
                                 url = product.images?.get(imagePage) ?: ""
                             )
                         }
-                        
+
                         // Icono de zoom en la esquina
                         Box(
                             modifier = Modifier
@@ -155,7 +160,7 @@ fun DetailsDataView(
                 )
                 {
                     Text(
-                        text = product.name.orEmpty(),
+                        text = product.name.orEmpty().capitalizeWords(),
                         fontSize = 20.sp,
                         color = TextPrimary,
                         fontFamily = FontFamily(Font(R.font.montserrat_bold)),
@@ -163,7 +168,7 @@ fun DetailsDataView(
 
                     Row(Modifier.fillMaxWidth()) {
                         Text(
-                            text = product.brand.orEmpty(),
+                            text = product.brand.orEmpty().capitalizeWords(),
                             fontSize = 14.sp,
                             color = TextSecondary,
                             fontFamily = FontFamily(Font(R.font.montserrat_bold)),
@@ -194,7 +199,7 @@ fun DetailsDataView(
                                 product.price?.toString().orEmpty()
                             },
                             fontSize = 18.sp,
-                            color = TextPrimary,
+                            color = TextBlue,
                             fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                         )
 
@@ -204,9 +209,9 @@ fun DetailsDataView(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable(
                                 enabled = !isAddingToCart
-                            ) { 
+                            ) {
                                 if (!isAddingToCart) {
-                                    onAddToCart(product.id) 
+                                    onAddToCart(product.id)
                                 }
                             }
                         ) {
@@ -231,16 +236,33 @@ fun DetailsDataView(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = product.description.orEmpty().capitalizeWords(),
-                        fontSize = 14.sp,
-                        color = TextPrimary,
-                        fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                        text = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+                                    color = TextPrimary
+                                )
+                            ) {
+                                append("Descripción: ")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    fontWeight = FontWeight.ExtraLight,
+                                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                                    color = TextSecondary
+                                )
+                            ) {
+                                append(product.description.orEmpty().capitalizeWords())
+                            }
+                        },
+                        fontSize = 14.sp
                     )
                 }
             }
         }
     }
-    
+
     // Diálogo de zoom
     if (showZoomDialog && products.isNotEmpty()) {
         val currentProduct = products[productPagerState.currentPage]
