@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.refactoringlife.lizimportadosv2.core.auth.AuthStateViewModel
+import com.refactoringlife.lizimportadosv2.core.navigator.AppRoutes
 import com.refactoringlife.lizimportadosv2.core.navigator.WOMAN
+import com.refactoringlife.lizimportadosv2.core.navigator.navigateFromBottomBar
 import com.refactoringlife.lizimportadosv2.core.navigator.navigateToDetails
 import com.refactoringlife.lizimportadosv2.features.woman.presenter.viewmodel.WomanViewModel
 import com.refactoringlife.lizimportadosv2.features.woman.presenter.views.WomanDataView
@@ -72,19 +74,18 @@ fun WomanScreen(
                 // TODO: Mostrar error
             }
             else -> {
-                uiState.products?.let { products ->
-                    WomanDataView(
-                        products = products,
-                        action = { id -> navController.navigateToDetails(category = WOMAN, id = id) },
-                        addCartProduct = { productId ->
-                            addingToCartProductId = productId
-                            userEmail?.let { email ->
-                                cartViewModel.addToCart(email, productId)
-                            }
-                        },
-                        addingToCartProductId = addingToCartProductId
-                    )
-                }
+                WomanDataView(
+                    products = uiState.products ?: emptyList(),
+                    action = { id -> navController.navigateToDetails(category = WOMAN, id = id) },
+                    addCartProduct = { productId ->
+                        addingToCartProductId = productId
+                        userEmail?.let { email ->
+                            cartViewModel.addToCart(email, productId)
+                        }
+                    },
+                    addingToCartProductId = addingToCartProductId,
+                    onNavigateToHome = { navController.navigateFromBottomBar(AppRoutes.HOME) }
+                )
             }
         }
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportadosv2.R
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyDivider
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyEmptyCart
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyMoreItems
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyWhatsAppButton
 import com.refactoringlife.lizimportadosv2.features.cart.presenter.views.CartComboItem
@@ -138,6 +139,13 @@ fun CartDataView(
                 )
                 
                 Spacer(Modifier.height(20.dp))
+            }
+        } else if (availableProducts.isEmpty() && availableCombos.isEmpty()) {
+            // Mostrar estado vacío cuando no hay productos ni combos
+            item {
+                LipsyEmptyCart(
+                    onStartShopping = onNavigateToHome
+                )
             }
         } else {
             // Mostrar productos solo si el carrito está disponible

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportadosv2.R
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyEmptyProducts
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyProduct
 import com.refactoringlife.lizimportadosv2.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
@@ -32,7 +33,8 @@ fun ChildrenDataView(
     products: List<ProductModel>,
     goToOptionScreen: (id) -> Unit,
     addCartProduct: (String) -> Unit = {},
-    addingToCartProductId: String? = null
+    addingToCartProductId: String? = null,
+    onNavigateToHome: (() -> Unit)? = null
 ){
     Column (modifier = Modifier.fillMaxSize()
         .background(Color.White)
@@ -47,22 +49,29 @@ fun ChildrenDataView(
 
         Spacer(Modifier.height(10.dp))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(0.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            items(products){product ->
-                LipsyProduct(
-                    product= product,
-                    isAvailable = true,
-                    addCartProduct = addCartProduct,
-                    action = goToOptionScreen,
-                    isLarge = true,
-                    isAddingToCart = addingToCartProductId == product.id
-                )
+        if (products.isEmpty()) {
+            LipsyEmptyProducts(
+                category = "la sección de niños",
+                onExploreOtherCategories = onNavigateToHome
+            )
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(0.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(products){product ->
+                    LipsyProduct(
+                        product= product,
+                        isAvailable = true,
+                        addCartProduct = addCartProduct,
+                        action = goToOptionScreen,
+                        isLarge = true,
+                        isAddingToCart = addingToCartProductId == product.id
+                    )
+                }
             }
         }
     }

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.refactoringlife.lizimportadosv2.R
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyEmptyProducts
 import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyProduct
 import com.refactoringlife.lizimportadosv2.features.home.data.model.ProductModel
 import com.refactoringlife.lizimportadosv2.ui.theme.TextBlue
@@ -31,7 +32,8 @@ fun WomanDataView(
     products: List<ProductModel>,
     action: (id) -> Unit,
     addCartProduct: (String) -> Unit = {},
-    addingToCartProductId: String? = null
+    addingToCartProductId: String? = null,
+    onNavigateToHome: (() -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -40,7 +42,7 @@ fun WomanDataView(
             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 90.dp)
     ) {
         Text(
-            text = "Seccion Mujer!",
+            text = "Sección Mujer",
             fontSize = 16.sp,
             fontFamily = FontFamily(Font(R.font.montserrat_bold)),
             color = TextBlue,
@@ -49,22 +51,29 @@ fun WomanDataView(
 
         Spacer(Modifier.height(10.dp))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(0.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            items(products) { product ->
-                LipsyProduct(
-                    product = product,
-                    isAvailable = true,
-                    addCartProduct = addCartProduct,
-                    action = action,
-                    isLarge = true,
-                    isAddingToCart = addingToCartProductId == product.id
-                )
+        if (products.isEmpty()) {
+            LipsyEmptyProducts(
+                category = "la sección de mujeres",
+                onExploreOtherCategories = onNavigateToHome
+            )
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(0.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(products) { product ->
+                    LipsyProduct(
+                        product = product,
+                        isAvailable = true,
+                        addCartProduct = addCartProduct,
+                        action = action,
+                        isLarge = true,
+                        isAddingToCart = addingToCartProductId == product.id
+                    )
+                }
             }
         }
     }

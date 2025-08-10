@@ -98,7 +98,8 @@ fun AppNavHost(
             DetailsScreen(
                 category = category, 
                 id = id,
-                authStateViewModel = authStateViewModel
+                authStateViewModel = authStateViewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 

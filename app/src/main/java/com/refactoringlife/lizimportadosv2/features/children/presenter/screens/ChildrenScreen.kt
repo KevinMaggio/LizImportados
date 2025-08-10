@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.refactoringlife.lizimportadosv2.core.auth.AuthStateViewModel
+import com.refactoringlife.lizimportadosv2.core.navigator.AppRoutes
 import com.refactoringlife.lizimportadosv2.core.navigator.CHILDREN
+import com.refactoringlife.lizimportadosv2.core.navigator.navigateFromBottomBar
 import com.refactoringlife.lizimportadosv2.core.navigator.navigateToDetails
 import com.refactoringlife.lizimportadosv2.features.children.presenter.viewmodel.ChildrenViewModel
 import com.refactoringlife.lizimportadosv2.features.children.presenter.views.ChildrenDataView
@@ -76,21 +78,20 @@ fun ChildrenScreen(
                 )
             }
             else -> {
-                uiState.products?.let { products ->
-                    ChildrenDataView(
-                        products = products,
-                        goToOptionScreen = { id ->
-                            navController.navigateToDetails(category = CHILDREN, id = id)
-                        },
-                        addCartProduct = { productId ->
-                            addingToCartProductId = productId
-                            userEmail?.let { email ->
-                                cartViewModel.addToCart(email, productId)
-                            }
-                        },
-                        addingToCartProductId = addingToCartProductId
-                    )
-                }
+                ChildrenDataView(
+                    products = uiState.products ?: emptyList(),
+                    goToOptionScreen = { id ->
+                        navController.navigateToDetails(category = CHILDREN, id = id)
+                    },
+                    addCartProduct = { productId ->
+                        addingToCartProductId = productId
+                        userEmail?.let { email ->
+                            cartViewModel.addToCart(email, productId)
+                        }
+                    },
+                    addingToCartProductId = addingToCartProductId,
+                    onNavigateToHome = { navController.navigateFromBottomBar(AppRoutes.HOME) }
+                )
             }
         }
 

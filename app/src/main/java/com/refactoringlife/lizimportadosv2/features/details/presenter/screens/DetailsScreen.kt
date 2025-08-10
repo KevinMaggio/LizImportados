@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.refactoringlife.lizimportadosv2.R
+import com.refactoringlife.lizimportadosv2.core.composablesLipsy.LipsyProductNotFound
 import com.refactoringlife.lizimportadosv2.core.utils.EMPTY
 import com.refactoringlife.lizimportadosv2.core.utils.isTrue
 import com.refactoringlife.lizimportadosv2.core.utils.isValid
@@ -35,7 +36,8 @@ import kotlinx.coroutines.delay
 fun DetailsScreen(
     category: String?,
     id: String?,
-    authStateViewModel: AuthStateViewModel
+    authStateViewModel: AuthStateViewModel,
+    onNavigateBack: (() -> Unit)? = null
 ) {
     val detailsViewModel: DetailsViewModel = viewModel()
     val cartViewModel: CartViewModel = viewModel()
@@ -112,9 +114,8 @@ fun DetailsScreen(
                 )
             }
             else -> {
-                Text(
-                    text = stringResource(R.string.no_product),
-                    modifier = Modifier.align(Alignment.Center)
+                LipsyProductNotFound(
+                    onGoBack = onNavigateBack ?: {}
                 )
             }
         }
