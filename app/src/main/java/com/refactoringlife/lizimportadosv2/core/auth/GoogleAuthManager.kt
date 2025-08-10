@@ -8,10 +8,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.refactoringlife.lizimportadosv2.core.utils.GOOGLE_ID
 import com.refactoringlife.lizimportadosv2.core.utils.getGoogleSignInIntent
 import kotlinx.coroutines.tasks.await
 import android.util.Log
+import com.refactoringlife.lizimportadosv2.R
 
 class GoogleAuthManager(
     private val context: Context,
@@ -27,7 +27,8 @@ class GoogleAuthManager(
      */
     fun getSignInIntent(): Intent {
         Log.d(TAG, "🔑 Obteniendo Intent de Google Sign-In")
-        return getGoogleSignInIntent(context, GOOGLE_ID)
+        val clientId = context.getString(R.string.default_web_client_id)
+        return getGoogleSignInIntent(context, clientId)
     }
     
     /**
