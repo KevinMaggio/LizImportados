@@ -63,6 +63,11 @@ fun CartScreen(
                             cartViewModel.removeFromCart(email, productId)
                         }
                     },
+                    onRemoveCombo = { comboId ->
+                        userEmail?.let { email ->
+                            cartViewModel.removeComboFromCart(email, comboId)
+                        }
+                    },
                     onClearCart = {
                         userEmail?.let { email ->
                             cartViewModel.clearCart(email)

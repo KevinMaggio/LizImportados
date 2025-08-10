@@ -265,6 +265,7 @@ class CartService(
             val updatedCart = CartResponse(
                 email = email,
                 productIds = updatedProductIds,
+                comboIds = currentCart.comboIds,
                 status = currentCart.status
             )
 
@@ -274,6 +275,34 @@ class CartService(
             getCartFull(email)
         } catch (e: Exception) {
             Log.e("CartService", "Error removiendo producto $productId del carrito de $email", e)
+            null
+        }
+    }
+
+    suspend fun removeComboFromCart(email: String, comboId: String): CartFullResponse? {
+        return try {
+            val currentCart = getCart(email) ?: return null
+
+            // Verificar si el carrito está disponible
+            if (currentCart.status == CartResponse.CartStatus.PROCESSED) {
+                Log.d("CartService", "❌ Carrito en procesamiento, no se puede remover combos")
+                return null
+            }
+
+            val updatedComboIds = currentCart.comboIds.filter { it != comboId }
+            val updatedCart = CartResponse(
+                email = email,
+                productIds = currentCart.productIds,
+                comboIds = updatedComboIds,
+                status = currentCart.status
+            )
+
+            saveCart(updatedCart)
+
+            Log.d("CartService", "Combo $comboId removido del carrito de $email")
+            getCartFull(email)
+        } catch (e: Exception) {
+            Log.e("CartService", "Error removiendo combo $comboId del carrito de $email", e)
             null
         }
     }

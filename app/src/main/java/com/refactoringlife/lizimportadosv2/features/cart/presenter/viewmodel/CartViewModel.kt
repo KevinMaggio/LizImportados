@@ -192,6 +192,27 @@ class CartViewModel(
         }
     }
 
+    fun removeComboFromCart(email: String, comboId: String) {
+        viewModelScope.launch {
+            Log.d("CartViewModel", "🎁➖ Removiendo combo $comboId del carrito")
+            try {
+                val cartResponse = repository.removeComboFromCart(email, comboId)
+                if (cartResponse != null) {
+                    val cartModel = mapToCartModel(cartResponse)
+                    _state.value = _state.value.copy(
+                        cart = cartModel,
+                        cartStatus = cartResponse.status
+                    )
+                    Log.d("CartViewModel", "✅ Combo removido del carrito")
+                } else {
+                    Log.e("CartViewModel", "❌ Error removiendo combo del carrito")
+                }
+            } catch (e: Exception) {
+                Log.e("CartViewModel", "❌ Error removiendo combo del carrito", e)
+            }
+        }
+    }
+
     fun clearCart(email: String) {
         viewModelScope.launch {
             Log.d("CartViewModel", "🗑️ Limpiando carrito")

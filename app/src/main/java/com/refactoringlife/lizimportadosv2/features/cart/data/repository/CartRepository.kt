@@ -57,6 +57,18 @@ class CartRepository(
         }
     }
 
+    suspend fun removeComboFromCart(email: String, comboId: String): CartFullResponse? {
+        return try {
+            Log.d("CartRepository", "🎁➖ Removiendo combo $comboId del carrito")
+            val cart = cartService.removeComboFromCart(email, comboId)
+            Log.d("CartRepository", "✅ Combo removido del carrito")
+            cart
+        } catch (e: Exception) {
+            Log.e("CartRepository", "❌ Error removiendo combo del carrito", e)
+            null
+        }
+    }
+
     suspend fun clearCart(email: String): Boolean {
         return try {
             Log.d("CartRepository", "🗑️ Limpiando carrito")

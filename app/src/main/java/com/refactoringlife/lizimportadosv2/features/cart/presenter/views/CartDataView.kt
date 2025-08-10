@@ -35,6 +35,7 @@ fun CartDataView(
     cartStatus: CartResponse.CartStatus = CartResponse.CartStatus.AVAILABLE,
     userEmail: String? = null,
     onRemoveItem: (String) -> Unit = {},
+    onRemoveCombo: (String) -> Unit = {},
     onClearCart: () -> Unit = {},
     onNavigateToHome: () -> Unit = {}
 ) {
@@ -160,8 +161,7 @@ fun CartDataView(
                         CartComboItem(
                             cartComboModel = combo,
                             onRemove = {
-                                // TODO: Implementar removeComboFromCart
-                                // onRemoveCombo(combo.comboId)
+                                onRemoveCombo(combo.comboId)
                             }
                         )
                     }
