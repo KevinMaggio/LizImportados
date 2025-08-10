@@ -31,7 +31,8 @@ fun HomeDataView(
     modifier: Modifier = Modifier,
     state: HomeUiState,
     action: (category, id) -> Unit,
-    onAddComboToCart: (String) -> Unit = {}
+    onAddComboToCart: (String) -> Unit = {},
+    isAddingToCart: Boolean = false
 ) {
     LazyColumn(
         modifier = modifier
@@ -80,7 +81,8 @@ fun HomeDataView(
             item {
                 ComboSection(
                     combos = state.combosModel,
-                    onAddComboToCart = onAddComboToCart
+                    onAddComboToCart = onAddComboToCart,
+                    isAddingToCart = isAddingToCart
                 )
             }
         }

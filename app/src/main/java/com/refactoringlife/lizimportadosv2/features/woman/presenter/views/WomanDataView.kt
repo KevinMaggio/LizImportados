@@ -29,7 +29,9 @@ typealias id = String
 @Composable
 fun WomanDataView(
     products: List<ProductModel>,
-    action: (id) -> Unit
+    action: (id) -> Unit,
+    addCartProduct: (String) -> Unit = {},
+    addingToCartProductId: String? = null
 ) {
     Column(
         modifier = Modifier
@@ -58,9 +60,10 @@ fun WomanDataView(
                 LipsyProduct(
                     product = product,
                     isAvailable = true,
-                    addCartProduct = {},
+                    addCartProduct = addCartProduct,
                     action = action,
-                    isLarge = true
+                    isLarge = true,
+                    isAddingToCart = addingToCartProductId == product.id
                 )
             }
         }

@@ -30,7 +30,9 @@ typealias id = String
 @Composable
 fun ChildrenDataView(
     products: List<ProductModel>,
-    goToOptionScreen: (id) -> Unit
+    goToOptionScreen: (id) -> Unit,
+    addCartProduct: (String) -> Unit = {},
+    addingToCartProductId: String? = null
 ){
     Column (modifier = Modifier.fillMaxSize()
         .background(Color.White)
@@ -56,9 +58,10 @@ fun ChildrenDataView(
                 LipsyProduct(
                     product= product,
                     isAvailable = true,
-                    addCartProduct = {},
+                    addCartProduct = addCartProduct,
                     action = goToOptionScreen,
-                    isLarge = true
+                    isLarge = true,
+                    isAddingToCart = addingToCartProductId == product.id
                 )
             }
         }

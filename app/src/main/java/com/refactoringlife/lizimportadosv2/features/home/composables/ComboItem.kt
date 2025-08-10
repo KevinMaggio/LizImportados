@@ -38,7 +38,8 @@ import com.refactoringlife.lizimportadosv2.ui.theme.TextSecondary
 fun ComboItem(
     combo: ComboResponse,
     lastItem: Boolean,
-    onAddToCart: (String) -> Unit = {}
+    onAddToCart: (String) -> Unit = {},
+    isAddingToCart: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -128,12 +129,18 @@ fun ComboItem(
             
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { onAddToCart(combo.id) }
+                modifier = Modifier.clickable(
+                    enabled = !isAddingToCart
+                ) { 
+                    if (!isAddingToCart) {
+                        onAddToCart(combo.id) 
+                    }
+                }
             ) {
                 Text(
-                    text = "Agregar a carrito",
+                    text = if (isAddingToCart) "Agregando..." else "Agregar a carrito",
                     fontSize = 14.sp,
-                    color = TextPrimary,
+                    color = if (isAddingToCart) Color.Gray else TextPrimary,
                     fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 )
 

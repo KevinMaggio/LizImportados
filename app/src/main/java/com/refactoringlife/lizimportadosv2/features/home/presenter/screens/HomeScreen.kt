@@ -61,7 +61,8 @@ fun HomeScreen(
                             userEmail?.let { email ->
                                 cartViewModel.addComboToCart(email, comboId)
                             }
-                        }
+                        },
+                        isAddingToCart = cartState.isAddingToCart
                     )
                 }
             }

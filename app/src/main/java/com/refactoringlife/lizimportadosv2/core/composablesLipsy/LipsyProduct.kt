@@ -29,7 +29,8 @@ fun LipsyProduct(
     isAvailable: Boolean = false,
     addCartProduct: (String) -> Unit,
     action: (id) -> Unit,
-    isLarge: Boolean = false
+    isLarge: Boolean = false,
+    isAddingToCart: Boolean = false
 ) {
     Column(modifier = Modifier
         .padding(if (isLarge) 5.dp else 20.dp)
@@ -103,13 +104,17 @@ fun LipsyProduct(
 
         if (isAvailable) {
             Text(
-                text = stringResource(R.string.add_cart),
+                text = if (isAddingToCart) "Agregando..." else stringResource(R.string.add_cart),
                 fontFamily = FontFamily(Font(R.font.montserrat_regular)),
                 fontSize = if (isLarge) 12.sp else 10.sp,
                 lineHeight = 1.sp,
-                color = TextBlue,
-                modifier = Modifier.clickable {
-                    addCartProduct(product.id)
+                color = if (isAddingToCart) TextSecondary else TextBlue,
+                modifier = Modifier.clickable(
+                    enabled = !isAddingToCart
+                ) {
+                    if (!isAddingToCart) {
+                        addCartProduct(product.id)
+                    }
                 }
             )
         }
