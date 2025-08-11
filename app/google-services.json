@@ -59,6 +59,14 @@
           }
         },
         {
+          "client_id": "58683493663-bo2h9e677h9cr8tren7kmf6ih8rui40l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.refactoringlife.lizimportadosv2",
+            "certificate_hash": "1832dd2e95430ca8e41f01653c952d4cfae66763"
+          }
+        },
+        {
           "client_id": "58683493663-sdbs70viafql7pc5nfl6d023aq2d1ae1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
